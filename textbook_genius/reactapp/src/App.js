@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Texbook from './components/textbook';
+import Example from './components/example';
 
 import {Button,TextField} from '@mui/material';
 import { useState,useEffect } from 'react';
@@ -20,6 +21,7 @@ function App(props) {
   return (
     <div className="App">
       <Texbook name="milky"></Texbook>
+      <Example></Example>
       {/* <title>you clicked {count} times</title>
       <h2>hi, {props.name}</h2>
       <Button onClick={()=>setCount(count+1)} variant="contained">ckick me</Button>

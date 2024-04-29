@@ -24,6 +24,6 @@ class getBook(APIView):
         url=req.prepare().url
 
         res=get(url,headers=header)
-        print(res.json())
+        # print(res.json())
         # return Response(res.json(),status=status.HTTP_200_OK)
         return Response(res.json(),status=status.HTTP_200_OK)
