@@ -20,7 +20,7 @@ function App(props) {
   // }
   return (
     <div className="App">
-      <Texbook name="milky"></Texbook>
+      <Texbook name="ilky"></Texbook>
       <Example></Example>
       {/* <title>you clicked {count} times</title>
       <h2>hi, {props.name}</h2>
