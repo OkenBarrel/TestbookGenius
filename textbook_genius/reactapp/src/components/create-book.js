@@ -7,9 +7,14 @@ function Texbook(props) {
   const [count,setCount]=useState(0);
   const[isbn,setIsbn]=useState(0);
   const[info,setInfo]=useState("");
+  const[cover,setCover]=useState("");
+  const[teacher,setTeacher]=useState("");
+  const[couserName,setCourseName]=useState("");
+
   async function handleSearchISBN(){
-    let response= await fetch("/api/get-book"+"?isbn="+isbn)
-    console.log(await response.json().then((data)=>{setInfo(data.title)}))
+    let response= await fetch("/api/get-douban-book"+"?isbn="+isbn)
+    console.log(await response.json().then((data)=>{setInfo(data.title);
+                                                    }))
   }
   return (
     <div className="App">
@@ -20,6 +25,7 @@ function Texbook(props) {
       <TextField label={"输入ISBN号"} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
       <Button variant="contained" color="secondary" onClick={handleSearchISBN}>搜索</Button>
       <p>{info}</p>
+      <img src={cover}></img>
     </div>
   );
 }

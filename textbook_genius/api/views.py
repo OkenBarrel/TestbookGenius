@@ -3,8 +3,8 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RoomSerializer
-from .models import Room
+from .serializers import RoomSerializer,BookSerializer
+from .models import Room,Book
 from requests import Request,post,get
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
@@ -14,8 +14,8 @@ class RoomView(generics.ListAPIView):
     print('in room')
     serializer_class = RoomSerializer
 
-class getBook(APIView):
-    def get(self,request,farmat=None):
+class getDoubanBook(APIView):
+    def get(self,request,format=None):
         scopes='book_basic_r'
         isbn = request.GET.get('isbn')
         header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74."}
@@ -27,3 +27,14 @@ class getBook(APIView):
         # print(res.json())
         # return Response(res.json(),status=status.HTTP_200_OK)
         return Response(res.json(),status=status.HTTP_200_OK)
+    
+class createBook(APIView):
+    serializer_class=BookSerializer
+    def post(self,request,format=None):
+        serializer=self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            title=serializer.data.get('title')
+            book = Book(title=title)
+            book.save()
+            return Response(serializer(book.data),status.HTTP_201_CREATED)
+        return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
