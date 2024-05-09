@@ -22,9 +22,14 @@ class Room(models.Model):
     votes_to_skip=models.IntegerField(null=False,default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
+class Course(models.Model):
+    # props: course_id, teacher, isbn, shared_files
+    pass
+
 class Book(models.Model):
+    # props:isbn, title, cover, author, publisher, pubdate
+    # doubanUrl, (doubanRating)...(info from external API
     isbn=models.IntegerField(null=False,default=-1)
     title=models.CharField(max_length=50,default="",unique=False)
-    # cover=
-    # authors=[]  ???
+    
     publisher=models.CharField(max_length=20,default="",unique=False)
