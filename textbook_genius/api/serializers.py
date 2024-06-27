@@ -10,4 +10,4 @@ class RoomSerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model=Book
-        dields={'isbn','authors','publisher'}
+        dields={'isbn','title','author','publisher','pubdate','cover','douban_url'}

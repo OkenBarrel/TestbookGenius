@@ -29,7 +29,13 @@ class Course(models.Model):
 class Book(models.Model):
     # props:isbn, title, cover, author, publisher, pubdate
     # doubanUrl, (doubanRating)...(info from external API
-    isbn=models.IntegerField(null=False,default=-1)
+    isbn=models.CharField(max_length=13,null=False,unique=True)
     title=models.CharField(max_length=50,default="",unique=False)
+    author=models.CharField(max_length=50,default="")
+    publisher=models.CharField(max_length=50,default="")
+    pubdate=models.TimeField()
+    cover=models.CharField(max_length=100,default="")
+    douban_url=models.CharField(max_length=50,default="")
+    def time_tostring(self):
+        return self.pubdate.strftime('%Y%m%d')
     
-    publisher=models.CharField(max_length=20,default="",unique=False)
