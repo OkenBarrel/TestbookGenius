@@ -22,3 +22,20 @@ class Room(models.Model):
     votes_to_skip=models.IntegerField(null=False,default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
+class Course(models.Model):
+    # props: course_id, teacher, isbn, shared_files
+    pass
+
+class Book(models.Model):
+    # props:isbn, title, cover, author, publisher, pubdate
+    # doubanUrl, (doubanRating)...(info from external API
+    isbn=models.CharField(max_length=13,null=False,unique=True)
+    title=models.CharField(max_length=50,default="",unique=False)
+    author=models.CharField(max_length=50,default="")
+    publisher=models.CharField(max_length=50,default="")
+    pubdate=models.TimeField()
+    cover=models.CharField(max_length=100,default="")
+    douban_url=models.CharField(max_length=50,default="")
+    def time_tostring(self):
+        return self.pubdate.strftime('%Y%m%d')
+    
