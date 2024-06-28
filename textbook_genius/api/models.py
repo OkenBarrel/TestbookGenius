@@ -37,9 +37,10 @@ class Book(models.Model):
     cover=models.CharField(max_length=100,default="")
     douban_url=models.CharField(max_length=50,default="")
 
-    
-    def time_tostring(self):
-        return self.pubdate.strftime('%Y%m%d')
+
+
+    # def time_tostring(self):
+    #     return self.pubdate.strftime('%Y%m%d')
     
     def __str__(self) -> str:
         return "isbn:{0} title:{1}".format(self.isbn,self.title)
