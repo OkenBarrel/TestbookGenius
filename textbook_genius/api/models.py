@@ -31,11 +31,16 @@ class Book(models.Model):
     # doubanUrl, (doubanRating)...(info from external API
     isbn=models.CharField(max_length=13,null=False,unique=True)
     title=models.CharField(max_length=50,default="",unique=False)
-    author=models.CharField(max_length=50,default="")
+    author=models.JSONField(max_length=50,default="")
     publisher=models.CharField(max_length=50,default="")
-    pubdate=models.TimeField()
+    pubdate=models.CharField(max_length=10)
     cover=models.CharField(max_length=100,default="")
     douban_url=models.CharField(max_length=50,default="")
+
+    
     def time_tostring(self):
         return self.pubdate.strftime('%Y%m%d')
+    
+    def __str__(self) -> str:
+        return "isbn:{0} title:{1}".format(self.isbn,self.title)
     

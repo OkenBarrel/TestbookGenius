@@ -50,6 +50,7 @@ class createBook(APIView):
     def post(self,request,format=None):
 
         serializer=self.serializer_class(data=request.data)
+        print(serializer)
         if serializer.is_valid():
             title=serializer.data.get('title')
             isbn=serializer.data.get('isbn')
@@ -65,6 +66,6 @@ class createBook(APIView):
             else:
                 book=Book(isbn=isbn,title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
                 book.save()
-                return Response(serializer(book.data),status.HTTP_201_CREATED)
-        
+                return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
