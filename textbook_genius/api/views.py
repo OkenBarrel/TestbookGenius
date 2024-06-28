@@ -59,7 +59,7 @@ class createBook(APIView):
             pubdate=serializer.data.get('pubdate')
             cover=serializer.data.get('cover')
             douban_url=serializer.data.get('douban_url')
-            book = Book(isbn=isbn)
+            # book = Book(isbn=isbn)
             queryset=Book.objects.filter(isbn=isbn)
             if queryset.exists():
                 return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
