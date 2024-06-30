@@ -15,12 +15,16 @@ function CreateBookPage(props){
     const[douban_url,setDouban]=useState("")
     const[publisher,setPublisher]=useState("")
     const[pubdate,setPubdate]=useState("")
+    const[error,setError]=useState("")
     
     const navigate=useNavigate();
 
     async function handleSearchButton(){
         let response= await fetch("/api/get-douban-book"+"?isbn="+isbn)
-        console.log(await response.json()
+        if(!response.ok){
+            setError(response.statusText);
+        }
+        await response.json()
         .then((data)=>{setTitle(data.title);
             setAuthor(data.author);
             setCover(data.images.small);
@@ -28,7 +32,7 @@ function CreateBookPage(props){
             setPublisher(data.publisher);
             setPubdate(data.pubdate);
 
-                                                        }))
+                                                        })
     }
     function handleSubmit(){
         console.log("handling submit")
@@ -62,6 +66,7 @@ function CreateBookPage(props){
                     </Grid>
                     <Grid item xs={12} align="center">
                             <TextField label={'输入ISBN号，获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
+                            <p color='red'>{error}</p>
                         <item>
                             <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
                         </item>

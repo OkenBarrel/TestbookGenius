@@ -37,7 +37,7 @@ class get_book(APIView):
         isbn=request.GET.get(self.lookup_kwarg)
         if isbn!=None:
             book=Book.objects.filter(isbn=isbn)
-            if len(book>0):
+            if len(book)>0:
                 data=BookSerializer(book[0]).data
                 return Response(data,status=status.HTTP_200_OK)
             return Response({'Book not found":"invalid ISBN.'},status=status.HTTP_404_NOT_FOUND)
