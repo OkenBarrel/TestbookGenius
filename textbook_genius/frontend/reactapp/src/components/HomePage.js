@@ -1,6 +1,6 @@
 import {Button,DialogContent,Grid,Typography,TextField} from '@mui/material';
 import React,{Component} from "react";
-import CreateBookPage from './createBook_box';
+import CreateBookPage from './CreateBookPage';
 import Book from "./Book"
 import {
     BrowserRouter as Router,
@@ -25,7 +25,7 @@ function HomePage(props) {
         <Routes>
           <Route path="/" element={renderHomePage()} />
           <Route path="/create" element={<CreateBookPage/>} />
-          <Route path="/book/:isbn" component={Book} />
+          <Route path="/book/:isbn" element={<Book/>} />
         </Routes>
       </Router>
     );
