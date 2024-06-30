@@ -37,7 +37,7 @@ class get_book(APIView):
         isbn=request.GET.get(self.lookup_kwarg)
         if isbn!=None:
             book=Book.objects.filter(isbn=isbn)
-            if len(book>0):
+            if len(book)>0:
                 data=BookSerializer(book[0]).data
                 return Response(data,status=status.HTTP_200_OK)
             return Response({'Book not found":"invalid ISBN.'},status=status.HTTP_404_NOT_FOUND)
@@ -50,6 +50,7 @@ class createBook(APIView):
     def post(self,request,format=None):
 
         serializer=self.serializer_class(data=request.data)
+        print(serializer)
         if serializer.is_valid():
             title=serializer.data.get('title')
             isbn=serializer.data.get('isbn')
@@ -58,13 +59,13 @@ class createBook(APIView):
             pubdate=serializer.data.get('pubdate')
             cover=serializer.data.get('cover')
             douban_url=serializer.data.get('douban_url')
-            book = Book(isbn=isbn)
+            # book = Book(isbn=isbn)
             queryset=Book.objects.filter(isbn=isbn)
             if queryset.exists():
                 return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
             else:
                 book=Book(isbn=isbn,title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
                 book.save()
-                return Response(serializer(book.data),status.HTTP_201_CREATED)
-        
+                return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
