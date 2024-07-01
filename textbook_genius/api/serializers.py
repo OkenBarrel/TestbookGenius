@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Room, Book
+from .models import Room, Book, Teacher, Course
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,13 +10,14 @@ class RoomSerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model=Book
-        fields=('isbn','title','author','publisher','pubdate','cover','douban_url')
+        fields={'isbn','title','author','publisher','pubdate','cover','douban_url'}
 
-    # def create(self, validated_data):
-    #     authors = validated_data.pop('authors', [])
-    #     # 在这里处理作者列表，可以根据需要进行逻辑处理，比如记录日志、验证数据等
-    #     # 你可以根据具体需求自行扩展处理逻辑
-    #     for author in authors:
-        
-    #     book = Book.objects.create(**validated_data)
-    #     return book
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields=('teacher_id','teacher_name','department')
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields=('course_id','course_name','department')

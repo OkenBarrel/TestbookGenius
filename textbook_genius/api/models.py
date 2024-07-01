@@ -22,10 +22,6 @@ class Room(models.Model):
     votes_to_skip=models.IntegerField(null=False,default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
-class Course(models.Model):
-    # props: course_id, teacher, isbn, shared_files
-    pass
-
 class Book(models.Model):
     # props:isbn, title, cover, author, publisher, pubdate
     # doubanUrl, (doubanRating)...(info from external API
@@ -36,12 +32,24 @@ class Book(models.Model):
     pubdate=models.CharField(max_length=10)
     cover=models.CharField(max_length=100,default="")
     douban_url=models.CharField(max_length=50,default="")
-
-
-
-    # def time_tostring(self):
-    #     return self.pubdate.strftime('%Y%m%d')
+    def time_tostring(self):
+        return self.pubdate.strftime('%Y%m%d')
     
-    def __str__(self) -> str:
-        return "isbn:{0} title:{1}".format(self.isbn,self.title)
+class Teacher(models.Model):
+    # props: teacher_id, teacher_name, department
+    teacher_id=models.CharField(max_length=50,null=False,unique=True)
+    teacher_name=models.CharField(max_length=50,null=False,default="")
+    department=models.CharField(max_length=50,null=False,default="")
     
+class Course(models.Model):
+    # props: course_id, course_name, department
+    course_id=models.CharField(max_length=50,null=False,unique=True)
+    course_name=models.CharField(max_length=50,null=False,default="")
+    department=models.CharField(max_length=50,null=False,default="")
+
+# relationship: teachers teach courses(many to many)
+class Teach(models.Model):
+    teacher=models.ForeignKey(Teacher,on_update=models.CASCADE,on_delete=models.CASCADE)
+    course=models.ForeignKey(Course,on_update=models.CASCADE,on_delete=models.CASCADE)
+    school_year=models.CharField(max_length=10,null=False,default="")
+    semester=models.IntegerField(null=False,default=1)
