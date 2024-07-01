@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Room, Book, Teacher, Course,User ,Mark
+from .models import Room, Book, Teacher, Course,User ,Mark , Comment, Like
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,3 +31,13 @@ class MarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mark
         fields=('userid','bookisbn')
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields=('com_id','info','book','user_id','com_date')
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields=('user','comment','like','dislike')
