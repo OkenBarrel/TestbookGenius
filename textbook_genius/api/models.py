@@ -47,8 +47,8 @@ class Course(models.Model):
     course_name=models.CharField(max_length=50,null=False,default="")
     department=models.CharField(max_length=50,null=False,default="")
 
-# relationship: teachers teach courses(many to many)
-class Teach(models.Model):
+class Usebook(models.Model):
+    book=models.ForeignKey(Book,on_update=models.CASCADE,on_delete=models.CASCADE)
     teacher=models.ForeignKey(Teacher,on_update=models.CASCADE,on_delete=models.CASCADE)
     course=models.ForeignKey(Course,on_update=models.CASCADE,on_delete=models.CASCADE)
     school_year=models.CharField(max_length=10,null=False,default="")
