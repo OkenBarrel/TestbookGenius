@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Room, Book, Teacher, Course,User ,Mark , Comment, Like
+from .models import Room, Book, Teacher, Course, Usebook, User , Mark , Comment, Like
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,7 +10,7 @@ class RoomSerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model=Book
-        fields={'isbn','title','author','publisher','pubdate','cover','douban_url'}
+        fields=('isbn','title','author','publisher','pubdate','cover','douban_url')
 
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,6 +21,11 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields=('course_id','course_name','department')
+
+class UsebookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usebook
+        fields=('isbn','teacher_id','course_id','school_year','semester')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
