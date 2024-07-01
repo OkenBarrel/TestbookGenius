@@ -53,3 +53,18 @@ class Teach(models.Model):
     course=models.ForeignKey(Course,on_update=models.CASCADE,on_delete=models.CASCADE)
     school_year=models.CharField(max_length=10,null=False,default="")
     semester=models.IntegerField(null=False,default=1)
+
+
+class User(models.Model):
+    user_id = models.CharField(max_length=50, null=False, unique=True)
+    user_name = models.CharField(max_length=50, null=False, default="")
+    user_password = models.CharField(max_length=50, null=False, default="")
+    user_email = models.CharField(max_length=50, null=False, default="")
+    user_major = models.CharField(max_length=50, null=False, default="")
+    user_department = models.CharField(max_length=50, null=False, default="")
+    user_credit = models.IntegerField(null=False,default=100)
+    user_indate = models.DateField()
+
+class Mark(models.Model):
+    userid = models.ForeignKey(User,on_update=models.CASCADE,on_delete=models.CASCADE)
+    bookisbn = models.ForeignKey(Book,on_update=models.CASCADE,on_delete=models.CASCADE)
