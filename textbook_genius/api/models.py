@@ -68,3 +68,24 @@ class User(models.Model):
 class Mark(models.Model):
     userid = models.ForeignKey(User,on_update=models.CASCADE,on_delete=models.CASCADE)
     bookisbn = models.ForeignKey(Book,on_update=models.CASCADE,on_delete=models.CASCADE)
+
+class Comment(models.Model):
+    com_id = models.CharField(max_length=50,null=False,unique=True)
+    info = models.CharField(max_length=200,null=False,unique=True)   
+    # relationship with book
+    book = models.ForeignKey(Book,on_update=models.CASCADE,on_delete=models.CASCADE)
+    # relationship with user
+    user_id = models.ForeignKey(User,on_update=models.CASCADE,on_delete=models.CASCADE) 
+    # relationship with user : props
+    com_date = models.DateTimeField(auto_now_add=True)
+
+class Like(models.Model):
+    # relationship with user and comment
+    user = models.ForeignKey(User,on_update=models.CASCADE,on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment,on_update=models.CASCADE,on_delete=models.CASCADE)
+    # props
+    like = models.IntegerField(null=False,default=0)
+    dislike = models.IntegerField(null=False,default=0)
+
+
+
