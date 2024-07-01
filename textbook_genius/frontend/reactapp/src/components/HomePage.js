@@ -16,6 +16,9 @@ function HomePage(props) {
         <div>
           <h2>This is HomePage</h2>
           <Button variant='contained' to="/create" component={Link}>创建书籍</Button>
+          <Button variant='contained' to="/register" component={Link}>注册</Button>
+          <Button variant='contained' to="/login" component={Link}>登录</Button>
+          <Button variant='contained' to="/user/:userId" component={Link}>用户信息</Button>
         </div>
       );
     }
@@ -26,6 +29,10 @@ function HomePage(props) {
           <Route path="/" element={renderHomePage()} />
           <Route path="/create" element={<CreateBookPage/>} />
           <Route path="/book/:isbn" element={<Book/>} />
+          <Route path="/register" />
+          <Route path="/login"/>
+          <Route path="/user/:userId"/>
+          {/* <Route path=/> */}
         </Routes>
       </Router>
     );
