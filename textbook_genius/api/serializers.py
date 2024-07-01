@@ -35,9 +35,9 @@ class MarkSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields={'com_id','info','book','user_id','com_date'}
+        fields=('com_id','info','book','user_id','com_date')
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields={'user','comment','like','dislike'}
+        fields=('user','comment','like','dislike')
