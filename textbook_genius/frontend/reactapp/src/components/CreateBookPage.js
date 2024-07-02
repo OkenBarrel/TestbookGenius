@@ -12,10 +12,12 @@ function CreateBookPage(props){
     const[title,setTitle]=useState("");
     const[author,setAuthor]=useState("");
     const[cover,setCover]=useState("");
-    const[douban_url,setDouban]=useState("")
-    const[publisher,setPublisher]=useState("")
-    const[pubdate,setPubdate]=useState("")
-    const[error,setError]=useState("")
+    const[douban_url,setDouban]=useState("");
+    const[publisher,setPublisher]=useState("");
+    const[pubdate,setPubdate]=useState("");
+    const[error,setError]=useState("");
+    const[teacher,setTeacher]=useState("");
+    const[course,setCourse]=useState("");
     
     const navigate=useNavigate();
 
@@ -46,7 +48,9 @@ function CreateBookPage(props){
                 publisher:publisher,
                 pubdate:pubdate,
                 cover:cover,
-                douban_url:douban_url
+                douban_url:douban_url,
+                teacher:teacher,
+                course:course
                 
 
             }),
@@ -60,7 +64,7 @@ function CreateBookPage(props){
     return(
         <div className='createBookPage'>
             <Grid container spacing={3} align="center" justifyContent="center">
-                <Grid container spacing={3} item xs={6} >
+                <Grid container spacing={2} item xs={6} >
                     <Grid item xs={12} align="center">
                         <h1>This is create Book</h1>
                     </Grid>
@@ -86,6 +90,12 @@ function CreateBookPage(props){
                     </Grid>
                     <Grid item xs={12} align="center">
                         <TextField value={publisher} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/>
+                    </Grid>
+                    <Grid item xs={12} align="center">
+                        <TextField value={publisher} label={"老师"} onChange={(e)=>{setTeacher(e.target.value)}}/>
+                    </Grid>
+                    <Grid item xs={12} align="center">
+                        <TextField value={publisher} label={"课程"} onChange={(e)=>{setPublisher(e.target.value)}}/>
                     </Grid>
                     <Grid item xs={12} align="center">
                         <Button variant="contained" onClick={handleSubmit}>创建</Button>

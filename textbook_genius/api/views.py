@@ -49,16 +49,20 @@ class createBook(APIView):
     serializer_class=BookSerializer
     def post(self,request,format=None):
 
-        serializer=self.serializer_class(data=request.data)
-        print(serializer)
-        if serializer.is_valid():
-            title=serializer.data.get('title')
-            isbn=serializer.data.get('isbn')
-            author=serializer.data.get('author')
-            publisher=serializer.data.get('publisher')
-            pubdate=serializer.data.get('pubdate')
-            cover=serializer.data.get('cover')
-            douban_url=serializer.data.get('douban_url')
+        book_serializer=self.serializer_class(data=request.data)
+        print(book_serializer)
+        if book_serializer.is_valid():
+            title=book_serializer.data.get('title')
+            isbn=book_serializer.data.get('isbn')
+            author=book_serializer.data.get('author')
+            publisher=book_serializer.data.get('publisher')
+            pubdate=book_serializer.data.get('pubdate')
+            cover=book_serializer.data.get('cover')
+            douban_url=book_serializer.data.get('douban_url')
+
+            teacher=book_serializer.data.get('teacher')
+            course=book_serializer.data.get('course')
+            
             # book = Book(isbn=isbn)
             queryset=Book.objects.filter(isbn=isbn)
             if queryset.exists():
