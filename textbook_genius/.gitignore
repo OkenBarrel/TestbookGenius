@@ -4,3 +4,4 @@ textbook_genius/frontend/__pycache__/
 *.pyc
 *.idea/
 *.vscode/
+testLocal/
