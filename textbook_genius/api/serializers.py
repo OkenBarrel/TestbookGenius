@@ -15,17 +15,20 @@ class BookSerializer(serializers.ModelSerializer):
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields=('teacher_id','teacher_name','department')
+        fields='__all__'
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields=('course_id','course_name','department')
+        fields=('course_name','department')
 
 class UsebookSerializer(serializers.ModelSerializer):
+    course = serializers.SlugRelatedField(slug_field='course_name', queryset=Course.objects.all())
+    teacher = serializers.SlugRelatedField(slug_field='teacher_name', queryset=Teacher.objects.all())
+    book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
     class Meta:
         model = Usebook
-        fields=('isbn','teacher_id','course_id','school_year','semester')
+        fields=('book','teacher','course','school_year','semester')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
