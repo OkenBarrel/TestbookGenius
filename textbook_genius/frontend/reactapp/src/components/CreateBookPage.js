@@ -1,4 +1,4 @@
-import {Button,DialogContent,TextField,Grid} from '@mui/material';
+import {Button,DialogContent,TextField,Grid,FormControl,InputLabel,OutlinedInput,FormHelperText} from '@mui/material';
 import {Box,ThemeProvider} from '@mui/material';
 
 import { useState,useEffect } from 'react';
@@ -69,50 +69,121 @@ function CreateBookPage(props){
 
     return(
         <div className='createBookPage'>
+            {/* <TextField label={'输入ISBN号，获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
+            <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
+            <form>
+            <TextField value={title} label={"标题"} onChange={(e)=>{setTitle(e.target.value)}}/>
+            <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/>
+            </form> */}
             <Grid container spacing={3} align="center" justifyContent="center">
-                <Grid container spacing={2} item xs={6} >
+                <Grid container spacing={1} item xs={6} >
                     <Grid item xs={12} align="center">
                         <h1>This is create Book</h1>
                     </Grid>
                     <Grid item xs={12} align="center">
-                            <TextField label={'输入ISBN号，获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
-                            <p color='red'>{error}</p>
-                        <item>
+                        <FormControl  variant="outlined">
+                            <InputLabel htmlFor="isbn-input">isbn</InputLabel>
+                            <OutlinedInput
+                                id="isbn-input"
+                                onChange={(e) => { setIsbn(e.target.value) }}
+                                label="ISBN"
+                            />
+                            <FormHelperText>输入ISBN号，获取书籍信息</FormHelperText>
                             <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
-                        </item>
-
-                    </Grid>
-                    {/* <Grid item xs={2} align="center">
-                        {/* <item> */}
-                            {/* <Button variant="contained" onClick={handleSearchButton}>搜索</Button> */}
-                        {/* </item> */}
-
-                    
-                    <Grid item xs={12} align="center">
-                        <TextField value={title} label={"标题"} onChange={(e)=>{setTitle(e.target.value)}}/>
+                        </FormControl>
+                        <p style={{ color: 'red' }}>{error}</p>
+                        
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/>
+                        <FormControl  variant="outlined">
+                            <InputLabel htmlFor="title-input">标题</InputLabel>
+                            <OutlinedInput
+                                id="title-input"
+                                value={title}
+                                onChange={(e) => { setTitle(e.target.value) }}
+                                label="标题"
+                            />
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={publisher} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/>
+                        <FormControl  variant="outlined">
+                            <InputLabel htmlFor="author-input">作者</InputLabel>
+                            <OutlinedInput
+                                id="author-input"
+                                value={author}
+                                onChange={(e) => { setAuthor(e.target.value) }}
+                                label="作者"
+                            />
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={publisher} label={"老师"} onChange={(e)=>{setTeacher(e.target.value)}}/>
+                        <FormControl  variant="outlined">
+                            <InputLabel htmlFor="publisher-input">出版社</InputLabel>
+                            <OutlinedInput
+                                id="publisher-input"
+                                value={publisher}
+                                onChange={(e) => { setPublisher(e.target.value) }}
+                                label="出版社"
+                            />
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={publisher} label={"课程"} onChange={(e)=>{setCourse(e.target.value)}}/>
+                        <FormControl  variant="outlined">
+                            <InputLabel htmlFor="teacher-input">老师</InputLabel>
+                            <OutlinedInput
+                                id="teacher-input"
+                                value={teacher}
+                                onChange={(e) => { setTeacher(e.target.value) }}
+                                label="老师"
+                            />
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={publisher} label={"学部"} onChange={(e)=>{setDepartment(e.target.value)}}/>
+                        <FormControl  variant="outlined">
+                            <InputLabel htmlFor="course-input">课程</InputLabel>
+                            <OutlinedInput
+                                id="course-input"
+                                value={course}
+                                onChange={(e) => { setCourse(e.target.value) }}
+                                label="课程"
+                            />
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={publisher} label={"学年"} onChange={(e)=>{setSchoolyear(e.target.value)}}/>
-                        <TextField value={publisher} label={"学期"} onChange={(e)=>{setSemester(e.target.value)}}/>
+                        <FormControl variant="outlined">
+                            <InputLabel htmlFor="department-input">学部</InputLabel>
+                            <OutlinedInput
+                                id="department-input"
+                                value={departmant}
+                                onChange={(e) => { setDepartment(e.target.value) }}
+                                label="学部"
+                            />
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} align="center">
+                        <FormControl variant="outlined">
+                            <InputLabel htmlFor="school-year-input">学年</InputLabel>
+                            <OutlinedInput
+                                id="school-year-input"
+                                value={school_year}
+                                onChange={(e) => { setSchoolyear(e.target.value) }}
+                                label="学年"
+                            />
+                        </FormControl>
+                        <FormControl variant="outlined">
+                            <InputLabel htmlFor="semester-input">学期</InputLabel>
+                            <OutlinedInput
+                                id="semester-input"
+                                value={semester}
+                                onChange={(e) => { setSemester(e.target.value) }}
+                                label="学期"
+                            />
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
                         <Button variant="contained" onClick={handleSubmit}>创建</Button>
                     </Grid>
+
 
                 </Grid>
                 <Grid container item xs={2}>
