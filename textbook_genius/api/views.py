@@ -4,9 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RoomSerializer,BookSerializer
-from .models import Room,Book
+from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,CommentSerializer,LikeSerializer,UserSerializer,UsebookSerializer,MarkSerializer
+from .models import Room,Book,Teacher,Course,Comment,Usebook,User,Like,Mark
 from requests import Request,post,get
+
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
 
@@ -46,11 +47,15 @@ class get_book(APIView):
     
 class createBook(APIView):
 
-    serializer_class=BookSerializer
+    book_serializer_class=BookSerializer
+    useBook_serializer_class=UsebookSerializer
+    course_serializer_class=CourseSerializer
+    teacher_serializer_class=TeacherSerializer
     def post(self,request,format=None):
-
-        book_serializer=self.serializer_class(data=request.data)
-        print(book_serializer)
+        book_data=request.data.get("book")
+        # print(request.data)
+        # print(book_data)
+        book_serializer=self.book_serializer_class(data=book_data)
         if book_serializer.is_valid():
             title=book_serializer.data.get('title')
             isbn=book_serializer.data.get('isbn')
@@ -59,17 +64,81 @@ class createBook(APIView):
             pubdate=book_serializer.data.get('pubdate')
             cover=book_serializer.data.get('cover')
             douban_url=book_serializer.data.get('douban_url')
-
-            teacher=book_serializer.data.get('teacher')
-            course=book_serializer.data.get('course')
             
-            # book = Book(isbn=isbn)
             queryset=Book.objects.filter(isbn=isbn)
             if queryset.exists():
-                return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
+                print("{0} is already created".format(title))
+                book=queryset[0]
+                print(book)
+                # return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
             else:
                 book=Book(isbn=isbn,title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
                 book.save()
-                return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
-        print(serializer.errors)
+                # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
+        else:
+            print('book')
+            queryset=Book.objects.filter(isbn=book_data['isbn'])
+            book=queryset[0]
+            print(book)
+            print(book_serializer.errors)
+        course_name=request.data.get("course")
+        course_serializer=self.course_serializer_class(data=course_name)
+        if course_serializer.is_valid():
+            course_name=course_serializer.data.get('course_name')
+            department=course_serializer.data.get('department')
+            queryset=Course.objects.filter(course_name=course_name)
+            if queryset.exists():
+                print("{0} is already created".format(course_name))
+                course=queryset[0]
+                # return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
+            else:
+                course=Course(course_name=course_name,department=department)
+                course.save()
+                # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
+        else:
+            print('course')
+            print(course_serializer.errors)
+        
+        teacher=request.data.get("teacher")
+        print(teacher)
+        teacher_serializer=self.teacher_serializer_class(data=teacher)
+        
+        if teacher_serializer.is_valid():
+            teacher_name=teacher_serializer.data.get('teacher_name')
+            queryset=Teacher.objects.filter(teacher_name=teacher_name)
+            if queryset.exists():
+                print("{0} is already created".format(teacher_name))
+                teacher=queryset[0]
+                # return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
+            else:
+                teacher=Teacher(teacher_name=teacher_name)
+                teacher.save()
+                # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
+        else:
+            print('teacher')
+            # print(teacher_serializer)
+            print(teacher_serializer.errors)
+        
+        usebook_data={
+            "course":course_name,
+            "teacher":teacher_serializer.data.get('teacher_name'),
+            "book":book_serializer.data.get('isbn'),
+            "school_year":request.data.get("school_year"),
+            "semester":request.data.get("semester")
+        }
+        useBook_serializer=self.useBook_serializer_class(data=usebook_data)
+        print(useBook_serializer)
+        if useBook_serializer.is_valid():
+            
+            # book = Book(isbn=isbn)
+            queryset=Usebook.objects.filter(book=book,course=course,teacher=teacher)
+            if queryset.exists():
+                return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
+            else:
+                useBook=Usebook(book=book,course=course,teacher=teacher)
+                useBook.save()
+                return Response(UsebookSerializer(useBook).data,status.HTTP_201_CREATED)
+        else:
+            print('useBook')
+            print(useBook_serializer.errors)
         return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)

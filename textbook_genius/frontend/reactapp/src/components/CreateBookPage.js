@@ -18,6 +18,9 @@ function CreateBookPage(props){
     const[error,setError]=useState("");
     const[teacher,setTeacher]=useState("");
     const[course,setCourse]=useState("");
+    const[departmant,setDepartment]=useState("");
+    const[school_year,setSchoolyear]=useState("");
+    const[semester,setSemester]=useState("");
     
     const navigate=useNavigate();
 
@@ -42,17 +45,20 @@ function CreateBookPage(props){
             method:"POST",
             headers:{"Content-Type": "application/json"},
             body:JSON.stringify({
-                isbn:isbn,
-                title:title,
-                author:author,
-                publisher:publisher,
-                pubdate:pubdate,
-                cover:cover,
-                douban_url:douban_url,
+                book:{isbn:isbn,
+                    title:title,
+                    author:author,
+                    publisher:publisher,
+                    pubdate:pubdate,
+                    cover:cover,
+                    douban_url:douban_url},
                 teacher:teacher,
-                course:course
-                
-
+                course:{
+                    course_name:course,
+                    departmant:departmant
+                },
+                school_year:school_year,
+                semester:semester
             }),
         };
         fetch("/api/create-book",requestOption)
@@ -95,7 +101,14 @@ function CreateBookPage(props){
                         <TextField value={publisher} label={"老师"} onChange={(e)=>{setTeacher(e.target.value)}}/>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={publisher} label={"课程"} onChange={(e)=>{setPublisher(e.target.value)}}/>
+                        <TextField value={publisher} label={"课程"} onChange={(e)=>{setCourse(e.target.value)}}/>
+                    </Grid>
+                    <Grid item xs={12} align="center">
+                        <TextField value={publisher} label={"学部"} onChange={(e)=>{setDepartment(e.target.value)}}/>
+                    </Grid>
+                    <Grid item xs={12} align="center">
+                        <TextField value={publisher} label={"学年"} onChange={(e)=>{setSchoolyear(e.target.value)}}/>
+                        <TextField value={publisher} label={"学期"} onChange={(e)=>{setSemester(e.target.value)}}/>
                     </Grid>
                     <Grid item xs={12} align="center">
                         <Button variant="contained" onClick={handleSubmit}>创建</Button>
