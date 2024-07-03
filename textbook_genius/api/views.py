@@ -97,6 +97,8 @@ class createBook(APIView):
                 # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
         else:
             print('course')
+            queryset=Course.objects.filter(course_name=course['course_name'],department=course['department'])
+            course=queryset[0]
             print(course_serializer.errors)
         
         teacher=request.data.get("teacher")
@@ -116,6 +118,8 @@ class createBook(APIView):
                 # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
         else:
             print('teacher')
+            queryset=Teacher.objects.filter(teacher_name=teacher["teacher_name"])
+            course=queryset[0]
             # print(teacher_serializer)
             print(teacher_serializer.errors)
         
