@@ -1,5 +1,6 @@
 import {Button,DialogContent,TextField,Grid} from '@mui/material';
 import {Box,ThemeProvider} from '@mui/material';
+import ScoreComponent from './ScoreComponet';
 
 import { useState,useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
