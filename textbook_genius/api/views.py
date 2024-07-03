@@ -69,3 +69,23 @@ class createBook(APIView):
                 return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
+
+    
+class updateBook(APIView):
+    serializer_class=BookSerializer
+    def patch(self,request,format=None):
+        serializer=self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            isbn=serializer.data.get('isbn')
+            title=serializer.data.get('title')
+            author=serializer.data.get('author')
+            publisher=serializer.data.get('publisher')
+            pubdate=serializer.data.get('pubdate')
+            cover=serializer.data.get('cover')
+            douban_url=serializer.data.get('douban_url')
+
+            Book.objects.filter(isbn=isbn).update(title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
+            return Response(BookSerializer(Book.objects.filter(isbn=isbn)).data,status.HTTP_200_OK)
+        
+        
+                
