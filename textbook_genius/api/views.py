@@ -46,7 +46,28 @@ class get_book(APIView):
 
     
 class createBook(APIView):
-
+    '''
+    {
+        "book": {
+            "isbn": "",
+            "title": "",
+            "author": [""],
+            "publisher": "",
+            "pubdate": "",
+            "cover": "",
+            "douban_url": ""
+        },
+        "teacher": {
+            "teacher_name":""
+        },
+        "course": {
+            "course_name": "",
+            "department":""
+        },
+        "school_year":"2",
+        "semester":""
+    }
+    '''
     book_serializer_class=BookSerializer
     useBook_serializer_class=UsebookSerializer
     course_serializer_class=CourseSerializer
