@@ -3,6 +3,7 @@ import React,{Component} from "react";
 import CreateBookPage from './CreateBookPage';
 import Book from "./Book"
 import LoginPage from './LoginPage';
+import RegisterPage from "./RegisterPage"
 import {
     BrowserRouter as Router,
     Routes,

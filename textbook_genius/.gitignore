@@ -5,3 +5,4 @@ textbook_genius/frontend/__pycache__/
 *.idea/
 *.vscode/
 testLocal/
+*.sqlite3
