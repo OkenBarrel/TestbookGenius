@@ -4,6 +4,7 @@ import CreateBookPage from './CreateBookPage';
 import Book from "./Book"
 import UpdateBookPage from './UpdateBookPage';
 import LoginPage from './LoginPage';
+import RegisterPage from "./RegisterPage"
 import {
     BrowserRouter as Router,
     Routes,
