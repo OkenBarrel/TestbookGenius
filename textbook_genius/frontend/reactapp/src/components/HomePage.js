@@ -30,7 +30,7 @@ function HomePage(props) {
           <Route path="/" element={renderHomePage()} />
           <Route path="/create" element={<CreateBookPage/>} />
           <Route path="/book/:isbn" element={<Book/>} />
-          <Route path="/register" />
+          <Route path="/register" element={<RegisterPage/>} />
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/user/:userId"/>
           {/* <Route path=/> */}
