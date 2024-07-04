@@ -64,7 +64,7 @@ class createBook(APIView):
             "course_name": "",
             "department":""
         },
-        "school_year":"2",
+        "school_year":"",
         "semester":""
     }
     '''
@@ -151,39 +151,67 @@ class createBook(APIView):
             "school_year":request.data.get("school_year"),
             "semester":request.data.get("semester")
         }
+        print(usebook_data)
         useBook_serializer=self.useBook_serializer_class(data=usebook_data)
         print(useBook_serializer)
         if useBook_serializer.is_valid():
-            
-            # book = Book(isbn=isbn)
             queryset=Usebook.objects.filter(book=book,course=course,teacher=teacher)
             if queryset.exists():
                 return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
             else:
-                useBook=Usebook(book=book,course=course,teacher=teacher)
+                useBook=Usebook(book=book,course=course,teacher=teacher,school_year=usebook_data['school_year'],semester=usebook_data['semester'])
                 useBook.save()
-                return Response(UsebookSerializer(useBook).data,status.HTTP_201_CREATED)
+                return Response(UsebookSerializer(useBook).data,status.HTTP_200_OK)
         else:
             print('useBook')
             print(useBook_serializer.errors)
+            return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
         return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
     
 
-
 class updateBook(APIView):
-    serializer_class=BookSerializer
-    def patch(self,request,format=None):
-        serializer=self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            isbn=serializer.data.get('isbn')
-            title=serializer.data.get('title')
-            author=serializer.data.get('author')
-            publisher=serializer.data.get('publisher')
-            pubdate=serializer.data.get('pubdate')
-            cover=serializer.data.get('cover')
-            douban_url=serializer.data.get('douban_url')
+    book_serializer_class=BookSerializer
+    #useBook_serializer_class=UsebookSerializer
+    #course_serializer_class=CourseSerializer
+   # teacher_serializer_class=TeacherSerializer
 
+    def patch(self,request,format=None):
+        book_data=request.data.get("book")
+        book_serializer=self.book_serializer_class(data=book_data)
+        if book_serializer.is_valid():
+            isbn=book_serializer.data.get('isbn')
+            title=book_serializer.data.get('title')
+            author=book_serializer.data.get('author')
+            publisher=book_serializer.data.get('publisher')
+            pubdate=book_serializer.data.get('pubdate')
+            cover=book_serializer.data.get('cover')
+            douban_url=book_serializer.data.get('douban_url')
             Book.objects.filter(isbn=isbn).update(title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
             return Response(BookSerializer(Book.objects.filter(isbn=isbn)).data,status.HTTP_200_OK)
+        else:
+            print('book')
+            queryset=Book.objects.filter(isbn=book_data['isbn'])
+            book=queryset[0]
+            print(book)
+            print(book_serializer.errors)
+
+
+class getUseBook(APIView):
+    def get(self,request,format=None):
+        '''
+        {
+            "book":{isbn}
+        }
+        '''
+        query_params=request.GET
+        filter_params={}
+        if 'book' in query_params:
+            filter_params['book__isbn']=query_params.get('book')
+
+        usebook_queryset = Usebook.objects.filter(**filter_params)
         
+        # Serialize the queryset
+        serializer = UsebookSerializer(usebook_queryset, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
         
+
