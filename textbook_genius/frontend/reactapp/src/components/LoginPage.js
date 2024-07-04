@@ -1,22 +1,30 @@
 import {Button,DialogContent,Grid,Typography,TextField, Paper} from '@mui/material';
 import React,{Component, useState} from "react";
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link,
-    Redirect,
-} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+// import {
+//     BrowserRouter as Router,
+//     Routes,
+//     Route,
+//     Link,
+//     Redirect,
+// } from "react-router-dom";
+
+
+
 import Alert from '@mui/material/Alert';
 
+
 const LoginPage = () => {
+
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin =()=>{
-        //TODO: use API to handle login function
+        //TODO: Just a dummy function, please use API to handle login function
         setError('');
         setSuccess('');
         if (!username || !password) {
@@ -24,10 +32,12 @@ const LoginPage = () => {
             return;
         }
         setTimeout(() => {
-            if (username === 'testuser' && password === 'password') {
+            if (username === 'tw11' && password === 'password' && username === 'tw11') {
                 setSuccess('Login successful!');
+                // navigate(`/}`);
+                //TODO: just for demo, please change to a real page.
             } else {
-                setError('Invalid username or password.');
+                setError('Invalid username or password(For test purpose, please using tw11 to login).');
             }
         }, 1000);
     };
@@ -65,7 +75,7 @@ const LoginPage = () => {
                         Login
                     </Button>
                 </form>
-                {error && <Alert severity="error, unfinished, API not impeletmen" style={{ marginTop: 20 }}>{error}</Alert>}
+                {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
                 {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
             </Paper>
         </Grid>
