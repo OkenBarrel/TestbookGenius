@@ -32,7 +32,7 @@ const LoginPage = () => {
             return;
         }
         setTimeout(() => {
-            if (username === 'tw11' && password === 'password' && username === 'tw11') {
+            if (username === 'tw11' && password === 'password') {
                 setSuccess('Login successful!');
                 // navigate(`/}`);
                 //TODO: just for demo, please change to a real page.
