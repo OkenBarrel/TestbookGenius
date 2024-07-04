@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 
 function UpdateBookPage(props){
     {/*initial value is different, depends on the book information*/}
-    const[isbn,setIsbn]=useState(0);
+    {/*const[isbn,setIsbn]=useState(0);*/}
     const[title,setTitle]=useState("");
     const[author,setAuthor]=useState("");
     const[publisher,setPublisher]=useState("");
@@ -14,6 +14,26 @@ function UpdateBookPage(props){
     const[douban_url,setDouban]=useState("");
 
     const navigate=useNavigate();
+
+    function handleSubmit(){
+        console.log("handling submit")
+        const requestOption={
+            method:"PATCH",
+            headers:{"Content-Type": "application/json"},
+            body:JSON.stringify({
+                book:{
+                    title:title,
+                    author:author,
+                    publisher:publisher,
+                    pubdate:pubdate,
+                    cover:cover,
+                    douban_url:douban_url
+                },
+            }),
+        };
+        fetch("/api/update-book",requestOption)
+        .then((response)=>response.json())
+    }
 
     return(
         <div className='updateBookPage'>
@@ -41,9 +61,9 @@ function UpdateBookPage(props){
                     <Grid item xs={12} align="center">
                         <TextField value={title} label={"豆瓣链接"} onChange={(e)=>{setDouban(e.target.value)}}/>    
                     </Grid>
-                   { /*<Grid item xs={12} align="center">
+                    <Grid item xs={12} align="center">
                         <Button variant="contained" onClick={handleSubmit}>修改</Button>
-                    </Grid>*/}
+                    </Grid>
                 </Grid>
             </Grid>
         </div>
