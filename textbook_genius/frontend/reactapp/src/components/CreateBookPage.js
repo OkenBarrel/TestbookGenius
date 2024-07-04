@@ -1,5 +1,6 @@
 import {Button,TextField,Grid,FormControl,InputLabel,OutlinedInput,FormHelperText} from '@mui/material';
 import {Box,ThemeProvider} from '@mui/material';
+import ScoreComponent from './ScoreComponet';
 
 import { useState,useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';

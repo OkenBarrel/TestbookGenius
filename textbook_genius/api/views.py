@@ -64,7 +64,7 @@ class createBook(APIView):
             "course_name": "",
             "department":""
         },
-        "school_year":"2",
+        "school_year":"",
         "semester":""
     }
     '''
@@ -151,21 +151,21 @@ class createBook(APIView):
             "school_year":request.data.get("school_year"),
             "semester":request.data.get("semester")
         }
+        print(usebook_data)
         useBook_serializer=self.useBook_serializer_class(data=usebook_data)
         print(useBook_serializer)
         if useBook_serializer.is_valid():
-            
-            # book = Book(isbn=isbn)
             queryset=Usebook.objects.filter(book=book,course=course,teacher=teacher)
             if queryset.exists():
                 return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
             else:
-                useBook=Usebook(book=book,course=course,teacher=teacher)
+                useBook=Usebook(book=book,course=course,teacher=teacher,school_year=usebook_data['school_year'],semester=usebook_data['semester'])
                 useBook.save()
-                return Response(UsebookSerializer(useBook).data,status.HTTP_201_CREATED)
+                return Response(UsebookSerializer(useBook).data,status.HTTP_200_OK)
         else:
             print('useBook')
             print(useBook_serializer.errors)
+            return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
         return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
     
 
@@ -194,4 +194,24 @@ class updateBook(APIView):
             book=queryset[0]
             print(book)
             print(book_serializer.errors)
+
+
+class getUseBook(APIView):
+    def get(self,request,format=None):
+        '''
+        {
+            "book":{isbn}
+        }
+        '''
+        query_params=request.GET
+        filter_params={}
+        if 'book' in query_params:
+            filter_params['book__isbn']=query_params.get('book')
+
+        usebook_queryset = Usebook.objects.filter(**filter_params)
+        
+        # Serialize the queryset
+        serializer = UsebookSerializer(usebook_queryset, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+        
 

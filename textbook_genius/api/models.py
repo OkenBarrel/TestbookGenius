@@ -61,7 +61,7 @@ class Usebook(models.Model):
     school_year=models.CharField(max_length=10,null=False,default="")
     semester=models.IntegerField(null=False,default=1)
     class Meta:
-        unique_together=('course','teacher','course')
+        unique_together=('course','teacher','course','school_year','semester')
 
     def __str__(self) -> str:
         return 'book: '+self.book.title+' teacher: '+self.teacher.teacher_name+' course: '+self.course.course_name
