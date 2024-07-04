@@ -1,4 +1,4 @@
-import {Button,DialogContent,TextField,Grid,FormControl,InputLabel,OutlinedInput,FormHelperText} from '@mui/material';
+import {Button,TextField,Grid,FormControl,InputLabel,OutlinedInput,FormHelperText} from '@mui/material';
 import {Box,ThemeProvider} from '@mui/material';
 
 import { useState,useEffect } from 'react';
@@ -15,19 +15,21 @@ function CreateBookPage(props){
     const[douban_url,setDouban]=useState("");
     const[publisher,setPublisher]=useState("");
     const[pubdate,setPubdate]=useState("");
-    const[error,setError]=useState("");
+    const[relationError,setRelationError]=useState("");
     const[teacher,setTeacher]=useState("");
     const[course,setCourse]=useState("");
     const[departmant,setDepartment]=useState("");
     const[school_year,setSchoolyear]=useState("");
     const[semester,setSemester]=useState("");
+    const[isbnError,setIsbnError]=useState("");
     
     const navigate=useNavigate();
 
     async function handleSearchButton(){
         let response= await fetch("/api/get-douban-book"+"?isbn="+isbn)
         if(!response.ok){
-            setError(response.statusText);
+            setIsbnError(response.statusText);
+            return;
         }
         await response.json()
         .then((data)=>{setTitle(data.title);
@@ -37,9 +39,9 @@ function CreateBookPage(props){
             setPublisher(data.publisher);
             setPubdate(data.pubdate);
 
-                                                        })
+            })
     }
-    function handleSubmit(){
+    async function handleSubmit(){
         console.log("handling submit")
         const requestOption={
             method:"POST",
@@ -61,9 +63,19 @@ function CreateBookPage(props){
                 semester:semester
             }),
         };
-        fetch("/api/create-book",requestOption)
-        .then((response)=>response.json())
-        .then((data)=>navigate('/book/'+data.isbn));
+        let response=await fetch("/api/create-book",requestOption)
+        if(!response.ok){
+            setRelationError(response.statusText);
+            return;
+        }
+        let data=await response.json();
+        navigate('/book/'+data.isbn);
+        // response.then((response)=>{
+        //     if(!response.ok){
+        //         setRelationError(response.statusText)
+        //     }
+        //     response.json()})
+        // .then((data)=>navigate('/book/'+data.isbn));
 
     };
 
@@ -81,7 +93,7 @@ function CreateBookPage(props){
                         <h1>This is create Book</h1>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <FormControl  variant="outlined">
+                        <FormControl  error={isbnError==""? false:true}variant="outlined">
                             <InputLabel htmlFor="isbn-input">isbn</InputLabel>
                             <OutlinedInput
                                 id="isbn-input"
@@ -91,7 +103,7 @@ function CreateBookPage(props){
                             <FormHelperText>输入ISBN号，获取书籍信息</FormHelperText>
                             <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
                         </FormControl>
-                        <p style={{ color: 'red' }}>{error}</p>
+                        {/* <p style={{ color: 'red' }}>{error}</p> */}
                         
                     </Grid>
                     <Grid item xs={12} align="center">

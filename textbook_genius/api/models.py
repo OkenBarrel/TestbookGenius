@@ -36,7 +36,7 @@ class Book(models.Model):
     cover=models.CharField(max_length=100,default="")
     douban_url=models.CharField(max_length=50,default="")
     def __str__(self) -> str:
-        return 'isbn: '+self.isbn+' title: '+self.isbn
+        return 'isbn: '+self.isbn+' title: '+self.title
     
 class Teacher(models.Model):
 #     # props: teacher_id, teacher_name, department
