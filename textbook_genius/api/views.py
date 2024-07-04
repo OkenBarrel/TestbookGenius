@@ -64,7 +64,7 @@ class createBook(APIView):
             "course_name": "",
             "department":""
         },
-        "school_year":"2",
+        "school_year":"",
         "semester":""
     }
     '''
@@ -162,7 +162,7 @@ class createBook(APIView):
             else:
                 useBook=Usebook(book=book,course=course,teacher=teacher)
                 useBook.save()
-                return Response(UsebookSerializer(useBook).data,status.HTTP_201_CREATED)
+                return Response(UsebookSerializer(useBook).data,status.HTTP_200_OK)
         else:
             print('useBook')
             print(useBook_serializer.errors)
@@ -194,4 +194,24 @@ class updateBook(APIView):
             book=queryset[0]
             print(book)
             print(book_serializer.errors)
+
+
+class getUseBook(APIView):
+    def get(self,request,format=None):
+        '''
+        {
+            "book":{isbn}
+        }
+        '''
+        query_params=request.GET
+        filter_params={}
+        if 'book' in query_params:
+            filter_params['book__isbn']=query_params.get('book')
+
+        usebook_queryset = Usebook.objects.filter(**filter_params)
+        
+        # Serialize the queryset
+        serializer = UsebookSerializer(usebook_queryset, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+        
 
