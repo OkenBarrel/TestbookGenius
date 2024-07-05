@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 
 function UpdateBookPage(props){
     {/*initial value is different, depends on the book information*/}
-    {/*const[isbn,setIsbn]=useState(0);*/}
+    const[isbn,setIsbn]=useState(0);
     const[title,setTitle]=useState("");
     const[author,setAuthor]=useState("");
     const[publisher,setPublisher]=useState("");
@@ -42,24 +42,23 @@ function UpdateBookPage(props){
                     <Grid item xs={12} align="center">
                         <h1>This is update Book</h1>
                     </Grid>  
-                    {/*<Grid item xs={12} align="center">
-                        <h1>ISBN:</h1>
-
-                    </Grid> */ }
+                    <Grid item xs={12} align="center">
+                        <TextField value={isbn} label={"ISBN"} onChange={(e)=>{setIsbn(e.target.value)}}/>    
+                    </Grid>
                     <Grid item xs={12} align="center">
                         <TextField value={title} label={"书名"} onChange={(e)=>{setTitle(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={title} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/>    
+                        <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={title} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/>    
+                        <TextField value={publisher} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={title} label={"出版日期"} onChange={(e)=>{setPubdate(e.target.value)}}/>    
+                        <TextField value={pubdate} label={"出版日期"} onChange={(e)=>{setPubdate(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField value={title} label={"豆瓣链接"} onChange={(e)=>{setDouban(e.target.value)}}/>    
+                        <TextField value={douban_url} label={"豆瓣链接"} onChange={(e)=>{setDouban(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
                         <Button variant="contained" onClick={handleSubmit}>修改</Button>
