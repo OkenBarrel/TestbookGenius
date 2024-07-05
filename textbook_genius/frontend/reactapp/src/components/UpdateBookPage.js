@@ -1,11 +1,17 @@
 import {Button,DialogContent,TextField,Grid} from '@mui/material';
 import {Box,ThemeProvider} from '@mui/material';
 import { useState,useEffect } from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    Redirect,
+} from "react-router-dom";
 
 function UpdateBookPage(props){
-    {/*initial value is different, depends on the book information*/}
-    const[isbn,setIsbn]=useState(0);
+    const { isbn } = useParams();
     const[title,setTitle]=useState("");
     const[author,setAuthor]=useState("");
     const[publisher,setPublisher]=useState("");
@@ -13,27 +19,21 @@ function UpdateBookPage(props){
     const[cover,setCover]=useState("");
     const[douban_url,setDouban]=useState("");
 
-    const navigate=useNavigate();
 
-    async function handleGetNow(){
-        const requestOption={
-            method:"PATCH",
-            headers:{"Content-Type": "application/json"},
-            body:JSON.stringify({
-                book:{
-                    title:title,
-                    author:author,
-                    publisher:publisher,
-                    pubdate:pubdate,
-                    cover:cover,
-                    douban_url:douban_url
-                },
-            }),
-        };
-        fetch("/api/update-book",requestOption)
-        .then((response)=>response.json())
+    useEffect(() => {
+        getBookDetails();
+      }, []);
+
+    async function getBookDetails(){
+        let res=await fetch("/api/get-book"+"?isbn="+isbn)
+        let data=await res.json()
+        setTitle(data.title);
+        setAuthor(data.author);
+        setCover(data.cover);
+        setDouban(data.douban_url);
+        setPubdate(data.pubdate);
+        setPublisher(data.publisher);
     }
-
 
     async function handleSubmit(){
         console.log("handling submit")
@@ -63,8 +63,8 @@ function UpdateBookPage(props){
                         <h1>This is update Book</h1>
                     </Grid>  
                     <Grid item xs={12} align="center">
-                        <TextField value={isbn} label={"isbn"} onChange={(e)=>{setIsbn(e.target.value)}}/>    
-                        <Button variant="contained" onClick={handleGetNow}>查找当前信息</Button>
+                        <TextField value={isbn} label={"ISBN"}/>    
+                        {/*<Button variant="contained" onClick={handleGetNow}>查找当前信息</Button>*/}
                     </Grid>
                     <Grid item xs={12} align="center">
                         <TextField value={title} label={"书名"} onChange={(e)=>{setTitle(e.target.value)}}/>    
@@ -79,10 +79,13 @@ function UpdateBookPage(props){
                         <TextField value={pubdate} label={"出版日期"} onChange={(e)=>{setPubdate(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
+                        <TextField value={cover} label={"封面"} onChange={(e)=>{setCover(e.target.value)}}/>    
+                    </Grid>
+                    <Grid item xs={12} align="center">
                         <TextField value={douban_url} label={"豆瓣链接"} onChange={(e)=>{setDouban(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <Button variant="contained" onClick={handleSubmit}>修改</Button>
+                        <Button variant="contained" to="../" component={Link} onClick={handleSubmit}>修改</Button>
                     </Grid>
                 </Grid>
             </Grid>
