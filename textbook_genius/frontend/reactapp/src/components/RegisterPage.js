@@ -9,9 +9,11 @@ const RegisterPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     setError('');
     setSuccess('');
+
+    // Validate inputs
     if (!username || !password || !confirmPassword) {
       setError('Username, password, and confirm password are required.');
       return;
@@ -20,14 +22,33 @@ const RegisterPage = () => {
       setError('Passwords do not match.');
       return;
     }
-    // Example API call to handle registration
-    setTimeout(() => {
-      if (username === 'testuser' && password === 'password') {
+
+    const apiUrl = '/api/register';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
         setSuccess('Registration successful!');
+        // Optionally clear form fields after successful registration
+        setUsername('');
+        setPassword('');
+        setConfirmPassword('');
       } else {
-        setError('Registration failed. Please try again.');
+        setError(data.message || 'Registration failed. Please try again.');
       }
-    }, 1000);
+    } catch (error) {
+      console.error('Registration error:', error);
+      setError('Registration failed. Please try again.');
+    }
   };
 
   return (
