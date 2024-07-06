@@ -22,7 +22,7 @@ const CommentComponet=({isbn})=>{
     },[]);
 
     async function getRelations(){
-        let response=await fetch("/api/get-useBook"+"?isbn="+{isbn});
+        let response=await fetch("/api/get-useBook"+"?isbn="+isbn);
         if(!response.ok){
             console.log("get relations wrong!!");
             return;

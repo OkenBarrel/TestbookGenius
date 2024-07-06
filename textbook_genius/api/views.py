@@ -200,15 +200,11 @@ class updateBook(APIView):
 
 class getUseBook(APIView):
     def get(self,request,format=None):
-        '''
-        {
-            "book":{isbn}
-        }
-        '''
         query_params=request.GET
         filter_params={}
-        if 'book' in query_params:
-            filter_params['book__isbn']=query_params.get('book')
+        print(query_params)
+        if 'isbn' in query_params:
+            filter_params['book__isbn']=query_params.get('isbn')
 
         usebook_queryset = Usebook.objects.filter(**filter_params)
         
