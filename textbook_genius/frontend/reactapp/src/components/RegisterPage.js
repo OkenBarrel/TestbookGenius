@@ -36,6 +36,7 @@ const RegisterPage = () => {
 
       const data = await response.json();
 
+      
       if (response.ok) {
         setSuccess('Registration successful!');
         // Optionally clear form fields after successful registration
