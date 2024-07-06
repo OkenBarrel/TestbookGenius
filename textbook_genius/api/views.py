@@ -189,14 +189,19 @@ class updateBook(APIView):
             pubdate=book_serializer.data.get('pubdate')
             cover=book_serializer.data.get('cover')
             douban_url=book_serializer.data.get('douban_url')
-            Book.objects.filter(isbn=book_data['isbn']).update(title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
-            return Response(BookSerializer(Book.objects.filter(isbn=isbn)).data,status.HTTP_200_OK)
+
+            book=Book.objects.get(isbn=isbn)
+            book.update(title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
+            book.save()
+            return Response(BookSerializer(book).data,status.HTTP_200_OK)
+        """
         else:
             print('book')
-            queryset=Book.objects.filter(isbn=book_data['isbn'])
+            queryset=Book.objects.filter(isbn=isbn)
             book=queryset[0]
             print(book)
             print(book_serializer.errors)
+        """
 
 
 class getUseBook(APIView):

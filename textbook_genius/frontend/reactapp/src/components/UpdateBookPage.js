@@ -9,7 +9,7 @@ import {
     Redirect,
     Switch
 } from "react-router-dom";
-import Book from "./Book";
+import {getCsrfToken} from "./CSRFToken";
 
 function UpdateBookPage(props){
     const { isbn } = useParams();
@@ -21,6 +21,7 @@ function UpdateBookPage(props){
     const[douban_url,setDouban]=useState("");
 
     const navigate=useNavigate();
+    const csrftoken=getCsrfToken();
 
     useEffect(() => {
         getBookDetails();
@@ -38,11 +39,13 @@ function UpdateBookPage(props){
     }
 
     async function handleSubmit(){
-        {/*navigate('/book/:isbn')*/}
         console.log("handling submit")
         const requestOption={
             method:"PATCH",
-            headers:{"Content-Type": "application/json"},
+            headers:{
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrftoken
+            },
             body:JSON.stringify({
                 book:{
                     title:title,
@@ -54,8 +57,9 @@ function UpdateBookPage(props){
                 },
             }),
         };
-        fetch("/api/update-book",requestOption)
-        .then((response)=>response.json())
+        let response=await fetch("/api/update-book",requestOption)
+        let data=await response.json();
+        navigate('/book/'+isbn);
     }
 
     return(
@@ -67,7 +71,6 @@ function UpdateBookPage(props){
                     </Grid>  
                     <Grid item xs={12} align="center">
                         <TextField value={isbn} label={"ISBN"}/>    
-                        {/*<Button variant="contained" onClick={handleGetNow}>查找当前信息</Button>*/}
                     </Grid>
                     <Grid item xs={12} align="center">
                         <TextField value={title} label={"书名"} onChange={(e)=>{setTitle(e.target.value)}}/>    

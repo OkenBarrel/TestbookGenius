@@ -2,7 +2,6 @@ import React, { Component, useState,useEffect } from "react";
 import {Button,DialogContent,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 // import CreateBookPage from "./CreateBookPage";
-<<<<<<< HEAD
 import {
     BrowserRouter as Router,
     Routes,
@@ -10,10 +9,8 @@ import {
     Link,
     Redirect
 } from "react-router-dom";
-=======
 import CommentComponet from "./CommentComponent";
 import ScoreComponent from "./ScoreComponet";
->>>>>>> 4e0d191477ec3ca9d21bc5c08ef8fdf2224577e6
 
 const Book=()=>{
     const { isbn } = useParams();
@@ -110,15 +107,13 @@ const Book=()=>{
                     title="cover"
                 />
             </Card>
-<<<<<<< HEAD
-=======
+            
             {/* <Card> */}
             <CommentComponet isbn={isbn}/>
 
             {/* </Card> */}
             
             
->>>>>>> 4e0d191477ec3ca9d21bc5c08ef8fdf2224577e6
         </div>
     );
 
