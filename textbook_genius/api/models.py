@@ -53,6 +53,8 @@ class Course(models.Model):
     department=models.CharField(max_length=50,null=False,default="")
     def __str__(self) -> str:
         return self.course_name
+    class Meta:
+        unique_together=('course_name','department')
 
 class Usebook(models.Model):
     book=models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE

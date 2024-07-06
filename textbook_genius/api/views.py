@@ -102,12 +102,12 @@ class createBook(APIView):
             book=queryset[0]
             print(book)
             print(book_serializer.errors)
-        course_name=request.data.get("course")
-        course_serializer=self.course_serializer_class(data=course_name)
+        course=request.data.get("course")
+        course_serializer=self.course_serializer_class(data=course)
         if course_serializer.is_valid():
             course_name=course_serializer.data.get('course_name')
             department=course_serializer.data.get('department')
-            queryset=Course.objects.filter(course_name=course_name)
+            queryset=Course.objects.filter(course_name=course_name,department=department)
             if queryset.exists():
                 print("{0} is already created".format(course_name))
                 course=queryset[0]
@@ -139,15 +139,18 @@ class createBook(APIView):
                 # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
         else:
             print('teacher')
-            queryset=Teacher.objects.filter(teacher_name=teacher["teacher_name"])
-            course=queryset[0]
-            # print(teacher_serializer)
             print(teacher_serializer.errors)
+            print(teacher)
+            queryset=Teacher.objects.filter(teacher_name=teacher["teacher_name"])
+            teacher=queryset[0]
+            # print(teacher_serializer)
+            
         
         usebook_data={
-            "course":course_name,
-            "teacher":teacher_serializer.data.get('teacher_name'),
-            "book":book_serializer.data.get('isbn'),
+            "course":course.course_name,
+            "department":course.department,
+            "teacher":teacher.teacher_name,
+            "book":book.isbn,
             "school_year":request.data.get("school_year"),
             "semester":request.data.get("semester")
         }
@@ -198,15 +201,11 @@ class updateBook(APIView):
 
 class getUseBook(APIView):
     def get(self,request,format=None):
-        '''
-        {
-            "book":{isbn}
-        }
-        '''
         query_params=request.GET
         filter_params={}
-        if 'book' in query_params:
-            filter_params['book__isbn']=query_params.get('book')
+        print(query_params)
+        if 'isbn' in query_params:
+            filter_params['book__isbn']=query_params.get('isbn')
 
         usebook_queryset = Usebook.objects.filter(**filter_params)
         
