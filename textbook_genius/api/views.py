@@ -214,7 +214,7 @@ class getUseBook(APIView):
         serializer = UsebookSerializer(usebook_queryset, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
         
-class RegisterUser(APIView):
+class register(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():

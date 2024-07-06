@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import RoomView,get_doubanBook,get_book,createBook,updateBook
 from .views import getUseBook
+from .views import register
 urlpatterns = [
     # path('', views.getRoutes, name="routes"),
     # path('home',RoomView.as_view()),
@@ -9,5 +10,6 @@ urlpatterns = [
     path('get-book',get_book.as_view()),
     path('create-book',createBook.as_view()),
     path('update-book',updateBook.as_view()),
-    path('get-useBook',getUseBook.as_view())
+    path('get-useBook',getUseBook.as_view()),
+    path('register',register.as_view())
 ]
