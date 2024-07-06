@@ -178,7 +178,7 @@ class updateBook(APIView):
     #course_serializer_class=CourseSerializer
    # teacher_serializer_class=TeacherSerializer
 
-    def patch(self,request,format=None):
+    def patch(self,request):
         book_data=request.data.get("book")
         book_serializer=self.book_serializer_class(data=book_data)
         if book_serializer.is_valid():
@@ -191,9 +191,17 @@ class updateBook(APIView):
             douban_url=book_serializer.data.get('douban_url')
 
             book=Book.objects.get(isbn=isbn)
+            """
+            book.title=title
+            book.author=author
+            book.publisher=publisher
+            book.pubdate=pubdate
+            book.cover=cover
+            book.douban_url=douban_url
+            """
             book.update(title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
             book.save()
-            return Response(BookSerializer(book).data,status.HTTP_200_OK)
+            #return Response(BookSerializer(book).data,status.HTTP_200_OK)
         """
         else:
             print('book')

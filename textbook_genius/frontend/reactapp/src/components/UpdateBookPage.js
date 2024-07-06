@@ -13,6 +13,7 @@ import {getCsrfToken} from "./CSRFToken";
 
 function UpdateBookPage(props){
     const { isbn } = useParams();
+
     const[title,setTitle]=useState("");
     const[author,setAuthor]=useState("");
     const[publisher,setPublisher]=useState("");
@@ -20,10 +21,42 @@ function UpdateBookPage(props){
     const[cover,setCover]=useState("");
     const[douban_url,setDouban]=useState("");
 
+    fetch("/api/get-book"+"?isbn="+isbn)
+    .then(res=>{
+        return res.json()
+    })
+    .then(data=>{
+        setTitle(data.title);
+        setAuthor(data.author);
+        setPubdate(data.pubdate);
+        setPublisher(data.publisher);
+        setCover(data.cover);
+        setDouban(data.douban_url);
+    })
+
+       /* setTitle(data.title);
+        setAuthor(data.author);
+        setPubdate(data.pubdate);
+        setPublisher(data.publisher);
+        setCover(data.cover);
+        setDouban(data.douban_url);*/
+    /*
+    let res= fetch("/api/get-book"+"?isbn="+isbn)
+    let data=res.json()
+
+    const[title,setTitle]=useState(data.title);
+    const[author,setAuthor]=useState(data.author);
+    const[publisher,setPublisher]=useState(data.publisher);
+    const[pubdate,setPubdate]=useState(data.pubdate);
+    const[cover,setCover]=useState(data.cover);
+    const[douban_url,setDouban]=useState(data.douban_url);*/
+    
+
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
 
-    useEffect(() => {
+   /* useEffect(() => {
+        console.log(isbn);
         getBookDetails();
       }, []);
 
@@ -36,7 +69,8 @@ function UpdateBookPage(props){
         setDouban(data.douban_url);
         setPubdate(data.pubdate);
         setPublisher(data.publisher);
-    }
+    }*/
+    
 
     async function handleSubmit(){
         console.log("handling submit")
@@ -91,7 +125,7 @@ function UpdateBookPage(props){
                         <TextField value={douban_url} label={"豆瓣链接"} onChange={(e)=>{setDouban(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <Button variant="contained" to="../" component={Link} onClick={handleSubmit}>修改</Button>
+                        <Button variant="contained" onClick={handleSubmit} to="../" component={Link}>修改</Button>
                     </Grid>
                 </Grid>
             </Grid>
