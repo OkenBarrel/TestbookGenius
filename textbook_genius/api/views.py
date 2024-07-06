@@ -118,7 +118,7 @@ class createBook(APIView):
                 # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
         else:
             print('course')
-            queryset=Course.objects.filter(course=course['course_name'],department=course['department'])
+            queryset=Course.objects.filter(course_name=course['course_name'],department=course['department'])
             course=queryset[0]
             print(course_serializer.errors)
         
@@ -142,14 +142,15 @@ class createBook(APIView):
             print(teacher_serializer.errors)
             print(teacher)
             queryset=Teacher.objects.filter(teacher_name=teacher["teacher_name"])
-            course=queryset[0]
+            teacher=queryset[0]
             # print(teacher_serializer)
             
         
         usebook_data={
-            "course":course_name,
-            "teacher":teacher_serializer.data.get('teacher_name'),
-            "book":book_serializer.data.get('isbn'),
+            "course":course.course_name,
+            "department":course.department,
+            "teacher":teacher.teacher_name,
+            "book":book.isbn,
             "school_year":request.data.get("school_year"),
             "semester":request.data.get("semester")
         }

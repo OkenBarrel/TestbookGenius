@@ -24,11 +24,12 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class UsebookSerializer(serializers.ModelSerializer):
     course = serializers.SlugRelatedField(slug_field='course_name', queryset=Course.objects.all())
+    course_department = serializers.SlugRelatedField(slug_field='department', queryset=Course.objects.all())
     teacher = serializers.SlugRelatedField(slug_field='teacher_name', queryset=Teacher.objects.all())
     book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
     class Meta:
         model = Usebook
-        fields=('book','teacher','course','school_year','semester')
+        fields=('book','teacher','course','course_department','school_year','semester')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
