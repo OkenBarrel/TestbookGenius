@@ -1,14 +1,15 @@
 import {Button,DialogContent,TextField,Grid} from '@mui/material';
-import {Box,ThemeProvider} from '@mui/material';
 import { useState,useEffect } from 'react';
-import {useParams} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import {
     BrowserRouter as Router,
     Routes,
     Route,
     Link,
     Redirect,
+    Switch
 } from "react-router-dom";
+import Book from "./Book";
 
 function UpdateBookPage(props){
     const { isbn } = useParams();
@@ -19,6 +20,7 @@ function UpdateBookPage(props){
     const[cover,setCover]=useState("");
     const[douban_url,setDouban]=useState("");
 
+    const navigate=useNavigate();
 
     useEffect(() => {
         getBookDetails();
@@ -36,6 +38,7 @@ function UpdateBookPage(props){
     }
 
     async function handleSubmit(){
+        {/*navigate('/book/:isbn')*/}
         console.log("handling submit")
         const requestOption={
             method:"PATCH",

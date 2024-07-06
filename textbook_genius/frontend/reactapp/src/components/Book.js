@@ -7,7 +7,7 @@ import {
     Routes,
     Route,
     Link,
-    Redirect,
+    Redirect
 } from "react-router-dom";
 
 const Book=()=>{
