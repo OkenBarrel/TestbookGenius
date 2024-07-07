@@ -7,6 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ScoreComponent from "./ScoreComponet";
 
 const CommentComponet=({isbn})=>{
+
     const [value,setValue]=useState(0);
     const [relations,setRelations]=useState([]);
     const[passon,setPasson]=useState();
@@ -38,8 +39,8 @@ const CommentComponet=({isbn})=>{
                     variant="scrollable" scrollButtons="auto"
                 >
                     {relations.map((relation)=>(
-                        <Tab label={relation.course+"-"+relation.teacher}></Tab>
-                    ))}   
+                        <Tab label={relation.course.course_name+"-"+relation.teacher}></Tab>
+                    ))}
                 
                 </Tabs>
             </Card>
