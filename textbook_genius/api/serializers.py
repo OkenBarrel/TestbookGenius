@@ -23,13 +23,37 @@ class CourseSerializer(serializers.ModelSerializer):
         fields=('course_name','department')
 
 class UsebookSerializer(serializers.ModelSerializer):
-    course = serializers.SlugRelatedField(slug_field='course_name', queryset=Course.objects.all())
-    course_department = serializers.SlugRelatedField(slug_field='department', queryset=Course.objects.all())
+    course_name = serializers.CharField(write_only=True)
+    department = serializers.CharField(write_only=True)
+    course = CourseSerializer(read_only=True)
+
     teacher = serializers.SlugRelatedField(slug_field='teacher_name', queryset=Teacher.objects.all())
     book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
+
     class Meta:
         model = Usebook
-        fields=('book','teacher','course','course_department','school_year','semester')
+        fields = ('book', 'teacher', 'course', 'school_year', 'semester', 'course_name', 'department')
+
+    def create(self, validated_data):
+        course_name = validated_data.pop('course_name')
+        department = validated_data.pop('department')
+        course, created = Course.objects.get_or_create(course_name=course_name, department=department)
+        validated_data['course'] = course
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        course_name = validated_data.pop('course_name')
+        department = validated_data.pop('department')
+        course, created = Course.objects.get_or_create(course_name=course_name, department=department)
+        validated_data['course'] = course
+        return super().update(instance, validated_data)
+    # course = serializers.SlugRelatedField(slug_field='course_name', queryset=Course.objects.all())
+    # course_department = serializers.SlugRelatedField(slug_field='department', queryset=Course.objects.all())
+    # teacher = serializers.SlugRelatedField(slug_field='teacher_name', queryset=Teacher.objects.all())
+    # book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
+    # class Meta:
+    #     model = Usebook
+    #     fields=('book','teacher','course','school_year','semester')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
