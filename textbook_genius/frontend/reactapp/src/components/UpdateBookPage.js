@@ -19,24 +19,29 @@ function UpdateBookPage(props){
     const[pubdate,setPubdate]=useState("");
     const[cover,setCover]=useState("");
     const[douban_url,setDouban]=useState("");
+      
+    /*
+    let res= fetch("/api/get-book"+"?isbn="+isbn)
+    let data=res.json()*/
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
 
     useEffect(() => {
-        getBookDetails();
-      }, []);
-
-    async function getBookDetails(){
-        let res=await fetch("/api/get-book"+"?isbn="+isbn)
-        let data=await res.json()
-        setTitle(data.title);
-        setAuthor(data.author);
-        setCover(data.cover);
-        setDouban(data.douban_url);
-        setPubdate(data.pubdate);
-        setPublisher(data.publisher);
-    }
+        console.log(isbn);
+        fetch("/api/get-book"+"?isbn="+isbn)
+        .then(res=>{
+            return res.json()
+        })
+        .then(data=>{
+            setTitle(data.title);
+            setAuthor(data.author);
+            setPubdate(data.pubdate);
+            setPublisher(data.publisher);
+            setCover(data.cover);
+            setDouban(data.douban_url);
+        })
+    }, []);   
 
     async function handleSubmit(){
         console.log("handling submit")
@@ -48,6 +53,7 @@ function UpdateBookPage(props){
             },
             body:JSON.stringify({
                 book:{
+                    isbn:isbn,
                     title:title,
                     author:author,
                     publisher:publisher,
@@ -59,7 +65,7 @@ function UpdateBookPage(props){
         };
         let response=await fetch("/api/update-book",requestOption)
         let data=await response.json();
-        navigate('/book/'+isbn);
+       {/* navigate('/book/'+isbn);*/}
     }
 
     return(
@@ -91,7 +97,7 @@ function UpdateBookPage(props){
                         <TextField value={douban_url} label={"豆瓣链接"} onChange={(e)=>{setDouban(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <Button variant="contained" to="../" component={Link} onClick={handleSubmit}>修改</Button>
+                        <Button variant="contained" onClick={handleSubmit} to="../" component={Link}>修改</Button>
                     </Grid>
                 </Grid>
             </Grid>
