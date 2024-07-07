@@ -5,8 +5,10 @@ from rest_framework.decorators import api_view,renderer_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import JSONParser
-from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,CommentSerializer,LikeSerializer,UserSerializer,UsebookSerializer,MarkSerializer
-from .models import Room,Book,Teacher,Course,Comment,Usebook,User,Like,Mark
+from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
+    CommentSerializer,LikeSerializer,UserSerializer,UsebookSerializer,MarkSerializer,\
+    ScoreUserRelationSerializer
+from .models import Room,Book,Teacher,Course,Comment,Usebook,User,Like,Mark,ScoreUserRelation
 from requests import Request,post,get,patch
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
@@ -230,3 +232,58 @@ class register(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class scoreUser(APIView):
+    '''
+    {
+        useBook:{useBook的id},
+        user:{user_id}
+    }
+    '''
+    serializer_class=ScoreUserRelationSerializer
+    def post(self,request):
+        # usebook_id=request.data.get('useBook')
+        # user_id=request.data.get('user_id')
+
+        serializer=self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            print(serializer.errors)
+            return Response({"Already exists":"already scored this one."},status=status.HTTP_409_CONFLICT)
+        user_id=serializer.data.get('user')
+        usebook_id=serializer.data.get('useBook')
+        try:
+            user = User.objects.get(user_id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            usebook=Usebook.objects.get(id=usebook_id)
+        except Usebook.DoesNotExist:
+            return Response({"error": "UseBook relation not found."}, status=status.HTTP_404_NOT_FOUND)
+        scoreUser=ScoreUserRelation(user=user,useBook=usebook)
+        scoreUser.save()
+        return Response(ScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
+        # useBook=Usebook.objects.filter(id=usebook_id)
+        # if not useBook.exists():
+        #      return Response({"Bad Request": "Invalid useBook relation."},status=status.HTTP_404_NOT_FOUND)
+
+        # serializer=self.serializer_class(data=request.data)
+        # if serializer.is_valid():
+        #     user_id=serializer.data.get('user_id')
+        #     user=User.objects.filter(user_id=user_id)
+        #     if not user.exists():
+        #         return Response({"Bad request":"Ivalid User."},status=status.HTTP_404_NOT_FOUND)
+        #     scoreUser=ScoreUserRelation(useBook=useBook,user=user)
+        #     scoreUser.save()
+        #     return Response(scoreUser.data,status=status.HTTP_200_OK)
+        # else:
+        #     print(serializer.errors)
+        #     return Response({"Already exists":"already scored this one."},status=status.HTTP_409_CONFLICT)
+
+    def delete(self,request):
+        usebook_id=request.data.get('usebook')
+        useBook=Usebook.objects.filter(id=usebook_id)
+        if not useBook.exists():
+             return Response({"Bad Request": "Invalid useBook relation."},status=status.HTTP_404_NOT_FOUND)
+
+        serializer=self.serializer_class(data=request.data)
+        pass 
