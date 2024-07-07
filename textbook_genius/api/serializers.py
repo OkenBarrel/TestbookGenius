@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Room, Book, Teacher, Course, Usebook, User , Mark , Comment, Like
+from .models import Room, Book, Teacher, Course, Usebook, User , Mark , Comment, Like, ScoreUserRelation
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,3 +78,20 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields=('user','comment','like','dislike')
+
+class ScoreUserRelationSerializer(serializers.ModelSerializer):
+    useBook=serializers.PrimaryKeyRelatedField(queryset=Usebook.objects.all())
+    user=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    class Meta:
+        model=ScoreUserRelation
+        fields=('useBook','user')
+    # def create(self,validated_data):
+    #     userbook_id = validated_data.pop('relation_id')
+    #     user_id = validated_data.pop('user_id')
+    #     course, created = Course.objects.get_or_create(course_name=course_name, department=department)
+    #     validated_data['course'] = course
+    #     return super().create(validated_data)
+    # def update(self, instance, validated_data):
+    #     instance.get_it=validated_data.get('get_it',instance.get_it)
+    #     instance.dont_get_it=validated_data.get('dont_get_it',instance.dont_get_it)
+    #     return super().update(instance, validated_data)

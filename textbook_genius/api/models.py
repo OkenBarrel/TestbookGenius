@@ -104,5 +104,9 @@ class Like(models.Model):
     like = models.IntegerField(null=False,default=0)
     dislike = models.IntegerField(null=False,default=0)
 
-
+class ScoreUserRelation(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    useBook=models.ForeignKey(Usebook,on_delete=models.CASCADE,primary_key=True)
+    # get_it=models.IntegerField(null=False,default=0)
+    # dont_get_it=models.IntegerField(null=False,default=0)
 
