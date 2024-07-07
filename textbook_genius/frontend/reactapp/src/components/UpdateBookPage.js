@@ -65,7 +65,7 @@ function UpdateBookPage(props){
         };
         let response=await fetch("/api/update-book",requestOption)
         let data=await response.json();
-       {/* navigate('/book/'+isbn);*/}
+        navigate('/book/'+isbn);
     }
 
     return(
@@ -97,7 +97,7 @@ function UpdateBookPage(props){
                         <TextField value={douban_url} label={"豆瓣链接"} onChange={(e)=>{setDouban(e.target.value)}}/>    
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <Button variant="contained" onClick={handleSubmit} to="../" component={Link}>修改</Button>
+                        <Button variant="contained" onClick={handleSubmit}>修改</Button>
                     </Grid>
                 </Grid>
             </Grid>

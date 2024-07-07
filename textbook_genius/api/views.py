@@ -174,7 +174,7 @@ class createBook(APIView):
     
 
 class updateBook(APIView):
-    book_serializer_class=BookSerializer
+    #book_serializer_class=BookSerializer
     #useBook_serializer_class=UsebookSerializer
     #course_serializer_class=CourseSerializer
     #teacher_serializer_class=TeacherSerializer
