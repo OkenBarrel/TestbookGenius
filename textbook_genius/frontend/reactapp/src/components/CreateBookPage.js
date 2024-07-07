@@ -1,6 +1,6 @@
-import {Button,TextField,Grid} from '@mui/material';
-import {Box,ThemeProvider} from '@mui/material';
-import ScoreComponent from './ScoreComponet';
+import {Button,TextField,Grid, FormControl,FormHelperText, CardContent, CardMedia} from '@mui/material';
+import {Box,OutlinedInput} from '@mui/material';
+import {Select, MenuItem,InputLabel,Card} from '@mui/material'
 
 import { useState,useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
@@ -91,72 +91,82 @@ function CreateBookPage(props){
 
     return(
         <div className='createBookPage'>
-            {/* <TextField label={'输入ISBN号，获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
-            <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
-            <form>
-            <TextField value={title} label={"标题"} onChange={(e)=>{setTitle(e.target.value)}}/>
-            <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/>
-            </form> */}
-            <Grid container spacing={3} align="center" justifyContent="center">
+            <Box sx={{ display:'flex',flexDirection: 'row' }}>
+                <Card>
+                    <Box sx={{ display:'flex',flexDirection: 'row' }}>
+                        <CardContent>
+                            <Grid container spacing={1} item xs={6} >
+                                <Grid item xs={12} align="center">
+                                    <h1>This is create book</h1>
+                                </Grid>
+                                <Grid item xs={12} align="center">
+                                    <TextField label={'输入ISBN号，获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
+                                    {/* <FormControl  error={isbnError==""? false:true}variant="outlined">
+                                        <InputLabel htmlFor="isbn-input">isbn</InputLabel>
+                                        <OutlinedInput
+                                            id="isbn-input"
+                                            onChange={(e) => { setIsbn(e.target.value) }}
+                                            label="ISBN"
+                                        />
+                                        <FormHelperText>输入ISBN号，获取书籍信息</FormHelperText>*/}
+                                    <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
+                                    {/* </FormControl>  */}
+                                    {/* <p style={{ color: 'red' }}>{error}</p> */}
+                                    
+                                </Grid>
+                                <Grid item xs={12} align="center">
+                                    {/* <TextField value={title} label={"标题"} onChange={(e)=>{setTitle(e.target.value)}}/> */}
+                                    <FormControl  variant="outlined">
+                                        <InputLabel htmlFor="title-input">标题</InputLabel>
+                                        <OutlinedInput
+                                            id="title-input"
+                                            value={title}
+                                            onChange={(e) => { setTitle(e.target.value) }}
+                                            label="标题"
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} align="center">
+                                    {/* <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/> */}
+                                    <FormControl  variant="outlined">
+                                        <InputLabel htmlFor="author-input">作者</InputLabel>
+                                        <OutlinedInput
+                                            id="author-input"
+                                            value={author}
+                                            onChange={(e) => { setAuthor(e.target.value) }}
+                                            label="作者"
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} align="center">
+                                {/* <TextField value={publisher} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/> */}
+                                    <FormControl  variant="outlined">
+                                        <InputLabel htmlFor="publisher-input">出版社</InputLabel>
+                                        <OutlinedInput
+                                            id="publisher-input"
+                                            value={publisher}
+                                            onChange={(e) => { setPublisher(e.target.value) }}
+                                            label="出版社"
+                                        />
+                                    </FormControl>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                        <CardMedia
+                        component="img"
+                        image={cover}
+                        title='cover'
+                        />
+                    </Box>
+                </Card>
+                <Box>
                 <Grid container spacing={1} item xs={6} >
                     <Grid item xs={12} align="center">
-                        <h1>This is create Book</h1>
+                        <h1>This is create Use</h1>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <TextField label={'输入ISBN号，获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
-                        {/* <FormControl  error={isbnError==""? false:true}variant="outlined">
-                            {% csrf_token %}
-                            <InputLabel htmlFor="isbn-input">isbn</InputLabel>
-                            <OutlinedInput
-                                id="isbn-input"
-                                onChange={(e) => { setIsbn(e.target.value) }}
-                                label="ISBN"
-                            />
-                            <FormHelperText>输入ISBN号，获取书籍信息</FormHelperText> */}
-                        <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
-                        {/* </FormControl> */}
-                        {/* <p style={{ color: 'red' }}>{error}</p> */}
-                        
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <TextField value={title} label={"标题"} onChange={(e)=>{setTitle(e.target.value)}}/>
-                        {/* <FormControl  variant="outlined">
-                            <InputLabel htmlFor="title-input">标题</InputLabel>
-                            <OutlinedInput
-                                id="title-input"
-                                value={title}
-                                onChange={(e) => { setTitle(e.target.value) }}
-                                label="标题"
-                            />
-                        </FormControl> */}
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/>
-                        {/* <FormControl  variant="outlined">
-                            <InputLabel htmlFor="author-input">作者</InputLabel>
-                            <OutlinedInput
-                                id="author-input"
-                                value={author}
-                                onChange={(e) => { setAuthor(e.target.value) }}
-                                label="作者"
-                            />
-                        </FormControl> */}
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                    <TextField value={publisher} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/>
-                        {/* <FormControl  variant="outlined">
-                            <InputLabel htmlFor="publisher-input">出版社</InputLabel>
-                            <OutlinedInput
-                                id="publisher-input"
-                                value={publisher}
-                                onChange={(e) => { setPublisher(e.target.value) }}
-                                label="出版社"
-                            />
-                        </FormControl> */}
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                    <TextField value={teacher} label={"老师"} onChange={(e)=>{setTeacher(e.target.value)}}/>
-                        {/* <FormControl  variant="outlined">
+                    {/* <TextField value={teacher} label={"老师"} onChange={(e)=>{setTeacher(e.target.value)}}/> */}
+                        <FormControl  variant="outlined">
                             <InputLabel htmlFor="teacher-input">老师</InputLabel>
                             <OutlinedInput
                                 id="teacher-input"
@@ -164,11 +174,10 @@ function CreateBookPage(props){
                                 onChange={(e) => { setTeacher(e.target.value) }}
                                 label="老师"
                             />
-                        </FormControl> */}
+                        </FormControl>
                     </Grid>
-                    <Grid item xs={12} align="center">
-                        <TextField value={pubdate} label={"出版日期"} onChange={(e)=>{setPubdate(e.target.value)}}/>
-                        {/* <FormControl  variant="outlined">
+                    {/* <Grid item xs={12} align="center">
+                        <FormControl  variant="outlined">
                             <InputLabel htmlFor="teacher-input">老师</InputLabel>
                             <OutlinedInput
                                 id="teacher-input"
@@ -176,11 +185,11 @@ function CreateBookPage(props){
                                 onChange={(e) => { setTeacher(e.target.value) }}
                                 label="老师"
                             />
-                        </FormControl> */}
-                    </Grid>
+                        </FormControl>
+                    </Grid> */}
                     <Grid item xs={12} align="center">
-                        <TextField value={course} label={"课程"} onChange={(e)=>{setCourse(e.target.value)}}/>
-                        {/* <FormControl  variant="outlined">
+                        {/* <TextField value={course} label={"课程"} onChange={(e)=>{setCourse(e.target.value)}}/> */}
+                        <FormControl  variant="outlined">
                             <InputLabel htmlFor="course-input">课程</InputLabel>
                             <OutlinedInput
                                 id="course-input"
@@ -188,11 +197,11 @@ function CreateBookPage(props){
                                 onChange={(e) => { setCourse(e.target.value) }}
                                 label="课程"
                             />
-                        </FormControl> */}
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                    <TextField value={department} label={"学部"} onChange={(e)=>{setDepartment(e.target.value)}}/>
-                        {/* <FormControl variant="outlined">
+                    {/* <TextField value={department} label={"学部"} onChange={(e)=>{setDepartment(e.target.value)}}/> */}
+                        <FormControl variant="outlined">
                             <InputLabel htmlFor="department-input">学部</InputLabel>
                             <OutlinedInput
                                 id="department-input"
@@ -200,11 +209,11 @@ function CreateBookPage(props){
                                 onChange={(e) => { setDepartment(e.target.value) }}
                                 label="学部"
                             />
-                        </FormControl> */}
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                    <TextField value={school_year} label={"学年"} onChange={(e)=>{setSchoolyear(e.target.value)}}/>
-                        {/* <FormControl variant="outlined">
+                    {/* <TextField value={school_year} label={"学年"} onChange={(e)=>{setSchoolyear(e.target.value)}}/> */}
+                        <FormControl variant="outlined">
                             <InputLabel htmlFor="school-year-input">学年</InputLabel>
                             <OutlinedInput
                                 id="school-year-input"
@@ -212,31 +221,26 @@ function CreateBookPage(props){
                                 onChange={(e) => { setSchoolyear(e.target.value) }}
                                 label="学年"
                             />
-                        </FormControl> */}
-                        <TextField value={semester} label={"学期"} onChange={(e)=>{setSemester(e.target.value)}}/>
-
-                        {/* <FormControl variant="outlined">
-                            <InputLabel htmlFor="semester-input">学期</InputLabel>
-                            <OutlinedInput
-                                id="semester-input"
-                                value={semester}
-                                onChange={(e) => { setSemester(e.target.value) }}
-                                label="学期"
-                            />
-                        </FormControl> */}
-                    </Grid>
-                    <Grid item xs={12} align="center">
+                        </FormControl>
+                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                            <InputLabel id="demo-simple-select-helper-label">学期</InputLabel>
+                            <Select
+                            labelId="demo-simple-select-helper-label"
+                            id="demo-simple-select-helper"
+                            value={semester}
+                            label="学期"
+                            onChange={(e)=>{setSemester(e.target.value)}}
+                            >
+                            <MenuItem value={1}>1-秋季学期</MenuItem>
+                            <MenuItem value={2}>2-春季学期</MenuItem>
+                            </Select>
+                            {/* <FormHelperText>With label + helper text</FormHelperText> */}
+                        </FormControl>
                         <Button variant="contained" onClick={handleSubmit}>创建</Button>
                     </Grid>
-
-
-                </Grid>
-                <Grid container item xs={2}>
-                    <p>this is cover</p>
-                    <img src={cover}/>
-                </Grid>
-            </Grid>
-
+                    </Grid>
+                </Box>
+            </Box>
         </div>
     );
 }

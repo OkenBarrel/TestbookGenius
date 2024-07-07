@@ -148,7 +148,7 @@ class createBook(APIView):
             
         
         usebook_data={
-            "course":course.course_name,
+            "course_name":course.course_name,
             "department":course.department,
             "teacher":teacher.teacher_name,
             "book":book.isbn,
