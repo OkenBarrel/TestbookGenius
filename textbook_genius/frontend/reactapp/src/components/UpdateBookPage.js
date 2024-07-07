@@ -13,64 +13,35 @@ import {getCsrfToken} from "./CSRFToken";
 
 function UpdateBookPage(props){
     const { isbn } = useParams();
-
     const[title,setTitle]=useState("");
     const[author,setAuthor]=useState("");
     const[publisher,setPublisher]=useState("");
     const[pubdate,setPubdate]=useState("");
     const[cover,setCover]=useState("");
     const[douban_url,setDouban]=useState("");
-
-    fetch("/api/get-book"+"?isbn="+isbn)
-    .then(res=>{
-        return res.json()
-    })
-    .then(data=>{
-        setTitle(data.title);
-        setAuthor(data.author);
-        setPubdate(data.pubdate);
-        setPublisher(data.publisher);
-        setCover(data.cover);
-        setDouban(data.douban_url);
-    })
-
-       /* setTitle(data.title);
-        setAuthor(data.author);
-        setPubdate(data.pubdate);
-        setPublisher(data.publisher);
-        setCover(data.cover);
-        setDouban(data.douban_url);*/
+      
     /*
     let res= fetch("/api/get-book"+"?isbn="+isbn)
-    let data=res.json()
-
-    const[title,setTitle]=useState(data.title);
-    const[author,setAuthor]=useState(data.author);
-    const[publisher,setPublisher]=useState(data.publisher);
-    const[pubdate,setPubdate]=useState(data.pubdate);
-    const[cover,setCover]=useState(data.cover);
-    const[douban_url,setDouban]=useState(data.douban_url);*/
-    
+    let data=res.json()*/
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
 
-   /* useEffect(() => {
+    useEffect(() => {
         console.log(isbn);
-        getBookDetails();
-      }, []);
-
-    async function getBookDetails(){
-        let res=await fetch("/api/get-book"+"?isbn="+isbn)
-        let data=await res.json()
-        setTitle(data.title);
-        setAuthor(data.author);
-        setCover(data.cover);
-        setDouban(data.douban_url);
-        setPubdate(data.pubdate);
-        setPublisher(data.publisher);
-    }*/
-    
+        fetch("/api/get-book"+"?isbn="+isbn)
+        .then(res=>{
+            return res.json()
+        })
+        .then(data=>{
+            setTitle(data.title);
+            setAuthor(data.author);
+            setPubdate(data.pubdate);
+            setPublisher(data.publisher);
+            setCover(data.cover);
+            setDouban(data.douban_url);
+        })
+    }, []);   
 
     async function handleSubmit(){
         console.log("handling submit")
@@ -82,6 +53,7 @@ function UpdateBookPage(props){
             },
             body:JSON.stringify({
                 book:{
+                    isbn:isbn,
                     title:title,
                     author:author,
                     publisher:publisher,
@@ -93,7 +65,7 @@ function UpdateBookPage(props){
         };
         let response=await fetch("/api/update-book",requestOption)
         let data=await response.json();
-        navigate('/book/'+isbn);
+       {/* navigate('/book/'+isbn);*/}
     }
 
     return(

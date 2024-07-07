@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,renderer_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,CommentSerializer,LikeSerializer,UserSerializer,UsebookSerializer,MarkSerializer
 from .models import Room,Book,Teacher,Course,Comment,Usebook,User,Like,Mark
-from requests import Request,post,get
+from requests import Request,post,get,patch
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
@@ -75,7 +76,7 @@ class createBook(APIView):
     def post(self,request,format=None):
         book_data=request.data.get("book")
         # print(request.data)
-        # print(book_data)
+        #print(book_data)
         book_serializer=self.book_serializer_class(data=book_data)
         if book_serializer.is_valid():
             title=book_serializer.data.get('title')
@@ -176,11 +177,22 @@ class updateBook(APIView):
     book_serializer_class=BookSerializer
     #useBook_serializer_class=UsebookSerializer
     #course_serializer_class=CourseSerializer
-   # teacher_serializer_class=TeacherSerializer
+    #teacher_serializer_class=TeacherSerializer
 
     def patch(self,request):
         book_data=request.data.get("book")
-        book_serializer=self.book_serializer_class(data=book_data)
+        #book_data=JSONParser().parse(request.data.get("book"))
+        print(book_data)
+        #book_serializer=self.book_serializer_class(data=book_data)
+       # book_serializer=BookSerializer(data=book_data)
+        book=Book.objects.get(isbn=book_data['isbn'])
+        book_up=BookSerializer(instance=book,data=book_data)
+        if book_up.is_valid():
+            book_up.save()
+            return Response(BookSerializer(book).data,status.HTTP_200_OK)
+        else:
+            return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND) 
+        """
         if book_serializer.is_valid():
             isbn=book_serializer.data.get('isbn')
             title=book_serializer.data.get('title')
@@ -190,25 +202,10 @@ class updateBook(APIView):
             cover=book_serializer.data.get('cover')
             douban_url=book_serializer.data.get('douban_url')
 
-            book=Book.objects.get(isbn=isbn)
-            """
-            book.title=title
-            book.author=author
-            book.publisher=publisher
-            book.pubdate=pubdate
-            book.cover=cover
-            book.douban_url=douban_url
-            """
-            book.update(title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
-            book.save()
-            #return Response(BookSerializer(book).data,status.HTTP_200_OK)
-        """
+            Book.objects.filter(isbn=isbn).update(title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
+            return Response(BookSerializer(Book.objects.filter(isbn=(book_data['isbn']))).data,status.HTTP_200_OK)
         else:
-            print('book')
-            queryset=Book.objects.filter(isbn=isbn)
-            book=queryset[0]
-            print(book)
-            print(book_serializer.errors)
+            return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND) 
         """
 
 
