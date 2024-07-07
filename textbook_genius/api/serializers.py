@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Room, Book, Teacher, Course, Usebook, User , Mark , Comment, Like, ScoreUserRelation
+from .models import Room, Book, Teacher, Course, Usebook, User , Mark , Comment, Like, UpScoreUserRelation
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -79,11 +79,11 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields=('user','comment','like','dislike')
 
-class ScoreUserRelationSerializer(serializers.ModelSerializer):
+class UpScoreUserRelationSerializer(serializers.ModelSerializer):
     useBook=serializers.PrimaryKeyRelatedField(queryset=Usebook.objects.all())
     user=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
-        model=ScoreUserRelation
+        model=UpScoreUserRelation
         fields=('useBook','user')
     # def create(self,validated_data):
     #     userbook_id = validated_data.pop('relation_id')

@@ -7,8 +7,8 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
     CommentSerializer,LikeSerializer,UserSerializer,UsebookSerializer,MarkSerializer,\
-    ScoreUserRelationSerializer
-from .models import Room,Book,Teacher,Course,Comment,Usebook,User,Like,Mark,ScoreUserRelation
+    UpScoreUserRelationSerializer
+from .models import Room,Book,Teacher,Course,Comment,Usebook,User,Like,Mark,UpScoreUserRelation
 from requests import Request,post,get,patch
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
@@ -240,7 +240,7 @@ class scoreUser(APIView):
         user:{user_id}
     }
     '''
-    serializer_class=ScoreUserRelationSerializer
+    serializer_class=UpScoreUserRelationSerializer
     def post(self,request):
         # usebook_id=request.data.get('useBook')
         # user_id=request.data.get('user_id')
@@ -259,9 +259,9 @@ class scoreUser(APIView):
             usebook=Usebook.objects.get(id=usebook_id)
         except Usebook.DoesNotExist:
             return Response({"error": "UseBook relation not found."}, status=status.HTTP_404_NOT_FOUND)
-        scoreUser=ScoreUserRelation(user=user,useBook=usebook)
+        scoreUser=UpScoreUserRelation(user=user,useBook=usebook)
         scoreUser.save()
-        return Response(ScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
+        return Response(UpScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
         # useBook=Usebook.objects.filter(id=usebook_id)
         # if not useBook.exists():
         #      return Response({"Bad Request": "Invalid useBook relation."},status=status.HTTP_404_NOT_FOUND)
