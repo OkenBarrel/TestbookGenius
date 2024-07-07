@@ -53,6 +53,8 @@ class Course(models.Model):
     department=models.CharField(max_length=50,null=False,default="")
     def __str__(self) -> str:
         return self.course_name
+    class Meta:
+        unique_together=('course_name','department')
 
 class Usebook(models.Model):
     book=models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
@@ -102,5 +104,9 @@ class Like(models.Model):
     like = models.IntegerField(null=False,default=0)
     dislike = models.IntegerField(null=False,default=0)
 
-
+class ScoreUserRelation(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    useBook=models.ForeignKey(Usebook,on_delete=models.CASCADE,primary_key=True)
+    # get_it=models.IntegerField(null=False,default=0)
+    # dont_get_it=models.IntegerField(null=False,default=0)
 

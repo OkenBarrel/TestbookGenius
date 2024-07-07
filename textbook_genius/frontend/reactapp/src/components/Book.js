@@ -2,6 +2,15 @@ import React, { Component, useState,useEffect } from "react";
 import {Button,DialogContent,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 // import CreateBookPage from "./CreateBookPage";
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    Redirect
+} from "react-router-dom";
+import CommentComponet from "./CommentComponent";
+import ScoreComponent from "./ScoreComponet";
 
 const Book=()=>{
     const { isbn } = useParams();
@@ -22,6 +31,7 @@ const Book=()=>{
         let res=await fetch("/api/get-book"+"?isbn="+isbn)
         if(!res.ok){
             navigate("/");
+            return;
         }
         let data=await res.json()
         setTitle(data.title);
@@ -71,6 +81,9 @@ const Book=()=>{
                                     <p>{pubdate}</p>
                                 </Box>
                             </Grid>
+                            <Grid item xs={12} align="center">
+                                <Button variant='contained' to="./update" component={Link}>修改书籍信息</Button>
+                            </Grid>
                         {/* </Grid> */}
 
                         {/* <Grid item xs={6}>
@@ -94,6 +107,12 @@ const Book=()=>{
                     title="cover"
                 />
             </Card>
+            
+            {/* <Card> */}
+            <CommentComponet isbn={isbn}/>
+
+            {/* </Card> */}
+            
             
         </div>
     );

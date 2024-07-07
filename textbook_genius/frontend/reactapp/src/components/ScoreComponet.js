@@ -5,7 +5,12 @@ import {DeleteIcon} from'@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
-function ScoreComponent({relationAndScore}){
+function ScoreComponent({relation}){
+    const [course,setCourse]=useState("");
+    useEffect(()=>{
+        console.log(relation);
+        setCourse(relation?.course);
+    },[])
 
     function handleYes(){
         console.log("yes");
@@ -29,9 +34,11 @@ function ScoreComponent({relationAndScore}){
       }));
 
     return(
+        
         <Card sx={{width:200,height:200}}>
             <CardContent>
-                <Typography variant="h1">This is the Scoring of {relationAndScore}</Typography>
+                {/* {console.log(course)} */}
+                <Typography variant="h4">This is the Scoring of {course}</Typography>
                 <BorderLinearProgress variant="determinate" value={30} />
 
                 <Button variant="contained" onClick={handleYes}>推荐</Button>
