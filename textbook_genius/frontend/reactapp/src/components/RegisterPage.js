@@ -1,21 +1,24 @@
 import React, { useState } from "react";
 import { Button, Grid, Typography, TextField, Paper } from "@mui/material";
 import Alert from "@mui/material/Alert";
+import { getCsrfToken } from "./CSRFToken";
 
 const RegisterPage = () => {
+  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const csrftoken = getCsrfToken(); 
 
   const handleRegister = async () => {
     setError('');
     setSuccess('');
 
     // Validate inputs
-    if (!username || !password || !confirmPassword) {
-      setError('Username, password, and confirm password are required.');
+    if (!email || !username || !password || !confirmPassword) {
+      setError('Email, username, password, and confirm password are required.');
       return;
     }
     if (password !== confirmPassword) {
@@ -30,8 +33,12 @@ const RegisterPage = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ 
+          user_name: username, 
+          user_password: password,
+          user_email : email}),
       });
 
       const data = await response.json();
@@ -39,9 +46,11 @@ const RegisterPage = () => {
       if (response.ok) {
         setSuccess('Registration successful!');
         // Optionally clear form fields after successful registration
-        setUsername('');
-        setPassword('');
-        setConfirmPassword('');
+       
+        // setEmail('');
+        // setUsername('');
+        // setPassword('');
+        // setConfirmPassword('');
       } else {
         setError(data.message || 'Registration failed. Please try again.');
       }
@@ -58,6 +67,14 @@ const RegisterPage = () => {
           Register
         </Typography>
         <form noValidate autoComplete="off">
+          <TextField
+            label="Email Address"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <TextField
             label="Username"
             fullWidth
