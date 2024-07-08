@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.contrib.sessions.models import Session
-from django.contrib.auth.admin import UserAdmin
+# from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
-from .models import Book,Teacher,Course,User,Mark,Usebook
+from .models import Book,Teacher,Course,Mark,Usebook
 
 
 class UsebookAdmin(admin.ModelAdmin):
@@ -18,6 +18,6 @@ admin.site.register(Course)
 admin.site.register(Mark)
 admin.site.register(Usebook,UsebookAdmin)
 admin.site.register(Session)
-admin.site.register(User, UserAdmin)
+# admin.site.register(User, UserAdmin)
 
 
