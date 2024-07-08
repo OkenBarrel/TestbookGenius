@@ -100,7 +100,7 @@ function CreateBookPage(props){
                                     <h1>This is create book</h1>
                                 </Grid>
                                 <Grid item xs={12} align="center">
-                                    <TextField label={'输入ISBN号，获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
+                                    <TextField label={'输入ISBN号,获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
                                     {/* <FormControl  error={isbnError==""? false:true}variant="outlined">
                                         <InputLabel htmlFor="isbn-input">isbn</InputLabel>
                                         <OutlinedInput
@@ -108,7 +108,7 @@ function CreateBookPage(props){
                                             onChange={(e) => { setIsbn(e.target.value) }}
                                             label="ISBN"
                                         />
-                                        <FormHelperText>输入ISBN号，获取书籍信息</FormHelperText>*/}
+                                        <FormHelperText>输入ISBN号,获取书籍信息</FormHelperText>*/}
                                     <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
                                     {/* </FormControl>  */}
                                     {/* <p style={{ color: 'red' }}>{error}</p> */}
