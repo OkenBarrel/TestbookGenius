@@ -59,25 +59,25 @@ const Book=()=>{
                         <Grid container spacing={1} item xs={12} >
                             <Grid item xs={12}>
                                 <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                    <p >标题：</p>
+                                    <p >标题:</p>
                                     <p >{title}</p>
                                 </Box>
                             </Grid>
                             <Grid item xs={12}>
                                 <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                    <p>作者：</p>
+                                    <p>作者:</p>
                                     <p>{author}</p>
                                 </Box>
                             </Grid>
                             <Grid item xs={12}>
                                 <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                    <p>出版社：</p>
+                                    <p>出版社:</p>
                                     <p>{publisher}</p>
                                 </Box>
                             </Grid>
                             <Grid item xs={12}>
                                 <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                    <p>出版日期：</p>
+                                    <p>出版日期:</p>
                                     <p>{pubdate}</p>
                                 </Box>
                             </Grid>

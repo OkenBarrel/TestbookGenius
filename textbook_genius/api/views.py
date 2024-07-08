@@ -57,25 +57,26 @@ class get_book(APIView):
 class createBook(APIView):
     '''
     {
-        "book": {
-            "isbn": "",
-            "title": "",
-            "author": [""],
-            "publisher": "",
-            "pubdate": "",
-            "cover": "",
-            "douban_url": ""
-        },
-        "teacher": {
-            "teacher_name":""
-        },
-        "course": {
-            "course_name": "",
-            "department":""
-        },
-        "school_year":"",
-        "semester":""
-    }
+    "book": {
+        "isbn": “isbn号”,str,长度:13,,
+        "title": "书名",str,长度范围:1-50,
+        "author": ["作者"],JSON,
+        "publisher": "出版社",str,长度范围:0-50,     
+        "pubdate": "出版日期",str,长度范围:7-10,格式:允许”2012-12”和“2012-12-12”两种格式,
+        "cover": "封面url",str,长度范围“1-100”,
+        "douban_url": "豆瓣url",str,长度范围:1-50
+    },
+    "teacher": {
+        "teacher_name":"教师名称",str,长度范围:1-50
+    },
+    "course": {
+        "course_name": "课程名称",str,长度范围:1-50,
+        "department":"学部名称",str,内容必须在已存在学部中
+    },
+    "school_year":"学年",str,长度:9,格式形如“2012-2013”,
+    "semester":2,int,只能为1或2
+}
+
     '''
     book_serializer_class=BookSerializer
     useBook_serializer_class=UsebookSerializer
@@ -178,7 +179,6 @@ class createBook(APIView):
             print('useBook')
             print(useBook_serializer.errors)
             return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
-        return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
     
 
 class updateBook(APIView):
@@ -220,18 +220,18 @@ class updateBook(APIView):
 class getUseBook(APIView):
     def get(self,request,format=None):
         '''
-        输出：[
+        输出:[
                 {
-                    "book": "9787101162097",
-                    "teacher": "历史老师",
+                    "book": "9787101162097",isbn号
+                    "teacher": "王翔",老师名称
                     "course": {
-                        "course_name": "历史",
-                        "department": "文法学部"
+                        "course_name": "中国古代文学",课程名称
+                        "department": "文法" 学部
                     },
-                    "school_year": "12-13",
-                    "semester": 1,
-                    "upvote_count": 0,
-                    "downvote_count": 0
+                    "school_year": "12-13",学年
+                    "semester": 学期,
+                    "upvote_count": 1,实用投票票数
+                    "downvote_count": 0,不实用投票票数
                 },
             ]
         '''
@@ -242,10 +242,12 @@ class getUseBook(APIView):
             filter_params['book__isbn']=query_params.get('isbn')
 
         usebook_queryset = Usebook.objects.filter(**filter_params)
+        if not usebook_queryset.exists():
+            return Response({"Bad Request":"Invalid ISBN."},status=status.HTTP_404_NOT_FOUND)
+
         
         # Serialize the queryset
         serializer = UsebookSerializer(usebook_queryset, many=True)
-        usebook_ids = [usebook.id for usebook in usebook_queryset]
         
         # Annotate usebook_queryset with upvotes and downvotes counts
         usebook_queryset = usebook_queryset.annotate(
