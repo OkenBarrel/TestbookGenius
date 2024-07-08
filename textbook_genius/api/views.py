@@ -7,8 +7,9 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
     CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
-    ScoreUserRelationSerializer
-from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,ScoreUserRelation
+    ScoreUserRelationSerializer,ProfileSerializer
+from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
+                    ScoreUserRelation, Profile
 from requests import Request,post,get,patch
 
 from django.contrib.auth.models import User
@@ -242,6 +243,7 @@ class register(APIView):
                                       email=request.data.get('user_email'),
                                       password=request.data.get('user_password'))
         user.save()
+        serializer=ProfileSerializer()
         return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
 
         # serializer = UserSerializer(data=request.data)
@@ -314,7 +316,7 @@ class scoreUser(APIView):
         pass 
 
 
-class login(APIView):
+class loggin(APIView):
     def post(self,request):
         username=request.data.get('username')
         password=request.data.get('password')

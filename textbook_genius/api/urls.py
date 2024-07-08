@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RoomView,get_doubanBook,get_book,createBook,updateBook,scoreUser
+from .views import RoomView,get_doubanBook,get_book,createBook,updateBook,scoreUser,loggin
 from .views import getUseBook
 from .views import register
 urlpatterns = [
@@ -13,5 +13,5 @@ urlpatterns = [
     path('get-useBook',getUseBook.as_view()),
     path('register',register.as_view()),
     path('score-user',scoreUser.as_view()),
-    path('login',scoreUser.as_view())
+    path('login',loggin.as_view())
 ]
