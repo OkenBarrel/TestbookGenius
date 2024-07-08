@@ -20,6 +20,12 @@ const Book=()=>{
     const[douban_url,setDouban]=useState("")
     const[publisher,setPublisher]=useState("")
     const[pubdate,setPubdate]=useState("")
+
+    const[buy_kong,setKong]=useState("")
+    const[buy_dang,setDang]=useState("")
+    const[buy_bookchina,setBookchina]=useState("")
+    const[buy_jie,setJie]=useState("")
+
     const navigate=useNavigate();
 
     useEffect(() => {
@@ -40,6 +46,11 @@ const Book=()=>{
         setDouban(data.douban_url);
         setPubdate(data.pubdate);
         setPublisher(data.publisher);
+
+        setKong("https://search.kongfz.com/product/?keyword="+isbn+"&dataType=0")
+        setDang("http://search.dangdang.com/?key="+isbn+"&act=input")
+        setBookchina("https://www.bookschina.com/book_find2/?stp="+isbn+"&sCate=0")
+        setJie("https://www.jiushujie.com/sell?q="+isbn)
         
         // .then((response)=>{
         //     return response.json();
@@ -52,7 +63,7 @@ const Book=()=>{
     return(
         <div>
             <h2>This is Book {title}</h2>
-            <Card variant="outlined"  align="center" jutifyContent="center" sx={{display:"flex",maxWidth: 700,maxHeight: 400}}>
+            <Card variant="outlined"  align="center" jutifyContent="center" sx={{display:"flex",maxWidth: 1400,maxHeight: 400}}>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     <CardContent sx={{ flex: '1 0 auto' }}>
                     {/* <Grid container spacing={3} align="center" justifyContent={"center"}> */}
@@ -106,6 +117,22 @@ const Book=()=>{
                     image={cover}
                     title="cover"
                 />
+                <Box align="center" justifyContent="center" alignItems="flex-end" sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} align="center">
+                            <Button variant="contained" to={buy_dang} component={Link}>当当网购买</Button>
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            <Button variant="contained" to={buy_bookchina} component={Link}>中国图书网购买</Button>
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            <Button variant="contained" to={buy_kong} component={Link}>孔夫子旧书网购买</Button>
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            <Button variant="contained" to={buy_jie} component={Link}>旧书街购买</Button>
+                        </Grid>
+                    </Grid>
+                </Box>
             </Card>
             
             {/* <Card> */}

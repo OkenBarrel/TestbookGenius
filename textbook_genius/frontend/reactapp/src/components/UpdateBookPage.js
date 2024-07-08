@@ -19,6 +19,12 @@ function UpdateBookPage(props){
     const[pubdate,setPubdate]=useState("");
     const[cover,setCover]=useState("");
     const[douban_url,setDouban]=useState("");
+
+    /*const[buy_kong,setKong]=useState("")
+    const[buy_dang,setDang]=useState("")
+    const[buy_bookchina,setBookchina]=useState("")
+    const[buy_fish,setFish]=useState("")
+    const[buy_jie,setJie]=useState("")*/
       
     /*
     let res= fetch("/api/get-book"+"?isbn="+isbn)
@@ -40,6 +46,12 @@ function UpdateBookPage(props){
             setPublisher(data.publisher);
             setCover(data.cover);
             setDouban(data.douban_url);
+
+           /* setKong("https://search.kongfz.com/product/?keyword="+isbn+"&dataType=0")
+            setDang("http://search.dangdang.com/?key="+isbn+"&act=input")
+            setBookchina("https://www.bookschina.com/book_find2/?stp="+isbn+"&sCate=0")
+            setFish("https://www.duozhuayu.com/search/book/"+isbn)
+            setJie("https://www.jiushujie.com/sell?q="+isbn) */
         })
     }, []);   
 
@@ -99,6 +111,13 @@ function UpdateBookPage(props){
                     <Grid item xs={12} align="center">
                         <Button variant="contained" onClick={handleSubmit}>修改</Button>
                     </Grid>
+                    {/*<Grid item xs={12} align="center">
+                        <Button variant="contained" to={buy_kong} component={Link}>孔夫子旧书网购买</Button>
+                        <Button variant="contained" to={buy_dang} component={Link}>当当网购买</Button>
+                        <Button variant="contained" to={buy_bookchina} component={Link}>中图网购买</Button>
+                        <Button variant="contained" to={buy_fish} component={Link}>多抓鱼购买</Button>
+                        <Button variant="contained" to={buy_jie} component={Link}>旧书街购买</Button>
+                    </Grid>*/}
                 </Grid>
             </Grid>
         </div>
