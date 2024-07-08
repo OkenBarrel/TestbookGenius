@@ -9,8 +9,8 @@ const FileUpload = ({ onFileSelect, acceptedFileTypes, label }) => {
      * 用于上传文件的通用组件。支持指定文件类型和自定义按钮标签。
      *
      * Props:
-     * - onFileSelect (function): 文件选择后的回调函数，接受一个文件对象作为参数。
-     * - acceptedFileTypes (string): 接受的文件类型，用于限制文件选择器中可见的文件类型。例如：".pdf,.doc,.docx,.txt"
+     * - onFileSelect (function): 文件选择后的回调函数,接受一个文件对象作为参数。
+     * - acceptedFileTypes (string): 接受的文件类型,用于限制文件选择器中可见的文件类型。例如:".pdf,.doc,.docx,.txt"
      * - label (string): 按钮上的文本标签。
      *
      * Usage:
