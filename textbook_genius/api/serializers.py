@@ -58,11 +58,11 @@ class UsebookSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('user_id', 'user_name', 'user_password','user_email','user_major','user_department','user_credit','user_indate')
-        extra_kwargs = {
-            'user_password': {'write_only': True},   # 用户密码只能写入，不会在序列化时返回
-            'user_indate': {'read_only': True},      # 用户注册日期只读
-        }
+        fields = ('user_id','user_name', 'user_password','user_email','user_major','user_department','user_credit')
+        # extra_kwargs = {
+        #     'user_password': {'write_only': True},   # 用户密码只能写入，不会在序列化时返回
+        #     'user_indate': {'read_only': True},      # 用户注册日期只读
+        # }
 
 class MarkSerializer(serializers.ModelSerializer):
     class Meta:

@@ -6,10 +6,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
-    CommentSerializer,LikeSerializer,UserSerializer,UsebookSerializer,MarkSerializer,\
+    CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
     ScoreUserRelationSerializer
-from .models import Room,Book,Teacher,Course,Comment,Usebook,User,Like,Mark,ScoreUserRelation
+from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,ScoreUserRelation
 from requests import Request,post,get,patch
+
+from django.contrib.auth.models import User
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
@@ -226,12 +228,34 @@ class getUseBook(APIView):
         return Response(serializer.data,status=status.HTTP_200_OK)
         
 class register(APIView):
+    '''
+    {
+        user_name:,
+        user_email:,
+        user_password:
+    }
+    '''
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print(request.data)
+        user=User.objects.create_user(username=request.data.get('user_name'),
+                                      email=request.data.get('user_email'),
+                                      password=request.data.get('user_password'))
+        user.save()
+        return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
+
+        # serializer = UserSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     print(serializer.data)
+        #     user_name= serializer.data.get('user_name')
+        #     user_password= serializer.data.get('user_password')
+        #     user_email= serializer.data.get('user_email')
+        #     user=User(user_name = user_name, user_password = user_password, user_email = user_email)
+        #     print(user.user_id)
+        #     user.save()
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # else:
+        #     print(serializer.errors)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class scoreUser(APIView):
     '''
