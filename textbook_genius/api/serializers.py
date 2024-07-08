@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Room, Book, Teacher, Course, Usebook, Profile , Mark ,\
-                    Comment, Like, UpScoreUserRelationScoreUserRelation
+                    Comment, Like, UpScoreUserRelation
 from django.contrib.auth.models import User
 
 class RoomSerializer(serializers.ModelSerializer):

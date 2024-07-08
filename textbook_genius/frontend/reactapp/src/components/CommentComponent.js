@@ -10,16 +10,19 @@ const CommentComponet=({isbn})=>{
 
     const [value,setValue]=useState(0);
     const [relations,setRelations]=useState([]);
+    const [ids,setIds]=useState([]);
+
     const[passon,setPasson]=useState();
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
         setPasson(relations[newValue])
+        console.log("passon"+passon)
         // console.log(relations[value]["course"]+"-"+relations[value]["teacher"]);
     };
     useEffect(()=>{
         getRelations();
-        setPasson(relations[0])
+        setPasson(relations[0]);
     },[]);
 
     async function getRelations(){
@@ -29,7 +32,10 @@ const CommentComponet=({isbn})=>{
             return;
         }
         let data=await response.json();
-        setRelations(data);
+        setRelations(data?.usebook_data);
+        setIds(data?.usebook_id)
+        console.log(ids)
+        // console.log(ids)
     }
     return(
         <Box sx={{display:'flex',flexDirection:'row'}}>
@@ -46,7 +52,7 @@ const CommentComponet=({isbn})=>{
             </Card>
 
             {console.log(relations[value])}
-            <ScoreComponent relation={relations[value]}></ScoreComponent>
+            <ScoreComponent relation={relations[value]} id={ids[value]}></ScoreComponent>
         </Box>
     )
 }

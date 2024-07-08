@@ -227,7 +227,8 @@ class getUseBook(APIView):
         
         # Serialize the queryset
         serializer = UsebookSerializer(usebook_queryset, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        usebook_ids = [usebook.id for usebook in usebook_queryset]
+        return Response({"usebook_id":usebook_ids,"usebook_data":serializer.data},status=status.HTTP_200_OK)
         
 class register(APIView):
     '''
@@ -264,22 +265,28 @@ class scoreUser(APIView):
     '''
     {
         useBook:{useBook的id},
-        user:{user_id}
+        
     }
+    cookie中正常设置user_id字段
     '''
     serializer_class=UpScoreUserRelationSerializer
     def post(self,request):
-        # usebook_id=request.data.get('useBook')
+        usebook_id=request.data.get('useBook')
         # user_id=request.data.get('user_id')
+        user_id=request.COOKIES.get('user_id')
+        upScore_data={
+            "useBook":usebook_id,
+            "user":user_id
+        }
 
-        serializer=self.serializer_class(data=request.data)
+        serializer=self.serializer_class(data=upScore_data)
         if not serializer.is_valid():
             print(serializer.errors)
-            return Response({"Already exists":"already scored this one."},status=status.HTTP_409_CONFLICT)
+            return Response({"Already exists":"{} already scored this one.".format(user_id)},status=status.HTTP_409_CONFLICT)
         user_id=serializer.data.get('user')
         usebook_id=serializer.data.get('useBook')
         try:
-            user = User.objects.get(user_id=user_id)
+            user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
         try:
@@ -289,31 +296,19 @@ class scoreUser(APIView):
         scoreUser=UpScoreUserRelation(user=user,useBook=usebook)
         scoreUser.save()
         return Response(UpScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
-        # useBook=Usebook.objects.filter(id=usebook_id)
-        # if not useBook.exists():
-        #      return Response({"Bad Request": "Invalid useBook relation."},status=status.HTTP_404_NOT_FOUND)
-
-        # serializer=self.serializer_class(data=request.data)
-        # if serializer.is_valid():
-        #     user_id=serializer.data.get('user_id')
-        #     user=User.objects.filter(user_id=user_id)
-        #     if not user.exists():
-        #         return Response({"Bad request":"Ivalid User."},status=status.HTTP_404_NOT_FOUND)
-        #     scoreUser=ScoreUserRelation(useBook=useBook,user=user)
-        #     scoreUser.save()
-        #     return Response(scoreUser.data,status=status.HTTP_200_OK)
-        # else:
-        #     print(serializer.errors)
-        #     return Response({"Already exists":"already scored this one."},status=status.HTTP_409_CONFLICT)
-
+    
     def delete(self,request):
-        usebook_id=request.data.get('usebook')
-        useBook=Usebook.objects.filter(id=usebook_id)
-        if not useBook.exists():
-             return Response({"Bad Request": "Invalid useBook relation."},status=status.HTTP_404_NOT_FOUND)
+        usebook_id = request.data.get('usebook')
+        user_id=request.COOKIES.get('user_id')
+        if not usebook_id:
+            return Response({"Bad Request": "usebook ID not provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer=self.serializer_class(data=request.data)
-        pass 
+        useBook = Usebook.objects.filter(id=usebook_id,user_id=user_id).first()
+        if not useBook:
+            return Response({"Bad Request": "Invalid usebook relation."}, status=status.HTTP_404_NOT_FOUND)
+
+        useBook.delete()
+        return Response({"Success": "Usebook relation deleted."}, status=status.HTTP_200_OK)
 
 
 class loggin(APIView):
