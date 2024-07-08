@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 import string
 import random
 import datetime
@@ -71,15 +72,15 @@ class Usebook(models.Model):
         return 'book: '+self.book.title+' teacher: '+self.teacher.teacher_name+' course: '+self.course.course_name
 
 
-class User(models.Model):
+class User(AbstractUser):
     user_id = models.CharField(max_length=10, default=generate_unique_code, unique=True,primary_key=True)
-    user_name = models.CharField(max_length=50, null=False, default="")
-    user_password = models.CharField(max_length=50, null=False, default="")
-    user_email = models.CharField(max_length=50, null=False, default="")
+    # user_name = models.CharField(max_length=50, null=False, default="")
+    # user_password = models.CharField(max_length=50, null=False, default="")
+    # user_email = models.CharField(max_length=50, null=False, default="")
     user_major = models.CharField(max_length=50, null=False, default="")
     user_department = models.CharField(max_length=50, null=False, default="")
     user_credit = models.IntegerField(null=False,default=100)
-    user_indate = models.DateTimeField(auto_now_add=True)
+    # user_indate = models.DateTimeField(auto_now_add=True)
     print(user_id)
     def __str__(self) -> str:
         return self.user_name
