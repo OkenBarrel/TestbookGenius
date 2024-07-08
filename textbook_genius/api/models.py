@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 import string
 import random
 import datetime
@@ -71,18 +72,19 @@ class Usebook(models.Model):
         return 'book: '+self.book.title+' teacher: '+self.teacher.teacher_name+' course: '+self.course.course_name
 
 
-class User(models.Model):
-    user_id = models.CharField(max_length=10, default=generate_unique_code, unique=True,primary_key=True)
-    user_name = models.CharField(max_length=50, null=False, default="")
-    user_password = models.CharField(max_length=50, null=False, default="")
-    user_email = models.CharField(max_length=50, null=False, default="")
+class Profile(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,primary_key=True)
+    # user_id = models.CharField(max_length=10, default=generate_unique_code, unique=True,primary_key=True)
+    # nickname = models.CharField(max_length=50, null=False, default="")
+    # user_password = models.CharField(max_length=50, null=False, default="")
+    # user_email = models.CharField(max_length=50, null=False, default="")
     user_major = models.CharField(max_length=50, null=False, default="")
     user_department = models.CharField(max_length=50, null=False, default="")
     user_credit = models.IntegerField(null=False,default=100)
-    user_indate = models.DateTimeField(auto_now_add=True)
-    print(user_id)
+    # user_indate = models.DateTimeField(auto_now_add=True)
+    # print(user_id)
     def __str__(self) -> str:
-        return self.user_name
+        return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
 
 class Mark(models.Model):
     markid=models.CharField(max_length=10,primary_key=True)

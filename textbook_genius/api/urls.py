@@ -12,5 +12,6 @@ urlpatterns = [
     path('update-book',updateBook.as_view()),
     path('get-useBook',getUseBook.as_view()),
     path('register',register.as_view()),
-    path('score-user',scoreUser.as_view())
+    path('score-user',scoreUser.as_view()),
+    path('login',scoreUser.as_view())
 ]

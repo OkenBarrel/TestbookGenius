@@ -12,6 +12,7 @@ from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,ScoreUser
 from requests import Request,post,get,patch
 
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login,logout
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
@@ -311,3 +312,15 @@ class scoreUser(APIView):
 
         serializer=self.serializer_class(data=request.data)
         pass 
+
+
+class login(APIView):
+    def post(self,request):
+        username=request.data.get('username')
+        password=request.data.get('password')
+        user=authenticate(request=request,username=username,password=password)
+        if user is not None:
+            login(request,user)
+            return Response({"username":user.get_username(),"email":user.get_email_field_name()})
+        else:
+            return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
