@@ -241,7 +241,7 @@ class register(APIView):
                                       email=request.data.get('user_email'),
                                       password=request.data.get('user_password'))
         user.save()
-        return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_201_CREATED)
+        return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
 
         # serializer = UserSerializer(data=request.data)
         # if serializer.is_valid():
