@@ -6,7 +6,6 @@ import { getCsrfToken } from './CSRFToken';
 
 
 import Alert from '@mui/material/Alert';
-import { getCsrfToken } from './CSRFToken';
 
 
 const LoginPage = () => {

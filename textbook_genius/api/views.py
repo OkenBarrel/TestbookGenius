@@ -316,7 +316,7 @@ class scoreUser(APIView):
         pass 
 
 
-class login(APIView):
+class loggin(APIView):
     def post(self,request):
         username=request.data.get('username')
         password=request.data.get('password')
