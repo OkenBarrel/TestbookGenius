@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Room, Book, Teacher, Course, Usebook, Profile , Mark ,\
-                    Comment, Like, UpScoreUserRelation
+                    Comment, Like, UpScoreUserRelation,DownScoreUserRelation
 from django.contrib.auth.models import User
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -94,13 +94,10 @@ class UpScoreUserRelationSerializer(serializers.ModelSerializer):
     class Meta:
         model=UpScoreUserRelation
         fields=('useBook','user')
-    # def create(self,validated_data):
-    #     userbook_id = validated_data.pop('relation_id')
-    #     user_id = validated_data.pop('user_id')
-    #     course, created = Course.objects.get_or_create(course_name=course_name, department=department)
-    #     validated_data['course'] = course
-    #     return super().create(validated_data)
-    # def update(self, instance, validated_data):
-    #     instance.get_it=validated_data.get('get_it',instance.get_it)
-    #     instance.dont_get_it=validated_data.get('dont_get_it',instance.dont_get_it)
-    #     return super().update(instance, validated_data)
+
+class DownScoreUserRelationSerializer(serializers.ModelSerializer):
+    useBook=serializers.PrimaryKeyRelatedField(queryset=Usebook.objects.all())
+    user=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    class Meta:
+        model=DownScoreUserRelation
+        fields=('useBook','user')

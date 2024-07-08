@@ -7,10 +7,12 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
     CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
-    UpScoreUserRelationSerializer,ProfileSerializer
+    UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer
 from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
-                    UpScoreUserRelation, Profile
+                    UpScoreUserRelation, Profile,DownScoreUserRelation
 from requests import Request,post,get,patch
+from django.db.models import Count
+from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
@@ -217,6 +219,22 @@ class updateBook(APIView):
 
 class getUseBook(APIView):
     def get(self,request,format=None):
+        '''
+        输出：[
+                {
+                    "book": "9787101162097",
+                    "teacher": "历史老师",
+                    "course": {
+                        "course_name": "历史",
+                        "department": "文法学部"
+                    },
+                    "school_year": "12-13",
+                    "semester": 1,
+                    "upvote_count": 0,
+                    "downvote_count": 0
+                },
+            ]
+        '''
         query_params=request.GET
         filter_params={}
         print(query_params)
@@ -228,7 +246,19 @@ class getUseBook(APIView):
         # Serialize the queryset
         serializer = UsebookSerializer(usebook_queryset, many=True)
         usebook_ids = [usebook.id for usebook in usebook_queryset]
-        return Response({"usebook_id":usebook_ids,"usebook_data":serializer.data},status=status.HTTP_200_OK)
+        
+        # Annotate usebook_queryset with upvotes and downvotes counts
+        usebook_queryset = usebook_queryset.annotate(
+            upvote_count=Count('upscoreuserrelation'),
+            downvote_count=Count('downscoreuserrelation')
+        )
+        response_data = serializer.data
+        for idx, usebook in enumerate(usebook_queryset):
+            response_data[idx]['id'] = usebook.id
+            response_data[idx]['upvote_count'] = usebook.upvote_count
+            response_data[idx]['downvote_count'] = usebook.downvote_count
+
+        return Response(response_data,status=status.HTTP_200_OK)
         
 class register(APIView):
     '''
@@ -261,7 +291,7 @@ class register(APIView):
         #     print(serializer.errors)
         # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class scoreUser(APIView):
+class upScoreUser(APIView):
     '''
     {
         useBook:{useBook的id},
@@ -285,29 +315,28 @@ class scoreUser(APIView):
             return Response({"Already exists":"{} already scored this one.".format(user_id)},status=status.HTTP_409_CONFLICT)
         user_id=serializer.data.get('user')
         usebook_id=serializer.data.get('useBook')
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            usebook=Usebook.objects.get(id=usebook_id)
-        except Usebook.DoesNotExist:
-            return Response({"error": "UseBook relation not found."}, status=status.HTTP_404_NOT_FOUND)
-        scoreUser=UpScoreUserRelation(user=user,useBook=usebook)
+        down=DownScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id)
+        if down.exists():
+            return Response({"Bad Request":"Cannot up and down at the same time."},status=status.HTTP_404_NOT_FOUND)
+        
+        user = get_object_or_404(User, id=user_id)
+        usebook = get_object_or_404(Usebook, id=usebook_id)
+        
+        scoreUser = UpScoreUserRelation.objects.create(user=user, useBook=usebook)
         scoreUser.save()
         return Response(UpScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
     
     def delete(self,request):
-        usebook_id = request.data.get('usebook')
+        usebook_id = request.data.get('useBook')
         user_id=request.COOKIES.get('user_id')
         if not usebook_id:
             return Response({"Bad Request": "usebook ID not provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        useBook = Usebook.objects.filter(id=usebook_id,user_id=user_id).first()
-        if not useBook:
+        scoreUser = UpScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id).first()
+        if not scoreUser:
             return Response({"Bad Request": "Invalid usebook relation."}, status=status.HTTP_404_NOT_FOUND)
 
-        useBook.delete()
+        scoreUser.delete()
         return Response({"Success": "Usebook relation deleted."}, status=status.HTTP_200_OK)
 
 
@@ -321,3 +350,52 @@ class loggin(APIView):
             return Response({"username":user.get_username(),"email":user.get_email_field_name()})
         else:
             return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
+        
+
+class downScoreUser(APIView):
+    '''
+    {
+        useBook:{useBook的id},
+        
+    }
+    cookie中正常设置user_id字段
+    '''
+    serializer_class=DownScoreUserRelationSerializer
+    def post(self,request):
+        usebook_id=request.data.get('useBook')
+        # user_id=request.data.get('user_id')
+        user_id=request.COOKIES.get('user_id')
+        upScore_data={
+            "useBook":usebook_id,
+            "user":user_id
+        }
+
+        serializer=self.serializer_class(data=upScore_data)
+        if not serializer.is_valid():
+            print(serializer.errors)
+            return Response({"Already exists":"{} already scored this one.".format(user_id)},status=status.HTTP_409_CONFLICT)
+        user_id=serializer.data.get('user')
+        usebook_id=serializer.data.get('useBook')
+        up=UpScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id)
+        if up.exists():
+            return Response({"Bad Request":"Cannot up and down at the same time."},status=status.HTTP_404_NOT_FOUND)
+        
+        user = get_object_or_404(User, id=user_id)
+        usebook = get_object_or_404(Usebook, id=usebook_id)
+
+        scoreUser=DownScoreUserRelation.objects.create(user=user,useBook=usebook)
+        scoreUser.save()
+        return Response(DownScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
+    
+    def delete(self,request):
+        usebook_id = request.data.get('useBook')
+        user_id=request.COOKIES.get('user_id')
+        if not usebook_id:
+            return Response({"Bad Request": "usebook ID not provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        scoreUser = DownScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id).first()
+        if not scoreUser:
+            return Response({"Bad Request": "Invalid usebook relation."}, status=status.HTTP_404_NOT_FOUND)
+
+        scoreUser.delete()
+        return Response({"Success": "Usebook relation deleted."}, status=status.HTTP_200_OK)

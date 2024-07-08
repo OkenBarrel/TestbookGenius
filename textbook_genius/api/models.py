@@ -111,7 +111,16 @@ class Like(models.Model):
 
 class UpScoreUserRelation(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    useBook=models.ForeignKey(Usebook,on_delete=models.CASCADE,primary_key=True)
-    # get_it=models.IntegerField(null=False,default=0)
-    # dont_get_it=models.IntegerField(null=False,default=0)
+    useBook=models.ForeignKey(Usebook,on_delete=models.CASCADE)
+    class Meta:
+        unique_together=('user','useBook')
+    def __str__(self) -> str:
+        return str(self.user.id)+" on "+self.useBook.__str__()
 
+class DownScoreUserRelation(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    useBook=models.ForeignKey(Usebook,on_delete=models.CASCADE)
+    class Meta:
+        unique_together=('user','useBook')
+    def __str__(self) -> str:
+        return str(self.user.id)+" on "+self.useBook.__str__()

@@ -11,7 +11,7 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 
 import { getCsrfToken,getCookie } from './CSRFToken';
 
-const ScoreComponent=({id,relation})=>{
+const ScoreComponent=({relation})=>{
     const [course,setCourse]=useState("");
     const [teacher,setTeacher]=useState("");
     const [yes,setYes]=useState(false);
@@ -32,7 +32,7 @@ const ScoreComponent=({id,relation})=>{
         // if(no){
         //     setNo(true)
         // }
-    },[id,relation])
+    },[relation])
 
     const handleRequest = async (url, method, body) => {
         let requestOption = {
@@ -58,7 +58,7 @@ const ScoreComponent=({id,relation})=>{
         }
         // const yesColor = yes&&!no ? "#f44336" : "default"; 
         const body = { 
-            usebook: id
+            usebook: relation?.id
         };
         if (yes) {
             // 取消点赞
@@ -93,14 +93,14 @@ const ScoreComponent=({id,relation})=>{
 
     };
     const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-        height: 20,
+        height: 30,//宽度
         borderRadius: 5,
         [`&.${linearProgressClasses.colorPrimary}`]: {
-          backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+          backgroundColor: theme.palette.mode === 'light' ? '#308fe8' : '#308fe8',
         },
         [`& .${linearProgressClasses.bar}`]: {
-          borderRadius: 5,
-          backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8',
+          borderRadius: 5,//圆头弧度 0直
+          backgroundColor: theme.palette.mode === 'light' ? '#f44334' : '#308fe8',
         },
       }));
 
@@ -109,8 +109,8 @@ const ScoreComponent=({id,relation})=>{
         <Card sx={{width:200,height:200}}>
             <CardContent>
                 {/* {console.log(course)} */}
-                <Typography variant="h6"> {id}-{course}-{teacher}</Typography>
-                <BorderLinearProgress variant="determinate" value={30} />
+                <Typography variant="h6"> {course}-{teacher}</Typography>
+                <BorderLinearProgress variant="determinate" value={relation?.downvote_count==0&&relation?.upvote_count==0 ? 0:relation?.upvote_count/relation?.downvote_count+relation?.upvote_count} />
                 <Tooltip title="实用">
                     <IconButton onClick={handleYes}>
                         <ThumbUpIcon variant="contained" style={{ color: yes ? "#f44336" : "#353838" }}/>
