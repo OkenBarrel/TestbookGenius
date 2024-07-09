@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 # Register your models here.
 from .models import Book,Teacher,Course,Mark,Usebook,UpScoreUserRelation,\
-    DownScoreUserRelation
+    DownScoreUserRelation,ValidationCode
 
 
 class UsebookAdmin(admin.ModelAdmin):
@@ -22,5 +22,5 @@ admin.site.register(Usebook,UsebookAdmin)
 admin.site.register(Session)
 admin.site.register(UpScoreUserRelation)
 admin.site.register(DownScoreUserRelation)
-
+admin.site.register(ValidationCode)
 

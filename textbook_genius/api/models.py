@@ -9,7 +9,7 @@ def generate_unique_code():
 
     while True:
         code = ''.join(random.choices(string.ascii_uppercase,k=length))
-        if User.objects.filter(user_id = code).count()==0:
+        if ValidationCode.objects.filter(code = code).count()==0:
             break
 
     return code
@@ -124,3 +124,10 @@ class DownScoreUserRelation(models.Model):
         unique_together=('user','useBook')
     def __str__(self) -> str:
         return str(self.user.id)+" on "+self.useBook.__str__()
+
+class ValidationCode(models.Model):
+    code=models.CharField(max_length=8,default=generate_unique_code, unique=True,primary_key=True)
+    email=models.CharField(max_length=100)
+    # class Meta:
+    def __str__(self) -> str:
+        return "email:{} code:{}".format(self.email,self.code)
