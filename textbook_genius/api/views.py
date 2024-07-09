@@ -401,3 +401,4 @@ class downScoreUser(APIView):
 
         scoreUser.delete()
         return Response({"Success": "Usebook relation deleted."}, status=status.HTTP_200_OK)
+    

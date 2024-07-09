@@ -1,6 +1,6 @@
 import React, { Component, useState,useEffect } from "react";
 import {Button,DialogContent,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -15,7 +15,9 @@ import {
 import CommentComponet from "./CommentComponent";
 import ScoreComponent from "./ScoreComponet";
 
-const Book=()=>{
+import { getCsrfToken } from './CSRFToken';
+
+const Book=(relation)=>{
     const { isbn } = useParams();
     const [title,setTitle]=useState("");
     const[author,setAuthor]=useState("");
@@ -29,11 +31,15 @@ const Book=()=>{
     const[buy_bookchina,setBookchina]=useState("")
     const[buy_jie,setJie]=useState("")
 
+    const[mark,setMark]=useState(false)
+
     const navigate=useNavigate();
+    const csrftoken=getCsrfToken();
 
     useEffect(() => {
         console.log(isbn);
         getBookDetails();
+        handleMark();
       }, []);
 
     async function getBookDetails(){
@@ -61,6 +67,19 @@ const Book=()=>{
         // .then((data)=>{
         //     setTitle(data.title)
         // })
+    }
+
+    async function handleMark(){
+        console.log("mark");
+        if (mark) {
+            // 取消收藏
+            console.log("mark"+mark);
+                setMark(false);
+        } else {
+            // 进行收藏
+            console.log("mark"+mark);
+                setMark(true);
+        }
     }
 
     return(
@@ -98,8 +117,8 @@ const Book=()=>{
                             <Grid item spacing={2} xs={12} align="center">
                                 <Button variant='contained' to="./update" component={Link}>修改书籍信息</Button>
                                 <Tooltip title="收藏书籍">
-                                    <IconButton >
-                                        <StarBorderIcon variant="contained"/>
+                                    <IconButton onclick={handleMark}>
+                                        <StarIcon variant="contained" style={{ color: mark ? "#0097a7" : "#353838" }}/>
                                     </IconButton>
                                 </Tooltip>
                             </Grid>
