@@ -7,15 +7,18 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
     CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
-    UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer
+    UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer,\
+    ValidationCodeSerializer
 from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
-                    UpScoreUserRelation, Profile,DownScoreUserRelation
+                    UpScoreUserRelation, Profile,DownScoreUserRelation,ValidationCode
 from requests import Request,post,get,patch
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
+
+# from tasks import get_douban_info
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
@@ -36,9 +39,7 @@ class get_doubanBook(APIView):
         url=req.prepare().url
 
         res=get(url,headers=header)
-        # print(res.json())
-        # return Response(res.json(),status=status.HTTP_200_OK)
-        return Response(res.json(),status=status.HTTP_200_OK)
+        return Response(res,status=status.HTTP_200_OK)
     
 class get_book(APIView):
     lookup_kwarg='isbn'
@@ -261,23 +262,39 @@ class getUseBook(APIView):
             response_data[idx]['downvote_count'] = usebook.downvote_count
 
         return Response(response_data,status=status.HTTP_200_OK)
-        
+from django.core.mail import send_mail
+
 class register(APIView):
     '''
     {
         user_name:,
         user_email:,
-        user_password:
+        user_password:,
+        validation:
     }
     '''
     def post(self, request):
         print(request.data)
-        user=User.objects.create_user(username=request.data.get('user_name'),
-                                      email=request.data.get('user_email'),
-                                      password=request.data.get('user_password'))
-        user.save()
-        serializer=ProfileSerializer()
-        return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
+        vali=get_object_or_404(ValidationCode,email=request.data.get('user_email'))
+        if vali.code!=request.data.get('validation'):
+            return Response("Wrong Validation",status=status.HTTP_404_NOT_FOUND)
+        try:
+            user=User.objects.create_user(username=request.data.get('user_name'),
+                                        email=request.data.get('user_email'),
+                                        password=request.data.get('user_password'))
+            user.save()
+            vali.delete()
+        #     send_mail(
+        #     "Testing for email validation",
+        #     "Here is the message.",
+        #     "3014033378@qq.com",
+        #     [request.data.get('user_email')],
+        #     fail_silently=False,
+        # )
+            serializer=ProfileSerializer()
+            return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({"Conflict":"Already registered"},status=status.HTTP_409_CONFLICT)
 
         # serializer = UserSerializer(data=request.data)
         # if serializer.is_valid():
@@ -401,3 +418,39 @@ class downScoreUser(APIView):
 
         scoreUser.delete()
         return Response({"Success": "Usebook relation deleted."}, status=status.HTTP_200_OK)
+    
+
+class validation(APIView):
+    '''
+        {
+            email:
+        }
+    '''
+    def post(self,request):
+        # email=request.data.get('email')
+        print(request.data)
+        history=ValidationCode.objects.filter(email=request.data.get('email')).first()
+        if history :
+            return Response("Already exists",status=status.HTTP_409_CONFLICT)
+        serializer=ValidationCodeSerializer(data=request.data)
+        if not serializer.is_valid():
+            return
+        email=serializer.data.get('email')
+        code=ValidationCode(email=email)
+        code.save()
+        send_mail(
+            "This is for validation",
+            "Here is the code code {0}.".format(code.code),
+            "3014033378@qq.com",
+            [email],
+            fail_silently=False,
+        )
+        return Response({"email":email},status=status.HTTP_200_OK)
+    def delete(self,request):
+        email=request.data.get('email')
+        vali=get_object_or_404(ValidationCode,email=email)
+        # vali=ValidationCode.objects.filter(email=email).first()
+        # if not vali:
+        #     return Response({"Bad Request":"Invalid email."},status=status.HTTP_404_NOT_FOUND)
+        vali.delete()
+        return Response({"OK":"Deleted."},status=status.HTTP_202_ACCEPTED)
