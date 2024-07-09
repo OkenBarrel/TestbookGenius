@@ -1,5 +1,8 @@
 import React, { Component, useState,useEffect } from "react";
 import {Button,DialogContent,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { useParams, useNavigate } from 'react-router-dom';
 // import CreateBookPage from "./CreateBookPage";
 import {
@@ -92,8 +95,13 @@ const Book=()=>{
                                     <p>{pubdate}</p>
                                 </Box>
                             </Grid>
-                            <Grid item xs={12} align="center">
+                            <Grid item spacing={2} xs={12} align="center">
                                 <Button variant='contained' to="./update" component={Link}>修改书籍信息</Button>
+                                <Tooltip title="收藏书籍">
+                                    <IconButton >
+                                        <StarBorderIcon variant="contained"/>
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
                         {/* </Grid> */}
 
