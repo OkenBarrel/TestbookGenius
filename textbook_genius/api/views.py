@@ -277,7 +277,7 @@ class register(APIView):
         print(request.data)
         vali=get_object_or_404(ValidationCode,email=request.data.get('user_email'))
         if vali.code!=request.data.get('validation'):
-            return Response("Wrong Validation",status=status.HTTP_404_NOT_FOUND)
+            return Response({"msg":"验证码错误"},status=status.HTTP_404_NOT_FOUND)
         try:
             user=User.objects.create_user(username=request.data.get('user_name'),
                                         email=request.data.get('user_email'),
@@ -431,7 +431,7 @@ class validation(APIView):
         print(request.data)
         history=ValidationCode.objects.filter(email=request.data.get('email')).first()
         if history :
-            return Response("Already exists",status=status.HTTP_409_CONFLICT)
+            return Response({"msg":"验证码已发送"},status=status.HTTP_409_CONFLICT)
         serializer=ValidationCodeSerializer(data=request.data)
         if not serializer.is_valid():
             return
