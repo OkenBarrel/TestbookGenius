@@ -33,13 +33,14 @@ class get_doubanBook(APIView):
     def get(self,request,format=None):
         # scopes='book_basic_r'
         isbn = request.GET.get('isbn')
+        print(isbn)
         header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74."}
         base='https://api.douban.com'
         req=Request('GET',base+'/v2/book/isbn/:'+isbn,params={'apiKey':APIKEY},headers=header)
         url=req.prepare().url
 
         res=get(url,headers=header)
-        return Response(res,status=status.HTTP_200_OK)
+        return Response(res.json(),status=status.HTTP_200_OK)
     
 class get_book(APIView):
     lookup_kwarg='isbn'
