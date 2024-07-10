@@ -16,10 +16,12 @@ import {
 } from "react-router-dom";
 
 function HomePage(props) {
+  
     function renderHomePage() {
       return (
         <div>
           <h2>This is HomePage</h2>
+          <h2></h2>
           <Button variant='contained' to="/create" component={Link}>创建书籍</Button>
           {/*<Button variant='contained' to="/update" component={Link}>修改书籍信息</Button>*/}
           <Button variant='contained' to="/register" component={Link}>注册</Button>

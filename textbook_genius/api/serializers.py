@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Room, Book, Teacher, Course, Usebook, User , Mark , Comment, Like, ScoreUserRelation
+from .models import Room, Book, Teacher, Course, Usebook, Profile , Mark ,\
+                    Comment, Like, UpScoreUserRelation,DownScoreUserRelation,ValidationCode
+from django.contrib.auth.models import User
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,14 +57,21 @@ class UsebookSerializer(serializers.ModelSerializer):
     #     model = Usebook
     #     fields=('book','teacher','course','school_year','semester')
 
-class UserSerializer(serializers.ModelSerializer):
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ('user_id','user_name', 'user_password','user_email','user_major','user_department','user_credit')
+        # extra_kwargs = {
+        #     'user_password': {'write_only': True},   # 用户密码只能写入,不会在序列化时返回
+        #     'user_indate': {'read_only': True},      # 用户注册日期只读
+        # }
+
+class ProfileSerializer(serializers.ModelSerializer):
+    # user = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
+    user_id=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
-        model = User
-        fields = ('user_id', 'user_name', 'user_password','user_email','user_major','user_department','user_credit','user_indate')
-        extra_kwargs = {
-            'user_password': {'write_only': True},   # 用户密码只能写入，不会在序列化时返回
-            'user_indate': {'read_only': True},      # 用户注册日期只读
-        }
+        model=Profile
+        fields=('user_id','user','user_major','user_department','user_credit')
 
 class MarkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -79,22 +88,25 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields=('user','comment','like','dislike')
 
-class ScoreUserRelationSerializer(serializers.ModelSerializer):
+class UpScoreUserRelationSerializer(serializers.ModelSerializer):
     useBook=serializers.PrimaryKeyRelatedField(queryset=Usebook.objects.all())
     user=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
-        model=ScoreUserRelation
+        model=UpScoreUserRelation
         fields=('useBook','user')
-    # def create(self,validated_data):
-    #     userbook_id = validated_data.pop('relation_id')
-    #     user_id = validated_data.pop('user_id')
-    #     course, created = Course.objects.get_or_create(course_name=course_name, department=department)
-    #     validated_data['course'] = course
-    #     return super().create(validated_data)
-    # def update(self, instance, validated_data):
-    #     instance.get_it=validated_data.get('get_it',instance.get_it)
-    #     instance.dont_get_it=validated_data.get('dont_get_it',instance.dont_get_it)
-    #     return super().update(instance, validated_data)
+
+class DownScoreUserRelationSerializer(serializers.ModelSerializer):
+    useBook=serializers.PrimaryKeyRelatedField(queryset=Usebook.objects.all())
+    user=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    class Meta:
+        model=DownScoreUserRelation
+        fields=('useBook','user')
+
+class ValidationCodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=ValidationCode
+        fields='__all__'
 
 class SearchSerializer(serializers.ModelSerializer):
     book = BookSerializer()
@@ -104,6 +116,3 @@ class SearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usebook
         fields = ('book', 'teacher', 'course', 'school_year', 'semester')
-
-
-    

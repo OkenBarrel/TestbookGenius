@@ -1,18 +1,21 @@
 from django.db import models
+from django.contrib.auth.models import User
 import string
 import random
-
+import datetime
 
 def generate_unique_code():
     length=6
 
     while True:
-        code = ''.join(random.chices(string.ascii_uppercase,k=length))
-        if Room.objects.filter(code=code).count()==0:
+        code = ''.join(random.choices(string.ascii_uppercase,k=length))
+        if ValidationCode.objects.filter(code = code).count()==0:
             break
 
-        return code
+    return code
     
+# def get_current_datetime():
+    # return datetime.datetime.now()
 
 # Create your models here.
 class Room(models.Model):
@@ -69,17 +72,19 @@ class Usebook(models.Model):
         return 'book: '+self.book.title+' teacher: '+self.teacher.teacher_name+' course: '+self.course.course_name
 
 
-class User(models.Model):
-    user_id = models.CharField(max_length=50, null=False, unique=True,primary_key=True)
-    user_name = models.CharField(max_length=50, null=False, default="")
-    user_password = models.CharField(max_length=50, null=False, default="")
-    user_email = models.CharField(max_length=50, null=False, default="")
+class Profile(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,primary_key=True)
+    # user_id = models.CharField(max_length=10, default=generate_unique_code, unique=True,primary_key=True)
+    # nickname = models.CharField(max_length=50, null=False, default="")
+    # user_password = models.CharField(max_length=50, null=False, default="")
+    # user_email = models.CharField(max_length=50, null=False, default="")
     user_major = models.CharField(max_length=50, null=False, default="")
     user_department = models.CharField(max_length=50, null=False, default="")
     user_credit = models.IntegerField(null=False,default=100)
-    user_indate = models.DateField()
+    # user_indate = models.DateTimeField(auto_now_add=True)
+    # print(user_id)
     def __str__(self) -> str:
-        return self.user_name
+        return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
 
 class Mark(models.Model):
     markid=models.CharField(max_length=10,primary_key=True)
@@ -104,9 +109,25 @@ class Like(models.Model):
     like = models.IntegerField(null=False,default=0)
     dislike = models.IntegerField(null=False,default=0)
 
-class ScoreUserRelation(models.Model):
+class UpScoreUserRelation(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    useBook=models.ForeignKey(Usebook,on_delete=models.CASCADE,primary_key=True)
-    # get_it=models.IntegerField(null=False,default=0)
-    # dont_get_it=models.IntegerField(null=False,default=0)
+    useBook=models.ForeignKey(Usebook,on_delete=models.CASCADE)
+    class Meta:
+        unique_together=('user','useBook')
+    def __str__(self) -> str:
+        return str(self.user.id)+" on "+self.useBook.__str__()
 
+class DownScoreUserRelation(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    useBook=models.ForeignKey(Usebook,on_delete=models.CASCADE)
+    class Meta:
+        unique_together=('user','useBook')
+    def __str__(self) -> str:
+        return str(self.user.id)+" on "+self.useBook.__str__()
+
+class ValidationCode(models.Model):
+    code=models.CharField(max_length=8,default=generate_unique_code, unique=True,primary_key=True)
+    email=models.CharField(max_length=100)
+    # class Meta:
+    def __str__(self) -> str:
+        return "email:{} code:{}".format(self.email,self.code)
