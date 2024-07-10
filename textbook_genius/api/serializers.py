@@ -95,3 +95,15 @@ class ScoreUserRelationSerializer(serializers.ModelSerializer):
     #     instance.get_it=validated_data.get('get_it',instance.get_it)
     #     instance.dont_get_it=validated_data.get('dont_get_it',instance.dont_get_it)
     #     return super().update(instance, validated_data)
+
+class SearchSerializer(serializers.ModelSerializer):
+    book = BookSerializer()
+    teacher = TeacherSerializer()
+    course = CourseSerializer()
+
+    class Meta:
+        model = Usebook
+        fields = ('book', 'teacher', 'course', 'school_year', 'semester')
+
+
+    

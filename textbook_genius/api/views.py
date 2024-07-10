@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Q
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view,renderer_classes
@@ -7,7 +8,7 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
     CommentSerializer,LikeSerializer,UserSerializer,UsebookSerializer,MarkSerializer,\
-    ScoreUserRelationSerializer
+    ScoreUserRelationSerializer,SearchSerializer
 from .models import Room,Book,Teacher,Course,Comment,Usebook,User,Like,Mark,ScoreUserRelation
 from requests import Request,post,get,patch
 
@@ -287,3 +288,20 @@ class scoreUser(APIView):
 
         serializer=self.serializer_class(data=request.data)
         pass 
+
+class SearchView(APIView):
+    serializer_class = SearchSerializer
+
+    def get(self, request):
+        query_params = request.query_params
+        query = query_params.get('query', '')
+
+        title_filter = Q(book__title__icontains=query)
+        course_filter = Q(course__course_name__icontains=query)
+        department_filter = Q(course__department__icontains=query)
+
+        search_results = Usebook.objects.filter(title_filter | course_filter | department_filter).select_related('book', 'teacher', 'course').distinct()
+
+        serialized_results = self.serializer_class(search_results, many=True).data
+
+        return Response(serialized_results, status=status.HTTP_200_OK)

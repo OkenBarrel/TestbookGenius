@@ -11,6 +11,7 @@ urlpatterns = [
     path('book/<str:isbn>/update', TemplateView.as_view(template_name='index.html')),
     path('user-register',TemplateView.as_view(template_name='index.html')),
     path('user-login',TemplateView.as_view(template_name='index.html')),
-    path('user/<str:userId>',TemplateView.as_view(template_name='index.html'))
+    path('user/<str:userId>',TemplateView.as_view(template_name='index.html')),
+    path('search/',TemplateView.as_view(template_name='index.html')),
 
 ]
