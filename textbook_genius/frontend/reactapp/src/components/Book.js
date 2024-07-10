@@ -69,16 +69,43 @@ const Book=(relation)=>{
         // })
     }
 
-    async function handleMark(){
+    useEffect(()=>{
+        console.log(relation);
+        
+    },[relation])
+
+    const handleRequest = async (url, method, body) => {
+        let requestOption = {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrftoken
+            },
+            body: JSON.stringify(body)
+        };
+        let response = await fetch(url, requestOption);
+        if (!response.ok) {
+            console.log(`${method} request failed`);
+            return false;
+        }
+        return true;
+    };
+
+    function handleMark(){
         console.log("mark");
+       /* const body = { 
+            usebook: relation?.id
+        };*/
         if (mark) {
             // 取消收藏
             console.log("mark"+mark);
-                setMark(false);
+            //const success = await handleRequest("/api/markUser", "DELETE", body);
+            setMark(false);
         } else {
             // 进行收藏
             console.log("mark"+mark);
-                setMark(true);
+            //const success = await handleRequest("/api/markUser", "POST", body);
+            setMark(true);
         }
     }
 
