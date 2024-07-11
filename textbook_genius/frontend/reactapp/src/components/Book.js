@@ -108,7 +108,16 @@ const Book=({relation})=>{
 
     return(
         <div>
-            <h2>This is Book {title}</h2>
+            <Grid container spacing={2} sx={{display:'flex',alignItems:'center', flexDirection:'row'}}>
+                <Grid item xs={12} align="center">
+                    <Button variant="contained" to="/" component={Link}>返回主页</Button>
+                </Grid>
+                <Grid item xs={12} align="center">
+                    <h2>This is Book {title}</h2>
+                </Grid>
+            </Grid>
+            
+            {/*<h2>This is Book {title}</h2>*/}
             <Card variant="outlined"  align="center" jutifyContent="center" sx={{display:"flex",maxWidth: 1400,maxHeight: 400}}>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     <CardContent sx={{ flex: '1 0 auto' }}>

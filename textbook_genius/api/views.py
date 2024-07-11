@@ -280,12 +280,25 @@ class register(APIView):
         vali=get_object_or_404(ValidationCode,email=request.data.get('user_email'))
         if vali.code!=request.data.get('validation'):
             return Response({"msg":"验证码错误"},status=status.HTTP_404_NOT_FOUND)
-        try:
-            user=User.objects.create_user(username=request.data.get('user_name'),
-                                        email=request.data.get('user_email'),
-                                        password=request.data.get('user_password'))
-            user.save()
-            vali.delete()
+        history=User.objects.filter(email=request.data.get('email')).first()
+        if history is not None:
+            return Response({"Conflict":"Already registered"},status=status.HTTP_409_CONFLICT)
+
+
+        # try:
+        user=User.objects.create_user(username=request.data.get('user_name'),
+                                    email=request.data.get('user_email'),
+                                    password=request.data.get('user_password'))
+        user.save()
+        login(request,user)
+        request.session['user_id'] = request.data.get('user_name')
+        if not request.session.session_key:
+            request.session.save()
+        print("session key:"+request.session.session_key)
+        print(request.session.get('user_id',None))
+        vali.delete()
+        return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
+
         #     send_mail(
         #     "Testing for email validation",
         #     "Here is the message.",
@@ -293,10 +306,23 @@ class register(APIView):
         #     [request.data.get('user_email')],
         #     fail_silently=False,
         # )
-            serializer=ProfileSerializer()
-            return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
-        except Exception:
-            return Response({"Conflict":"Already registered"},status=status.HTTP_409_CONFLICT)
+        # serializer=ProfileSerializer()
+        # user=authenticate(request=request,username=username,password=password)
+        # if user is not None:
+            # login(request,user)
+            # if not request.session.session_key:
+            #     request.session.save()
+            # print("session key:"+request.session.session_key)
+            #print("usernsme:"+request.session['user_name'])
+            #print(request.session.session_key)
+            # return Response({"username":user.get_username(),"email":user.get_email_field_name()})
+        # else:
+        #     print("error")
+        #     return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
+            #return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
+        # except Exception:
+        
+        
 
         # serializer = UserSerializer(data=request.data)
         # if serializer.is_valid():
@@ -365,12 +391,16 @@ class loggin(APIView):
     def post(self,request):
         username=request.data.get('username')
         password=request.data.get('password')
+        """
         user=authenticate(request=request,username=username,password=password)
         if user is not None:
             login(request,user)
+            print(request.session.session_key)
             return Response({"username":user.get_username(),"email":user.get_email_field_name()})
         else:
-            return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
+            print("error")
+            return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
+        """
         
 
 class downScoreUser(APIView):
