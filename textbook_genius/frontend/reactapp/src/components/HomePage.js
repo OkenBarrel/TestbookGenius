@@ -14,6 +14,7 @@ import {
     Link,
     Redirect,
 } from "react-router-dom";
+import UserPage from "./UserPage";
 
 function HomePage(props) {
   
