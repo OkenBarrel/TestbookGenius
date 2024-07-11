@@ -97,12 +97,10 @@ const Book=({relation})=>{
         };*/
         if (mark) {
             // 取消收藏
-            console.log("mark"+mark);
            // const success = await handleRequest("/api/scoreUser", "DELETE", body);
             setMark(false);
         } else {
             // 进行收藏
-            console.log("mark"+mark);
            // const success = await handleRequest("/api/scoreUser", "POST", body);
             setMark(true);
         }
