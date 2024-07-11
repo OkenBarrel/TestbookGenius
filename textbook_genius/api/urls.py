@@ -14,4 +14,5 @@ urlpatterns = [
     path('register',register.as_view()),
     path('score-user',scoreUser.as_view()),
     path('login',loggin.as_view())
+
 ]

@@ -320,6 +320,8 @@ class loggin(APIView):
     def post(self,request):
         username=request.data.get('username')
         password=request.data.get('password')
+        print(username)
+        print(password)
         user=authenticate(request=request,username=username,password=password)
         if user is not None:
             login(request,user)

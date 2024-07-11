@@ -12,6 +12,7 @@ import {
     Link,
     Redirect,
 } from "react-router-dom";
+import UserPage from "./UserPage";
 
 function HomePage(props) {
   
@@ -38,7 +39,7 @@ function HomePage(props) {
           <Route path="/book/:isbn/update" element={<UpdateBookPage/>} />
           <Route path="/register" element={<RegisterPage/>} />
           <Route path="/login" element={<LoginPage/>}/>
-          <Route path="/user/:userId"/>
+          <Route path="/user/:userId" element={<UserPage/>}/>
           {/* <Route path=/> */}
         </Routes>
       </Router>
