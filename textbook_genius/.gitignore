@@ -1,6 +1,6 @@
-api/migrations/__pycache__/
-textbook_genius/__pycache__/
-frontend/__pycache__/
+/api/migrations/__pycache__
+/textbook_genius/__pycache__
+*/__pycache__/
 *.pyc
 *.idea/
 *.vscode/
