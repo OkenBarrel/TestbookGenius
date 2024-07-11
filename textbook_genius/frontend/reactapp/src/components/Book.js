@@ -1,5 +1,5 @@
 import React, { Component, useState,useEffect } from "react";
-import {Button,DialogContent,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
+import {Button,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -17,7 +17,7 @@ import ScoreComponent from "./ScoreComponet";
 
 import { getCsrfToken } from './CSRFToken';
 
-const Book=(relation)=>{
+const Book=({relation})=>{
     const { isbn } = useParams();
     const [title,setTitle]=useState("");
     const[author,setAuthor]=useState("");
@@ -39,7 +39,6 @@ const Book=(relation)=>{
     useEffect(() => {
         console.log(isbn);
         getBookDetails();
-        handleMark();
       }, []);
 
     async function getBookDetails(){
@@ -71,7 +70,7 @@ const Book=(relation)=>{
 
     useEffect(()=>{
         console.log(relation);
-        
+       
     },[relation])
 
     const handleRequest = async (url, method, body) => {
@@ -91,20 +90,18 @@ const Book=(relation)=>{
         return true;
     };
 
-    function handleMark(){
+    async function handleMark(){
         console.log("mark");
-       /* const body = { 
+        /*const body = { 
             usebook: relation?.id
         };*/
         if (mark) {
             // 取消收藏
-            console.log("mark"+mark);
-            //const success = await handleRequest("/api/markUser", "DELETE", body);
+           // const success = await handleRequest("/api/scoreUser", "DELETE", body);
             setMark(false);
         } else {
             // 进行收藏
-            console.log("mark"+mark);
-            //const success = await handleRequest("/api/markUser", "POST", body);
+           // const success = await handleRequest("/api/scoreUser", "POST", body);
             setMark(true);
         }
     }
@@ -144,8 +141,8 @@ const Book=(relation)=>{
                             <Grid item spacing={2} xs={12} align="center">
                                 <Button variant='contained' to="./update" component={Link}>修改书籍信息</Button>
                                 <Tooltip title="收藏书籍">
-                                    <IconButton onclick={handleMark}>
-                                        <StarIcon variant="contained" style={{ color: mark ? "#0097a7" : "#353838" }}/>
+                                    <IconButton type="button" onClick={handleMark}>
+                                        <StarIcon variant="contained" style={{ color: mark ? "#ffcc00" : "#353838" }}/>
                                     </IconButton>
                                 </Tooltip>
                             </Grid>
