@@ -18,8 +18,7 @@ from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-# from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 # from tasks import get_douban_info
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
@@ -120,9 +119,9 @@ class createBook(APIView):
             book=Book(isbn=isbn,title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
             book.save()
         else:
-            print('book')
+            # print('book')
             queryset=Book.objects.filter(isbn=book_data['isbn'])
-            book=queryset[0]
+            # book=queryset[0]
             if queryset.exists():
                 book=queryset[0]
             else:
@@ -413,18 +412,22 @@ class loggin(APIView):
     def post(self,request):
         username=request.data.get('username')
         password=request.data.get('password')
-        """
+        
         print(username)
         print(password)
         user=authenticate(request=request,username=username,password=password)
         if user is not None:
             login(request,user)
-            print(request.session.session_key)
-            return Response({"username":user.get_username(),"email":user.get_email_field_name()})
+            res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
+            res.set_cookie('username',username,httponly=False,secure=True)
+            res.set_cookie('user_id',user.id,httponly=False,secure=True)
+            # print(request.session.session_key)
+            return res
+            # return Response({"username":user.get_username(),"email":user.get_email_field_name()})
         else:
             print("error")
             return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
-        """
+        
         
 
 class downScoreUser(APIView):
@@ -512,6 +515,7 @@ class validation(APIView):
         return Response({"OK":"Deleted."},status=status.HTTP_202_ACCEPTED)
     
 class SearchView(APIView):
+
     serializer_class = SearchSerializer
 
     def get(self, request):
@@ -527,3 +531,15 @@ class SearchView(APIView):
         serialized_results = self.serializer_class(search_results, many=True).data
 
         return Response(serialized_results, status=status.HTTP_200_OK)
+    
+class loggout(APIView):
+    def post(self,request):
+        if request.user is None:
+            return Response({'msg':'未登录，无需注销'},status=status.HTTP_406_NOT_ACCEPTABLE)
+        logout(request=request)
+        return Response({'success':'成功注销'},status=status.HTTP_200_OK)
+    def get(self,request):
+        if request.user is None:
+            return Response({'msg':'未登录，无需注销'},status=status.HTTP_406_NOT_ACCEPTABLE)
+        logout(request=request)
+        return Response({'success':'成功注销'},status=status.HTTP_200_OK)

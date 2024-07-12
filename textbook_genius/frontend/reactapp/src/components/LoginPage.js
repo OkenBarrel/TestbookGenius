@@ -1,6 +1,6 @@
 import {Button,DialogContent,Grid,Typography,TextField, Paper} from '@mui/material';
 import React,{Component, useState} from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
 import Alert from '@mui/material/Alert';
 
@@ -14,6 +14,10 @@ const LoginPage = () => {
     const [success, setSuccess] = useState('');
     const navigate = useNavigate();
     const csrftoken=getCsrfToken();
+
+    const location = useLocation()
+    const { state } = location
+    console.log(location, state);
 
     async function handleLogin(){
         //TODO: Just a dummy function, please use API to handle login function
@@ -43,6 +47,7 @@ const LoginPage = () => {
             }
             const data = await response.json();
             setSuccess('Login successful!');
+            navigate(-1);
             // if (username === 'tw11' && password === 'password' && username === 'tw11') {
             //     setSuccess('Login successful!');
             //     // navigate(`/}`);

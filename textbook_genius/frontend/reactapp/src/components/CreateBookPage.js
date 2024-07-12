@@ -35,12 +35,17 @@ function CreateBookPage(props){
 
     const csrftoken = getCsrfToken();
 
-    useEffect(()=>{
-        console.log(school_year)
-    },[school_year]);
+    // useEffect(()=>{
+    //     console.log(school_year)
+    // },[school_year]);
     
 
     async function handleSearchButton(){
+        console.log("username: "+getCookie('username'))
+        if(getCookie('username')==null){
+            navigate('/login',{state:{from:'createBook'}})
+            return;
+        }
         if(isbn.length !=13){
             setIsbnError("ISBN无效，请重新输入");
             return;

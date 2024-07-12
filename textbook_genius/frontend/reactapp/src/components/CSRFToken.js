@@ -3,6 +3,7 @@
 function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
+            console.log(document.cookie)
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
@@ -15,10 +16,9 @@ function getCookie(name) {
         }
         return cookieValue;
 }
-export {getCookie};
 
 function getCsrfToken() {
     return getCookie('csrftoken');
 }
 
-export { getCsrfToken };
+export { getCsrfToken,getCookie };
