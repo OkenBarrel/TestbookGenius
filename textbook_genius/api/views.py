@@ -18,7 +18,8 @@ from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-
+# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 # from tasks import get_douban_info
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
@@ -30,7 +31,9 @@ class RoomView(generics.ListAPIView):
     print('in room')
     serializer_class = RoomSerializer
 
+
 class get_doubanBook(APIView):
+    # redirect_field_name = "redirect_to"
     def get(self,request,format=None):
         # scopes='book_basic_r'
         isbn = request.GET.get('isbn')
@@ -90,10 +93,11 @@ class createBook(APIView):
     def post(self,request,format=None):
         school_year=request.data.get("school_year")
         if len(school_year)!=9:
-            return Response({"mas":"学年格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({"msg":"学年格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
         semester=request.data.get("semester")
-        if semester not in ['1','2',"1","2"]:
-            return Response({"mas":"学期格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
+        if semester not in ['1','2',"1","2",1,2]:
+            print(semester)
+            return Response({"msg":"学期格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
         book_data=request.data.get("book")
         # print(request.data)
         #print(book_data)
@@ -377,7 +381,7 @@ class upScoreUser(APIView):
         serializer=self.serializer_class(data=upScore_data)
         if not serializer.is_valid():
             print(serializer.errors)
-            return Response({"Already exists":"{} already scored this one.".format(user_id)},status=status.HTTP_409_CONFLICT)
+            return Response({"msg":"{} already scored this one.".format(user_id)},status=status.HTTP_409_CONFLICT)
         user_id=serializer.data.get('user')
         usebook_id=serializer.data.get('useBook')
         down=DownScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id)
