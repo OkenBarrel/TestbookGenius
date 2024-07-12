@@ -18,7 +18,8 @@ from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 # from tasks import get_douban_info
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
@@ -408,26 +409,48 @@ class loggin(APIView):
         else:
             return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ProfileViewer(APIView):
-    def GET(self, request, user_id):
+#     @csrf_exempt
+    def get(self, request, user_id):
             try:
-                profile = Profile.objects.get(user__user_id=user_id)
+                profile = Profile.objects.get(user__username=user_id)
                 serializer = ProfileSerializer(profile)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            except Profile.DoesNotExist:
-                return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+                print("find")
 
-    def GET(self, request, user_id):
+                data = {
+                    'username': profile.user.username,
+                    'user_department': profile.user_department,
+                    'user_major': profile.user_major,
+                    'user_credit': profile.user_credit
+                }
+                return Response(data, status=status.HTTP_200_OK)
+#                 return res
+            except Profile.DoesNotExist:
+                print("fail")
+                return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+#
+#     @csrf_exempt
+    def put(self, request, user_id):
             try:
-                profile = Profile.objects.get(user__user_id=user_id)
+                print("valid")
+                profile = Profile.objects.get(user__username=user_id)
                 serializer = ProfileSerializer(profile, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                    return Response(serializer.data, status=status.HTTP_200_OK)
+                    data = {
+                        'username': profile.user.username,
+                        'user_department': profile.user_department,
+                        'user_major': profile.user_major,
+                        'user_credit': profile.user_credit
+                    }
+                    print("valid")
+                    return Response(data, status=status.HTTP_200_OK)
+                print("not valid")
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             except Profile.DoesNotExist:
+                print("except")
                 return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-            print("error")
             return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
 
 

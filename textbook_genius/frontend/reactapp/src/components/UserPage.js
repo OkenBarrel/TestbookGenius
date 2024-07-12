@@ -8,48 +8,58 @@ const UserPage =()=> {
     //TODO: Dummy data, in real situation, please using API to acquire user data.
 
     // const { userId } = useParams();
-    const userId = 'ls53';
+    const userId = 'testuser';
     const [userInfo, setUserInfo] = useState(
         {
-            userID: 'ls53',
-            name: 'Shit',
-            department: 'LAS',
-            major: 'Computer Science',
+            // userID: 'testuser',
+            // name: 'Shit',
+            // department: 'LAS',
+            // major: 'Computer Science',
+            // ProgramStartYear: '2024',
+            // credit: '100',
+            // avatarUrl: '/Avatar/DefaultAvatar.png'
+            // userID: '',
+            username: '',
+            department: '',
+            major: '',
             ProgramStartYear: '2024',
-            credit: '100',
+            credit: '',
             avatarUrl: '/Avatar/DefaultAvatar.png'
         });
-
     const [isEditing, setIsEditing] = useState(false);
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const requestConfg = {
-    //                 method:"GET",
-    //                 headers: {
-    //                     'Authorization': `Bearer ${localStorage.getItem('token')}`
-    //                 }
-    //             };
-    //             const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, requestConfg)
-    //
-    //             setUserInfo(response.data);
-    //         } catch (error) {
-    //             console.error('Error fetching user data:', error);
-    //         }
-    //     };
-    //     fetchUserData();
-    // }, [userId]);
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, {
+                    method: 'get',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Content-Type': 'application/json'
                     }
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setUserInfo(data);
+                    setUserInfo({
+                        username: data.username,
+                        department: data.user_department,
+                        major: data.user_major,
+                        ProgramStartYear: '2024',
+                        credit: data.user_credit,
+                        avatarUrl: '/Avatar/DefaultAvatar.png'
+                    });
                 } else {
                     console.error('Error fetching user data:', response.statusText);
                 }
@@ -82,17 +92,29 @@ const UserPage =()=> {
         e.preventDefault();
         setIsEditing(false);
         try{
+            const csrftoken = getCookie('csrftoken');
             const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, {
-                method: 'PUT',
+                method: 'put',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
                 },
-                body: JSON.stringify(userInfo)
+                body: JSON.stringify({
+                    user_major: userInfo.major,
+                    user_department: userInfo.department,
+                    user_credit: userInfo.credit
+                })
             });
             if (response.ok) {
                 const data = await response.json();
-                setUserInfo(data);
+                setUserInfo({
+                    username: data.username,
+                    department: data.user_department,
+                    major: data.user_major,
+                    ProgramStartYear: '2024',
+                    credit: data.user_credit,
+                    avatarUrl: userInfo.avatarUrl
+                });
                 setIsEditing(false);
             } else {
                 console.error('Error updating user data:', response.statusText);
@@ -116,15 +138,10 @@ const UserPage =()=> {
                     </Box>
                 )}
                 <Typography variant="h4" component="h1" gutterBottom>
-                    {userInfo.name}'s Profile
+                    {userInfo.username}'s Profile
                 </Typography>
                 <Box mb={2}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography variant="body1">
-                                <strong>User ID:</strong> {userInfo.userID}
-                            </Typography>
-                        </Grid>
                         <Grid item xs={12}>
                             <Typography variant="body1">
                                 <strong>Credit:</strong> {userInfo.credit}
@@ -135,12 +152,11 @@ const UserPage =()=> {
 
                 <form onSubmit={clickSubmitHandler}>
                     <Grid container spacing={2}>
-
                         <Grid item xs={12}>
                             <TextField
                                 label="Name"
-                                name="name"
-                                value={userInfo.name}
+                                name="username"
+                                value={userInfo.username}
                                 onChange={handleInputChange}
                                 fullWidth
                                 variant="outlined"
@@ -172,7 +188,7 @@ const UserPage =()=> {
                         <Grid item xs={12}>
                             <TextField
                                 label="Program Start Year"
-                                name="programStartYear"
+                                name="ProgramStartYear"
                                 value={userInfo.ProgramStartYear}
                                 onChange={handleInputChange}
                                 fullWidth
@@ -180,7 +196,6 @@ const UserPage =()=> {
                                 disabled={!isEditing}
                             />
                         </Grid>
-
                         <Grid item xs={12} style={{ textAlign: 'right' }}>
                             <Button
                                 variant="contained"
