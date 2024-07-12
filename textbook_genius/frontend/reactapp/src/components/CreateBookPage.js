@@ -88,11 +88,11 @@ function CreateBookPage(props){
             }),
         };
         let response=await fetch("/api/create-book",requestOption)
+        let data=await response.json();
         if(!response.ok){
-            setRelationError(response.statusText);
+            setRelationError(data.msg);
             return;
         }
-        let data=await response.json();
         navigate('/book/'+isbn);
         // response.then((response)=>{
         //     if(!response.ok){

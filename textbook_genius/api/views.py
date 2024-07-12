@@ -119,8 +119,12 @@ class createBook(APIView):
             print('book')
             queryset=Book.objects.filter(isbn=book_data['isbn'])
             book=queryset[0]
-            print(book)
-            print(book_serializer.errors)
+            if queryset.exists():
+                book=queryset[0]
+            else:
+                print(book_serializer.errors)
+                return Response({'msg':'书籍信息格式有误'},status=status.HTTP_404_NOT_FOUND)
+            
         course=request.data.get("course")
         course_serializer=self.course_serializer_class(data=course)
         if course_serializer.is_valid():
@@ -138,8 +142,11 @@ class createBook(APIView):
         else:
             print('course')
             queryset=Course.objects.filter(course_name=course['course_name'],department=course['department'])
-            course=queryset[0]
-            print(course_serializer.errors)
+            if queryset.exists():
+                course=queryset[0]
+            else: 
+                print(course_serializer.errors)
+                return Response({'msg':'课程信息格式有误'},status=status.HTTP_404_NOT_FOUND)
         
         teacher=request.data.get("teacher")
         # print(teacher)
@@ -161,7 +168,9 @@ class createBook(APIView):
             print(teacher_serializer.errors)
             print(teacher)
             queryset=Teacher.objects.filter(teacher_name=teacher["teacher_name"])
-            teacher=queryset[0]
+            if queryset.exists():
+                teacher=queryset[0]
+            else: return Response({'msg':'教师信息格式有误'},status=status.HTTP_404_NOT_FOUND)
             # print(teacher_serializer)
             
         
@@ -179,7 +188,7 @@ class createBook(APIView):
         if useBook_serializer.is_valid():
             queryset=Usebook.objects.filter(book=book,course=course,teacher=teacher)
             if queryset.exists():
-                return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
+                return Response({'msg':'关系已存在'},status.HTTP_409_CONFLICT)
             else:
                 useBook=Usebook(book=book,course=course,teacher=teacher,school_year=usebook_data['school_year'],semester=usebook_data['semester'])
                 useBook.save()
@@ -187,7 +196,10 @@ class createBook(APIView):
         else:
             print('useBook')
             print(useBook_serializer.errors)
-            return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
+            queryset=Usebook.objects.filter(book=book,course=course,teacher=teacher)
+            if queryset.exists():
+                return Response({'msg':'关系已存在'},status.HTTP_409_CONFLICT)
+            return Response({'msg':'信息格式有误'},status.HTTP_409_CONFLICT)
     
 
 class updateBook(APIView):
