@@ -78,30 +78,8 @@ const ScoreComponent=({relation})=>{
 
     };
 
+
     async function handleNo(){
-        // const noColor=no&&!yes? "#0097a7":"default";
-        console.log('no');
-        if(yes){
-           return;
-        }
-        const body = { 
-            usebook: relation?.id
-        };
-        if(no){
-            // 取消点踩
-            console.log("no"+no);
-            const success = await handleRequest("/api/down-score-user", "DELETE", body);
-                setNo(false);
-        }else{
-            //进行点踩
-            console.log("no"+no);
-            const success = await handleRequest("/api/down-score-user", "POST", body);
-                setNo(true);
-        }
-
-    };
-
-    /*function handleNo(){
         // const noColor=no&&!yes? "#0097a7":"default";
         console.log('no');
         if(yes){
@@ -124,7 +102,7 @@ const ScoreComponent=({relation})=>{
             }
         }
 
-    };*/
+    };
     const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
         height: 30,//宽度
         borderRadius: 5,
