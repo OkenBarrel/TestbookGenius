@@ -417,31 +417,25 @@ class loggin(APIView):
         username=request.data.get('username')
         password=request.data.get('password')
         
-        # user=authenticate(request=request,username=username,password=password)
-        # login(request,user)  #用户id对应写在_auth_user_id里
-        # request.session['user_id'] = user.pk
-        # request.session['is_login'] = True
-        # if not request.session.session_key:
-        #     request.session.save()
-        # print("session key:"+request.session.session_key)
-        # print(request.session.get('_auth_user_id',None))
-        # print(request.session.items()) #获取session键值对
-        # data=request.session.items()
-        # return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
-
-
-        
         print(username)
         print(password)
         user=authenticate(request=request,username=username,password=password)
+
         if user is not None:
-            login(request,user)
+            login(request,user) #用户id对应写在_auth_user_id里
+            request.session['user_id'] = user.pk
+            request.session['is_login'] = True
+            if not request.session.session_key:
+                request.session.save()
+            print("session key:"+request.session.session_key)
+            print(request.session.get('_auth_user_id',None))
+            print(request.session.items()) #获取session键值对
+            data=request.session.items()
             res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
             res.set_cookie('username',username,httponly=False,secure=True)
             res.set_cookie('user_id',user.id,httponly=False,secure=True)
-            # print(request.session.session_key)
             return res
-            # return Response({"username":user.get_username(),"email":user.get_email_field_name()})
+            # return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
         else:
             return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
 
