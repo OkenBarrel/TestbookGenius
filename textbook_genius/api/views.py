@@ -270,6 +270,26 @@ class getUseBook(APIView):
             response_data[idx]['downvote_count'] = usebook.downvote_count
 
         return Response(response_data,status=status.HTTP_200_OK)
+    
+class getComment(APIView):
+    def get(self, request, format=None):
+        # 假设通过URL参数获取关系ID
+        relation_id = request.GET.get('relation_id')
+        
+        # 根据关系ID查询评论
+        comments = Comment.objects.filter(relation_id=relation_id)
+        
+        # 如果没有找到评论，返回404
+        if not comments.exists():
+            return Response({"msg": "没有找到评论"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 序列化查询到的评论数据
+        serializer = CommentSerializer(comments, many=True)
+        
+        # 返回序列化后的数据
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
 from django.core.mail import send_mail
 
 class register(APIView):
@@ -296,6 +316,7 @@ class register(APIView):
                                     email=request.data.get('user_email'),
                                     password=request.data.get('user_password'))
         user.save()
+        Profile.objects.create(user=user)###
         login(request,user)
         request.session['user_id'] = request.data.get('user_name')
         if not request.session.session_key:

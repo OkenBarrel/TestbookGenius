@@ -10,6 +10,7 @@ const CommentComponet=({isbn})=>{
 
     const [value,setValue]=useState(0);
     const [relations,setRelations]=useState([]);
+    const [comments, setComments] = useState([]);
 
 
     const handleChange = (event, newValue) => {
@@ -34,6 +35,28 @@ const CommentComponet=({isbn})=>{
         // console.log(ids)
         // console.log(ids)
     }
+  
+    const getComment = async (relationId) => {
+        try {
+            const response = await fetch(`api/get-comment/${relationId}`);
+            if (!response.ok) {
+                throw new Error('网络响应错误');
+            }
+            const data = await response.json();
+            setComments(data);
+        } catch (error) {
+            console.error('获取评论数据失败:', error);
+        }
+    };
+
+    // 当relations或value变化时，获取新的评论数据
+    useEffect(() => {
+        if (relations.length > 0 && relations[value]) {
+            const relationId = relations[value].id; // 假设每个relation对象都有一个id属性
+            getComment(relationId);
+        }
+    }, [relations, value]);
+    
     return(
         <Box sx={{display:'flex',flexDirection:'row'}}>
             <Card>
