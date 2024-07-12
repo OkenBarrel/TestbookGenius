@@ -426,7 +426,7 @@ class loggin(APIView):
         print(request.session.get('_auth_user_id',None))
         print(request.session.items()) #获取session键值对
         data=request.session.items()
-        return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
+        return Response({"userid":request.session.get('_auth_user_id',None),"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
 
 
         """
