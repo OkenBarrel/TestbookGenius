@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import get_doubanBook,get_book,createBook,updateBook,upScoreUser,loggin,\
-                    downScoreUser,getUseBook,register,validation,SearchView,loggout
+                    downScoreUser,getUseBook,register,validation,SearchView,loggout,ProfileViewer
 
 urlpatterns = [
     path('get-douban-book',get_doubanBook.as_view()),
