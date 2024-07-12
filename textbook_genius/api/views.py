@@ -208,6 +208,9 @@ class createBook(APIView):
     
 
 class updateBook(APIView):
+    '''
+    书籍的isbn号不允许修改
+    '''
     #book_serializer_class=BookSerializer
     #useBook_serializer_class=UsebookSerializer
     #course_serializer_class=CourseSerializer
@@ -226,21 +229,6 @@ class updateBook(APIView):
             return Response(BookSerializer(book).data,status.HTTP_200_OK)
         else:
             return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND) 
-        """
-        if book_serializer.is_valid():
-            isbn=book_serializer.data.get('isbn')
-            title=book_serializer.data.get('title')
-            author=book_serializer.data.get('author')
-            publisher=book_serializer.data.get('publisher')
-            pubdate=book_serializer.data.get('pubdate')
-            cover=book_serializer.data.get('cover')
-            douban_url=book_serializer.data.get('douban_url')
-
-            Book.objects.filter(isbn=isbn).update(title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
-            return Response(BookSerializer(Book.objects.filter(isbn=(book_data['isbn']))).data,status.HTTP_200_OK)
-        else:
-            return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND) 
-        """
 
 
 class getUseBook(APIView):

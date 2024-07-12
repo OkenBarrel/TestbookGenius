@@ -39,13 +39,6 @@ function UpdateBookPage(props){
             setDouban(data.douban_url);
         })
     }, []);  
-    
-    /*useEffect(() => {
-        fetch("/api/login")
-        .then(data=>{
-            setUser(data.user_id)
-        })
-    }, [])*/
 
     async function handleSubmit(){
         console.log("handling submit")
@@ -74,17 +67,14 @@ function UpdateBookPage(props){
 
     return(
         <div className='updateBookPage'>
-            <Grid container spacing={2} align="center" sx={{display:'flex',flexDirection:'column'}}>
-                <Grid container spacing={2} item xs={6}>
-                    <Grid item xs={12} align="center" spacing={2} sx={{display:'flex',flexDirection:'row'}}>
-                        <h2>This is update Book</h2>
-                        <HelloComponent/>
-                    </Grid> 
-                    {/*<Grid>
-                        <HelloComponent/>
-                    </Grid> */}
-                </Grid>
-                <Grid container spacing={2} item xs={6}>
+            <Grid container spacing={2} align="center">
+                {/*<Grid container spacing={2} item xs={12} justifyContent="flex-end">
+                    <HelloComponent/>
+                </Grid>*/}
+                <Grid container spacing={2} item xs={12}>
+                    <Grid item xs={12} align="center">
+                        <h1>This is update Book</h1>
+                    </Grid>
                     <Grid item xs={12} align="center">
                         <TextField value={isbn} label={"ISBN"}/>    
                     </Grid>

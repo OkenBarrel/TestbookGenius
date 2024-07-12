@@ -9,38 +9,38 @@ import {
     Redirect,
     Switch
 } from "react-router-dom";
+import { getCookie } from './CSRFToken';
 import {getCsrfToken} from "./CSRFToken";
 
 const HelloComponent=()=>{
     const csrftoken=getCsrfToken();
 
-    const[user,setUser]=useState("haha")
+    const[user,setUser]=useState("Please Login")
 
-    /*useEffect(() => {
+    useEffect(() => {
         fetch("/api/login")
-        .then(res=>{
-            return res.json()
-        })
-        .then(data=>{
-            setUser(data.user_id)
-        })
-    }, []);*/
+        /*.then(res=>{
+            if(res.username==null){
+                console.log("user_id is null!")
+                setUser("Please Login")
+            }
+            else{
+                setUser("Hello, "+res.username)
+            }
+        })*/
+       if(getCookie('username')==null){
+            console.log("user_id is null!")
+            setUser("Please Login")
+       }
+       else{
+            setUser("Hello, "+getCookie('username'))
+       }
+    }, []);
 
     return(
-        /*<Card sx={{width:500,height:30}}>
-            <CardContent>
-                <Grid container spacing={1} item xs={12} >
-                    <Grid item xs={12}>
-                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                            <p>Hello,{user}</p>
-                        </Box>
-                    </Grid>
-                </Grid>
-            </CardContent>
-        </Card>*/
         <Grid container spacing={1} item xs={12} >
             <Grid item xs={12}>
-                <h2>Hello,{user}</h2>
+                <h3>{user}</h3>
             </Grid>
         </Grid>
     )
