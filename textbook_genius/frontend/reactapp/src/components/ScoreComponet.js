@@ -63,58 +63,46 @@ const ScoreComponent=({relation})=>{
         if (yes) {
             // 取消点赞
             console.log("yes"+yes);
-            const success = await handleRequest("/api/scoreUser", "DELETE", body);
-            // if (success) {
+            const success = await handleRequest("/api/up-score-user", "DELETE", body);
+            if (success) {
                 setYes(false);
-            // }
+            }
         } else {
             // 进行点赞
             console.log("yes"+yes);
-            const success = await handleRequest("/api/scoreUser", "POST", body);
-            // if (success) {
+            const success = await handleRequest("/api/up-score-user", "POST", body);
+            if (success) {
                 setYes(true);
-            // }
+            }
         }
 
     };
+
 
     async function handleNo(){
         // const noColor=no&&!yes? "#0097a7":"default";
         console.log('no');
         if(yes){
-           return;
+            return;
         }
         const body = { 
             usebook: relation?.id
         };
         if(no){
             // 取消点踩
-            console.log("no"+no);
-            const success = await handleRequest("/api/scoreUser", "DELETE", body);
+            const success = await handleRequest("/api/down-score-user", "DELETE", body);
+            if (success) {
                 setNo(false);
+            }
         }else{
             //进行点踩
-            console.log("no"+no);
-            const success = await handleRequest("/api/scoreUser", "POST", body);
+            const success = await handleRequest("/api/down-score-user", "POST", body);
+            if (success) {
                 setNo(true);
+            }
         }
 
     };
-
-    /*function handleNo(){
-        // const noColor=no&&!yes? "#0097a7":"default";
-        console.log('no');
-        if(yes){
-            return;
-        }
-
-        if(no){
-            // 取消点踩
-        }else{
-            //进行点踩
-        }
-
-    };*/
     const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
         height: 30,//宽度
         borderRadius: 5,

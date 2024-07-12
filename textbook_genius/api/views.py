@@ -41,6 +41,8 @@ class get_doubanBook(APIView):
         url=req.prepare().url
 
         res=get(url,headers=header)
+        if not res.ok:
+            return Response({"msg":"ISBN无效，请重新输入"},status=status.HTTP_404_NOT_FOUND)
         return Response(res.json(),status=status.HTTP_200_OK)
     
 class get_book(APIView):
@@ -86,6 +88,12 @@ class createBook(APIView):
     course_serializer_class=CourseSerializer
     teacher_serializer_class=TeacherSerializer
     def post(self,request,format=None):
+        school_year=request.data.get("school_year")
+        if len(school_year)!=9:
+            return Response({"mas":"学年格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
+        semester=request.data.get("semester")
+        if semester not in ['1','2',"1","2"]:
+            return Response({"mas":"学期格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
         book_data=request.data.get("book")
         # print(request.data)
         #print(book_data)
@@ -99,16 +107,14 @@ class createBook(APIView):
             cover=book_serializer.data.get('cover')
             douban_url=book_serializer.data.get('douban_url')
             
-            queryset=Book.objects.filter(isbn=isbn)
-            if queryset.exists():
-                print("{0} is already created".format(title))
-                book=queryset[0]
-                print(book)
-                # return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
-            else:
-                book=Book(isbn=isbn,title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
-                book.save()
-                # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
+            # queryset=Book.objects.filter(isbn=isbn)
+            # if queryset.exists():
+            #     print("{0} is already created".format(title))
+            #     book=queryset[0]
+            #     print(book)
+            # else:
+            book=Book(isbn=isbn,title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
+            book.save()
         else:
             print('book')
             queryset=Book.objects.filter(isbn=book_data['isbn'])
@@ -121,13 +127,13 @@ class createBook(APIView):
             course_name=course_serializer.data.get('course_name')
             department=course_serializer.data.get('department')
             queryset=Course.objects.filter(course_name=course_name,department=department)
-            if queryset.exists():
-                print("{0} is already created".format(course_name))
-                course=queryset[0]
+            # if queryset.exists():
+                # print("{0} is already created".format(course_name))
+                # course=queryset[0]
                 # return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
-            else:
-                course=Course(course_name=course_name,department=department)
-                course.save()
+            # else:
+            course=Course(course_name=course_name,department=department)
+            course.save()
                 # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
         else:
             print('course')
@@ -136,7 +142,7 @@ class createBook(APIView):
             print(course_serializer.errors)
         
         teacher=request.data.get("teacher")
-        print(teacher)
+        # print(teacher)
         teacher_serializer=self.teacher_serializer_class(data=teacher)
         
         if teacher_serializer.is_valid():
@@ -164,10 +170,10 @@ class createBook(APIView):
             "department":course.department,
             "teacher":teacher.teacher_name,
             "book":book.isbn,
-            "school_year":request.data.get("school_year"),
-            "semester":request.data.get("semester")
+            "school_year":school_year,
+            "semester":semester
         }
-        print(usebook_data)
+        # print(usebook_data)
         useBook_serializer=self.useBook_serializer_class(data=usebook_data)
         print(useBook_serializer)
         if useBook_serializer.is_valid():
