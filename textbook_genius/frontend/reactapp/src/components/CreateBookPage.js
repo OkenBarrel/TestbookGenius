@@ -30,6 +30,10 @@ function CreateBookPage(props){
     const navigate=useNavigate();
 
     const csrftoken = getCsrfToken();
+
+    useEffect(()=>{
+        console.log(school_year)
+    },[school_year]);
     
 
     async function handleSearchButton(){

@@ -90,12 +90,12 @@ const ScoreComponent=({relation})=>{
         if(no){
             // 取消点踩
             console.log("no"+no);
-            const success = await handleRequest("/api/scoreUser", "DELETE", body);
+            const success = await handleRequest("/api/down-score-user", "DELETE", body);
                 setNo(false);
         }else{
             //进行点踩
             console.log("no"+no);
-            const success = await handleRequest("/api/scoreUser", "POST", body);
+            const success = await handleRequest("/api/down-score-user", "POST", body);
                 setNo(true);
         }
 

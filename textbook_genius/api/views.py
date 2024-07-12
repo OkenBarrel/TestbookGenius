@@ -88,6 +88,12 @@ class createBook(APIView):
     course_serializer_class=CourseSerializer
     teacher_serializer_class=TeacherSerializer
     def post(self,request,format=None):
+        school_year=request.data.get("school_year")
+        if len(school_year)!=9:
+            return Response({"mas":"学年格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
+        semester=request.data.get("semester")
+        if semester not in ['1','2',"1","2"]:
+            return Response({"mas":"学期格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
         book_data=request.data.get("book")
         # print(request.data)
         #print(book_data)
@@ -164,8 +170,8 @@ class createBook(APIView):
             "department":course.department,
             "teacher":teacher.teacher_name,
             "book":book.isbn,
-            "school_year":request.data.get("school_year"),
-            "semester":request.data.get("semester")
+            "school_year":school_year,
+            "semester":semester
         }
         # print(usebook_data)
         useBook_serializer=self.useBook_serializer_class(data=usebook_data)
