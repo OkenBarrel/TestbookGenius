@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { useParams } from 'react-router-dom';
 // import './UserPage.css';
 import { Container, TextField, Typography, Button, Paper, Grid, Box, Avatar } from '@mui/material';
 import FileUpload from "./FileUpload";
 const UserPage =()=> {
     //TODO: Dummy data, in real situation, please using API to acquire user data.
+
+    // const { userId } = useParams();
+    const userId = 'ls53';
     const [userInfo, setUserInfo] = useState(
         {
             userID: 'ls53',
@@ -17,6 +21,45 @@ const UserPage =()=> {
         });
 
     const [isEditing, setIsEditing] = useState(false);
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         try {
+    //             const requestConfg = {
+    //                 method:"GET",
+    //                 headers: {
+    //                     'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //                 }
+    //             };
+    //             const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, requestConfg)
+    //
+    //             setUserInfo(response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching user data:', error);
+    //         }
+    //     };
+    //     fetchUserData();
+    // }, [userId]);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setUserInfo(data);
+                } else {
+                    console.error('Error fetching user data:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchUserData();
+    }, [userId]);
+
 
     const handleFileSelect = (fileUrl) => {
         setUserInfo({
@@ -35,10 +78,32 @@ const UserPage =()=> {
     const clickEditHandler = ()=>{
         setIsEditing(!isEditing);
     };
-    const clickSubmitHandler= (e)=>{
+    const clickSubmitHandler= async (e)=>{
         e.preventDefault();
         setIsEditing(false);
-    };
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userInfo)
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setUserInfo(data);
+                setIsEditing(false);
+            } else {
+                console.error('Error updating user data:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating user data:', error);
+        }
+    }
+
+
+
     return (
         <Container maxWidth="sm" style={{ marginTop: '20px' }}>
             <Paper elevation={3} style={{ padding: '20px' }}>

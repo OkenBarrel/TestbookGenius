@@ -328,3 +328,23 @@ class loggin(APIView):
             return Response({"username":user.get_username(),"email":user.get_email_field_name()})
         else:
             return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
+
+class ProfileViewer(APIView):
+    def GET(self, request, user_id):
+            try:
+                profile = Profile.objects.get(user__user_id=user_id)
+                serializer = ProfileSerializer(profile)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Profile.DoesNotExist:
+                return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    def GET(self, request, user_id):
+            try:
+                profile = Profile.objects.get(user__user_id=user_id)
+                serializer = ProfileSerializer(profile, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            except Profile.DoesNotExist:
+                return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
