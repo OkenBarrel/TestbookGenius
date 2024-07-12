@@ -167,15 +167,7 @@ function CreateBookPage(props){
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                    {/* <TextField value={school_year} label={"学年"} onChange={(e)=>{setSchoolyear(e.target.value)}}/> */}
                         <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
-                            {/* <InputLabel htmlFor="school-year-input">学年</InputLabel>
-                            <OutlinedInput
-                                id="school-year-input"
-                                value={school_year}
-                                onChange={(e) => { setSchoolyear(e.target.value) }}
-                                label="学年"
-                            /> */}
                             <SchoolYearSelect onChange={(e)=>{setSchoolyear(e.target.value)}} value={school_year}/>
                         </FormControl>
                         <FormControl sx={{ m: 1, minWidth: 140 }}>
@@ -190,7 +182,6 @@ function CreateBookPage(props){
                             <MenuItem value={1}>1-秋季学期</MenuItem>
                             <MenuItem value={2}>2-春季学期</MenuItem>
                             </Select>
-                            {/* <FormHelperText>With label + helper text</FormHelperText> */}
                         </FormControl>
                         <Button variant="contained" onClick={handleSubmit}>创建</Button>
                         {relationError && <Alert severity="error" style={{ marginTop: 20 }}>{relationError}</Alert>}
