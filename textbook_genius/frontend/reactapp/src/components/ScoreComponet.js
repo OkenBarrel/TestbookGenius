@@ -63,17 +63,17 @@ const ScoreComponent=({relation})=>{
         if (yes) {
             // 取消点赞
             console.log("yes"+yes);
-            const success = await handleRequest("/api/scoreUser", "DELETE", body);
-            // if (success) {
+            const success = await handleRequest("/api/up-score-user", "DELETE", body);
+            if (success) {
                 setYes(false);
-            // }
+            }
         } else {
             // 进行点赞
             console.log("yes"+yes);
-            const success = await handleRequest("/api/scoreUser", "POST", body);
-            // if (success) {
+            const success = await handleRequest("/api/up-score-user", "POST", body);
+            if (success) {
                 setYes(true);
-            // }
+            }
         }
 
     };
@@ -107,11 +107,21 @@ const ScoreComponent=({relation})=>{
         if(yes){
             return;
         }
-
+        const body = { 
+            usebook: relation?.id
+        };
         if(no){
             // 取消点踩
+            const success = await handleRequest("/api/down-score-user", "DELETE", body);
+            if (success) {
+                setNo(false);
+            }
         }else{
             //进行点踩
+            const success = await handleRequest("/api/down-score-user", "POST", body);
+            if (success) {
+                setNo(true);
+            }
         }
 
     };*/
