@@ -7,6 +7,7 @@ import LoginPage from './LoginPage';
 import RegisterPage from "./RegisterPage";
 import SearchPage from './SearchPage';
 import SearchResults from './SearchResults';
+import HelloComponent from './HelloComponent';
 import { getCookie } from './CSRFToken';
 import {
     BrowserRouter as Router,
@@ -33,6 +34,11 @@ function HomePage(props) {
     function renderHomePage() {
       return (
         <div>
+          <Grid>
+            <Grid item xs={12} justifyContent="flex-end">
+              <HelloComponent/>
+            </Grid>
+          </Grid>
           <h2>This is HomePage</h2>
           <h2></h2>
           <Button variant='contained' to="/create" component={Link}>创建书籍</Button>
@@ -60,6 +66,7 @@ function HomePage(props) {
           <Route path="/search/results" element={<SearchResults/>}/>
         </Routes>
       </Router>
+
     );
   }
   
