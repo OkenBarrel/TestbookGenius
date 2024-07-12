@@ -62,6 +62,14 @@ function CreateBookPage(props){
     }
     async function handleSubmit(){
         console.log("handling submit")
+        if(isbn.length !=13){
+            setIsbnError("ISBN无效，请重新输入");
+            return;
+        }
+        if(!isbn||!title||!author||!pubdate||!cover||!douban_url||!teacher_name||!course_name||!department||!school_year||!semester){
+            setRelationError("请将信息填写完整");
+            return;
+        }
         const requestOption={
             method:"POST",
             headers:{
@@ -88,18 +96,13 @@ function CreateBookPage(props){
             }),
         };
         let response=await fetch("/api/create-book",requestOption)
+        let data=await response.json();
         if(!response.ok){
-            setRelationError(response.statusText);
+            setRelationError(data.msg);
             return;
         }
-        let data=await response.json();
+        setRelationError("");
         navigate('/book/'+isbn);
-        // response.then((response)=>{
-        //     if(!response.ok){
-        //         setRelationError(response.statusText)
-        //     }
-        //     response.json()})
-        // .then((data)=>navigate('/book/'+data.isbn));
 
     };
 
@@ -164,15 +167,7 @@ function CreateBookPage(props){
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} align="center">
-                    {/* <TextField value={school_year} label={"学年"} onChange={(e)=>{setSchoolyear(e.target.value)}}/> */}
                         <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
-                            {/* <InputLabel htmlFor="school-year-input">学年</InputLabel>
-                            <OutlinedInput
-                                id="school-year-input"
-                                value={school_year}
-                                onChange={(e) => { setSchoolyear(e.target.value) }}
-                                label="学年"
-                            /> */}
                             <SchoolYearSelect onChange={(e)=>{setSchoolyear(e.target.value)}} value={school_year}/>
                         </FormControl>
                         <FormControl sx={{ m: 1, minWidth: 140 }}>
@@ -187,9 +182,10 @@ function CreateBookPage(props){
                             <MenuItem value={1}>1-秋季学期</MenuItem>
                             <MenuItem value={2}>2-春季学期</MenuItem>
                             </Select>
-                            {/* <FormHelperText>With label + helper text</FormHelperText> */}
                         </FormControl>
                         <Button variant="contained" onClick={handleSubmit}>创建</Button>
+                        {relationError && <Alert severity="error" style={{ marginTop: 20 }}>{relationError}</Alert>}
+
                     </Grid>
                     </Grid>
                 </Box>
