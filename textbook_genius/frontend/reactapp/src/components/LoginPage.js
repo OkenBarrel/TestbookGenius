@@ -2,9 +2,6 @@ import {Button,DialogContent,Grid,Typography,TextField, Paper} from '@mui/materi
 import React,{Component, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
-
-
-
 import Alert from '@mui/material/Alert';
 
 
@@ -41,7 +38,7 @@ const LoginPage = () => {
             const response=await fetch('/api/login',requestOption);
             if(!response.ok){
                 const errorData = await response.json();
-                setError(errorData.detail || 'Invalid username or password.');
+                setError(errorData.msg || 'Invalid username or password.');
                 return;
             }
             const data = await response.json();

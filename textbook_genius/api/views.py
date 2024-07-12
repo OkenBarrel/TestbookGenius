@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Q
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view,renderer_classes
@@ -7,13 +8,18 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
     CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
-    ScoreUserRelationSerializer,ProfileSerializer
+    UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer,\
+    ValidationCodeSerializer,SearchSerializer
 from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
-                    ScoreUserRelation, Profile
+                    UpScoreUserRelation, Profile,DownScoreUserRelation,ValidationCode
 from requests import Request,post,get,patch
+from django.db.models import Count
+from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
+
+# from tasks import get_douban_info
 
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
@@ -28,14 +34,15 @@ class get_doubanBook(APIView):
     def get(self,request,format=None):
         # scopes='book_basic_r'
         isbn = request.GET.get('isbn')
+        print(isbn)
         header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74."}
         base='https://api.douban.com'
         req=Request('GET',base+'/v2/book/isbn/:'+isbn,params={'apiKey':APIKEY},headers=header)
         url=req.prepare().url
 
         res=get(url,headers=header)
-        # print(res.json())
-        # return Response(res.json(),status=status.HTTP_200_OK)
+        if not res.ok:
+            return Response({"msg":"ISBN无效，请重新输入"},status=status.HTTP_404_NOT_FOUND)
         return Response(res.json(),status=status.HTTP_200_OK)
     
 class get_book(APIView):
@@ -55,31 +62,38 @@ class get_book(APIView):
 class createBook(APIView):
     '''
     {
-        "book": {
-            "isbn": "",
-            "title": "",
-            "author": [""],
-            "publisher": "",
-            "pubdate": "",
-            "cover": "",
-            "douban_url": ""
-        },
-        "teacher": {
-            "teacher_name":""
-        },
-        "course": {
-            "course_name": "",
-            "department":""
-        },
-        "school_year":"",
-        "semester":""
-    }
+    "book": {
+        "isbn": “isbn号”,str,长度:13,,
+        "title": "书名",str,长度范围:1-50,
+        "author": ["作者"],JSON,
+        "publisher": "出版社",str,长度范围:0-50,
+        "pubdate": "出版日期",str,长度范围:7-10,格式:允许”2012-12”和“2012-12-12”两种格式,
+        "cover": "封面url",str,长度范围“1-100”,
+        "douban_url": "豆瓣url",str,长度范围:1-50
+    },
+    "teacher": {
+        "teacher_name":"教师名称",str,长度范围:1-50
+    },
+    "course": {
+        "course_name": "课程名称",str,长度范围:1-50,
+        "department":"学部名称",str,内容必须在已存在学部中
+    },
+    "school_year":"学年",str,长度:9,格式形如“2012-2013”,
+    "semester":2,int,只能为1或2
+}
+
     '''
     book_serializer_class=BookSerializer
     useBook_serializer_class=UsebookSerializer
     course_serializer_class=CourseSerializer
     teacher_serializer_class=TeacherSerializer
     def post(self,request,format=None):
+        school_year=request.data.get("school_year")
+        if len(school_year)!=9:
+            return Response({"mas":"学年格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
+        semester=request.data.get("semester")
+        if semester not in ['1','2',"1","2"]:
+            return Response({"mas":"学期格式不正确"},status=status.HTTP_406_NOT_ACCEPTABLE)
         book_data=request.data.get("book")
         # print(request.data)
         #print(book_data)
@@ -93,16 +107,14 @@ class createBook(APIView):
             cover=book_serializer.data.get('cover')
             douban_url=book_serializer.data.get('douban_url')
             
-            queryset=Book.objects.filter(isbn=isbn)
-            if queryset.exists():
-                print("{0} is already created".format(title))
-                book=queryset[0]
-                print(book)
-                # return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
-            else:
-                book=Book(isbn=isbn,title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
-                book.save()
-                # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
+            # queryset=Book.objects.filter(isbn=isbn)
+            # if queryset.exists():
+            #     print("{0} is already created".format(title))
+            #     book=queryset[0]
+            #     print(book)
+            # else:
+            book=Book(isbn=isbn,title=title,author=author,publisher=publisher,pubdate=pubdate,cover=cover,douban_url=douban_url)
+            book.save()
         else:
             print('book')
             queryset=Book.objects.filter(isbn=book_data['isbn'])
@@ -115,13 +127,13 @@ class createBook(APIView):
             course_name=course_serializer.data.get('course_name')
             department=course_serializer.data.get('department')
             queryset=Course.objects.filter(course_name=course_name,department=department)
-            if queryset.exists():
-                print("{0} is already created".format(course_name))
-                course=queryset[0]
+            # if queryset.exists():
+                # print("{0} is already created".format(course_name))
+                # course=queryset[0]
                 # return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
-            else:
-                course=Course(course_name=course_name,department=department)
-                course.save()
+            # else:
+            course=Course(course_name=course_name,department=department)
+            course.save()
                 # return Response(BookSerializer(book).data,status.HTTP_201_CREATED)
         else:
             print('course')
@@ -130,7 +142,7 @@ class createBook(APIView):
             print(course_serializer.errors)
         
         teacher=request.data.get("teacher")
-        print(teacher)
+        # print(teacher)
         teacher_serializer=self.teacher_serializer_class(data=teacher)
         
         if teacher_serializer.is_valid():
@@ -158,10 +170,10 @@ class createBook(APIView):
             "department":course.department,
             "teacher":teacher.teacher_name,
             "book":book.isbn,
-            "school_year":request.data.get("school_year"),
-            "semester":request.data.get("semester")
+            "school_year":school_year,
+            "semester":semester
         }
-        print(usebook_data)
+        # print(usebook_data)
         useBook_serializer=self.useBook_serializer_class(data=usebook_data)
         print(useBook_serializer)
         if useBook_serializer.is_valid():
@@ -176,7 +188,6 @@ class createBook(APIView):
             print('useBook')
             print(useBook_serializer.errors)
             return Response({'Created':'already exists'},status.HTTP_409_CONFLICT)
-        return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
     
 
 class updateBook(APIView):
@@ -217,6 +228,22 @@ class updateBook(APIView):
 
 class getUseBook(APIView):
     def get(self,request,format=None):
+        '''
+        输出:[
+                {
+                    "book": "9787101162097",isbn号
+                    "teacher": "王翔",老师名称
+                    "course": {
+                        "course_name": "中国古代文学",课程名称
+                        "department": "文法" 学部
+                    },
+                    "school_year": "12-13",学年
+                    "semester": 学期,
+                    "upvote_count": 1,实用投票票数
+                    "downvote_count": 0,不实用投票票数
+                },
+            ]
+        '''
         query_params=request.GET
         filter_params={}
         print(query_params)
@@ -224,27 +251,84 @@ class getUseBook(APIView):
             filter_params['book__isbn']=query_params.get('isbn')
 
         usebook_queryset = Usebook.objects.filter(**filter_params)
-        
+        if not usebook_queryset.exists():
+            return Response({"Bad Request":"Invalid ISBN."},status=status.HTTP_404_NOT_FOUND)
+
+
         # Serialize the queryset
         serializer = UsebookSerializer(usebook_queryset, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
         
+        # Annotate usebook_queryset with upvotes and downvotes counts
+        usebook_queryset = usebook_queryset.annotate(
+            upvote_count=Count('upscoreuserrelation'),
+            downvote_count=Count('downscoreuserrelation')
+        )
+        response_data = serializer.data
+        for idx, usebook in enumerate(usebook_queryset):
+            response_data[idx]['id'] = usebook.id
+            response_data[idx]['upvote_count'] = usebook.upvote_count
+            response_data[idx]['downvote_count'] = usebook.downvote_count
+
+        return Response(response_data,status=status.HTTP_200_OK)
+from django.core.mail import send_mail
+
 class register(APIView):
     '''
     {
         user_name:,
         user_email:,
-        user_password:
+        user_password:,
+        validation:
     }
     '''
     def post(self, request):
         print(request.data)
+        vali=get_object_or_404(ValidationCode,email=request.data.get('user_email'))
+        if vali.code!=request.data.get('validation'):
+            return Response({"msg":"验证码错误"},status=status.HTTP_404_NOT_FOUND)
+        history=User.objects.filter(email=request.data.get('email')).first()
+        if history is not None:
+            return Response({"Conflict":"Already registered"},status=status.HTTP_409_CONFLICT)
+
+
+        # try:
         user=User.objects.create_user(username=request.data.get('user_name'),
-                                      email=request.data.get('user_email'),
-                                      password=request.data.get('user_password'))
+                                    email=request.data.get('user_email'),
+                                    password=request.data.get('user_password'))
         user.save()
-        serializer=ProfileSerializer()
-        return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
+        login(request,user)
+        request.session['user_id'] = request.data.get('user_name')
+        if not request.session.session_key:
+            request.session.save()
+        print("session key:"+request.session.session_key)
+        print(request.session.get('user_id',None))
+        vali.delete()
+        return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
+
+        #     send_mail(
+        #     "Testing for email validation",
+        #     "Here is the message.",
+        #     "3014033378@qq.com",
+        #     [request.data.get('user_email')],
+        #     fail_silently=False,
+        # )
+        # serializer=ProfileSerializer()
+        # user=authenticate(request=request,username=username,password=password)
+        # if user is not None:
+            # login(request,user)
+            # if not request.session.session_key:
+            #     request.session.save()
+            # print("session key:"+request.session.session_key)
+            #print("usernsme:"+request.session['user_name'])
+            #print(request.session.session_key)
+            # return Response({"username":user.get_username(),"email":user.get_email_field_name()})
+        # else:
+        #     print("error")
+        #     return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
+            #return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
+        # except Exception:
+
+
 
         # serializer = UserSerializer(data=request.data)
         # if serializer.is_valid():
@@ -260,71 +344,66 @@ class register(APIView):
         #     print(serializer.errors)
         # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class scoreUser(APIView):
+class upScoreUser(APIView):
     '''
     {
         useBook:{useBook的id},
-        user:{user_id}
-    }
-    '''
-    serializer_class=ScoreUserRelationSerializer
-    def post(self,request):
-        # usebook_id=request.data.get('useBook')
-        # user_id=request.data.get('user_id')
 
-        serializer=self.serializer_class(data=request.data)
+    }
+    cookie中正常设置user_id字段
+    '''
+    serializer_class=UpScoreUserRelationSerializer
+    def post(self,request):
+        usebook_id=request.data.get('useBook')
+        # user_id=request.data.get('user_id')
+        user_id=request.COOKIES.get('user_id')
+        upScore_data={
+            "useBook":usebook_id,
+            "user":user_id
+        }
+
+        serializer=self.serializer_class(data=upScore_data)
         if not serializer.is_valid():
             print(serializer.errors)
-            return Response({"Already exists":"already scored this one."},status=status.HTTP_409_CONFLICT)
+            return Response({"Already exists":"{} already scored this one.".format(user_id)},status=status.HTTP_409_CONFLICT)
         user_id=serializer.data.get('user')
         usebook_id=serializer.data.get('useBook')
-        try:
-            user = User.objects.get(user_id=user_id)
-        except User.DoesNotExist:
-            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            usebook=Usebook.objects.get(id=usebook_id)
-        except Usebook.DoesNotExist:
-            return Response({"error": "UseBook relation not found."}, status=status.HTTP_404_NOT_FOUND)
-        scoreUser=ScoreUserRelation(user=user,useBook=usebook)
-        scoreUser.save()
-        return Response(ScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
-        # useBook=Usebook.objects.filter(id=usebook_id)
-        # if not useBook.exists():
-        #      return Response({"Bad Request": "Invalid useBook relation."},status=status.HTTP_404_NOT_FOUND)
+        down=DownScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id)
+        if down.exists():
+            return Response({"Bad Request":"Cannot up and down at the same time."},status=status.HTTP_404_NOT_FOUND)
 
-        # serializer=self.serializer_class(data=request.data)
-        # if serializer.is_valid():
-        #     user_id=serializer.data.get('user_id')
-        #     user=User.objects.filter(user_id=user_id)
-        #     if not user.exists():
-        #         return Response({"Bad request":"Ivalid User."},status=status.HTTP_404_NOT_FOUND)
-        #     scoreUser=ScoreUserRelation(useBook=useBook,user=user)
-        #     scoreUser.save()
-        #     return Response(scoreUser.data,status=status.HTTP_200_OK)
-        # else:
-        #     print(serializer.errors)
-        #     return Response({"Already exists":"already scored this one."},status=status.HTTP_409_CONFLICT)
+        user = get_object_or_404(User, id=user_id)
+        usebook = get_object_or_404(Usebook, id=usebook_id)
+
+        scoreUser = UpScoreUserRelation.objects.create(user=user, useBook=usebook)
+        scoreUser.save()
+        return Response(UpScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
 
     def delete(self,request):
-        usebook_id=request.data.get('usebook')
-        useBook=Usebook.objects.filter(id=usebook_id)
-        if not useBook.exists():
-             return Response({"Bad Request": "Invalid useBook relation."},status=status.HTTP_404_NOT_FOUND)
+        usebook_id = request.data.get('useBook')
+        user_id=request.COOKIES.get('user_id')
+        if not usebook_id:
+            return Response({"Bad Request": "usebook ID not provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer=self.serializer_class(data=request.data)
-        pass 
+        scoreUser = UpScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id).first()
+        if not scoreUser:
+            return Response({"Bad Request": "Invalid usebook relation."}, status=status.HTTP_404_NOT_FOUND)
+
+        scoreUser.delete()
+        return Response({"Success": "Usebook relation deleted."}, status=status.HTTP_200_OK)
 
 
 class loggin(APIView):
     def post(self,request):
         username=request.data.get('username')
         password=request.data.get('password')
+
         print(username)
         print(password)
         user=authenticate(request=request,username=username,password=password)
         if user is not None:
             login(request,user)
+            print(request.session.session_key)
             return Response({"username":user.get_username(),"email":user.get_email_field_name()})
         else:
             return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
@@ -348,3 +427,108 @@ class ProfileViewer(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             except Profile.DoesNotExist:
                 return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+            print("error")
+            return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class downScoreUser(APIView):
+    '''
+    {
+        useBook:{useBook的id},
+
+    }
+    cookie中正常设置user_id字段
+    '''
+    serializer_class=DownScoreUserRelationSerializer
+    def post(self,request):
+        usebook_id=request.data.get('useBook')
+        # user_id=request.data.get('user_id')
+        user_id=request.COOKIES.get('user_id')
+        upScore_data={
+            "useBook":usebook_id,
+            "user":user_id
+        }
+
+        serializer=self.serializer_class(data=upScore_data)
+        if not serializer.is_valid():
+            print(serializer.errors)
+            return Response({"Already exists":"{} already scored this one.".format(user_id)},status=status.HTTP_409_CONFLICT)
+        user_id=serializer.data.get('user')
+        usebook_id=serializer.data.get('useBook')
+        up=UpScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id)
+        if up.exists():
+            return Response({"Bad Request":"Cannot up and down at the same time."},status=status.HTTP_404_NOT_FOUND)
+
+        user = get_object_or_404(User, id=user_id)
+        usebook = get_object_or_404(Usebook, id=usebook_id)
+
+        scoreUser=DownScoreUserRelation.objects.create(user=user,useBook=usebook)
+        scoreUser.save()
+        return Response(DownScoreUserRelationSerializer(scoreUser).data,status=status.HTTP_200_OK)
+
+    def delete(self,request):
+        usebook_id = request.data.get('useBook')
+        user_id=request.COOKIES.get('user_id')
+        if not usebook_id:
+            return Response({"Bad Request": "usebook ID not provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        scoreUser = DownScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id).first()
+        if not scoreUser:
+            return Response({"Bad Request": "Invalid usebook relation."}, status=status.HTTP_404_NOT_FOUND)
+
+        scoreUser.delete()
+        return Response({"Success": "Usebook relation deleted."}, status=status.HTTP_200_OK)
+
+
+class validation(APIView):
+    '''
+        {
+            email:
+        }
+    '''
+    def post(self,request):
+        # email=request.data.get('email')
+        print(request.data)
+        history=ValidationCode.objects.filter(email=request.data.get('email')).first()
+        if history :
+            return Response({"msg":"验证码已发送"},status=status.HTTP_409_CONFLICT)
+        serializer=ValidationCodeSerializer(data=request.data)
+        if not serializer.is_valid():
+            return
+        email=serializer.data.get('email')
+        code=ValidationCode(email=email)
+        code.save()
+        send_mail(
+            "This is for validation",
+            "Here is the code code {0}.".format(code.code),
+            "3014033378@qq.com",
+            [email],
+            fail_silently=False,
+        )
+        return Response({"email":email},status=status.HTTP_200_OK)
+    def delete(self,request):
+        email=request.data.get('email')
+        vali=get_object_or_404(ValidationCode,email=email)
+        # vali=ValidationCode.objects.filter(email=email).first()
+        # if not vali:
+        #     return Response({"Bad Request":"Invalid email."},status=status.HTTP_404_NOT_FOUND)
+        vali.delete()
+        return Response({"OK":"Deleted."},status=status.HTTP_202_ACCEPTED)
+
+class SearchView(APIView):
+    serializer_class = SearchSerializer
+
+    def get(self, request):
+        query_params = request.query_params
+        query = query_params.get('query', '')
+
+        title_filter = Q(book__title__icontains=query)
+        course_filter = Q(course__course_name__icontains=query)
+        department_filter = Q(course__department__icontains=query)
+
+        search_results = Usebook.objects.filter(title_filter | course_filter | department_filter).select_related('book', 'teacher', 'course').distinct()
+
+        serialized_results = self.serializer_class(search_results, many=True).data
+
+        return Response(serialized_results, status=status.HTTP_200_OK)

@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import RoomView,get_doubanBook,get_book,createBook,updateBook,scoreUser,loggin,ProfileViewer
-from .views import getUseBook
-from .views import register
+from .views import RoomView,get_doubanBook,get_book,createBook,updateBook,upScoreUser,loggin,\
+                    downScoreUser,getUseBook,register,validation,SearchView,ProfileViewer
 urlpatterns = [
     # path('', views.getRoutes, name="routes"),
     # path('home',RoomView.as_view()),
@@ -12,8 +11,10 @@ urlpatterns = [
     path('update-book',updateBook.as_view()),
     path('get-useBook',getUseBook.as_view()),
     path('register',register.as_view()),
-    path('score-user',scoreUser.as_view()),
+    path('up-score-user',upScoreUser.as_view()),
     path('login',loggin.as_view()),
+    path('down-score-user',downScoreUser.as_view()),
+    path('validation',validation.as_view()),
+    path('search',SearchView.as_view(),name = 'search')
     path('user/<str:user_id>/', ProfileViewer.as_view(), name='user_profile')
-
 ]
