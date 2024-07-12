@@ -147,6 +147,11 @@ LOGGING = {
         'level': 'INFO',
     }
 }
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # 使用 Redis 作为消息代理
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # 使用 Redis 作为结果后端

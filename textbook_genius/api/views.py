@@ -21,7 +21,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 # from tasks import get_douban_info
-
+from rest_framework.parsers import MultiPartParser, FormParser
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
 
@@ -409,9 +409,8 @@ class loggin(APIView):
         else:
             return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(csrf_exempt, name='dispatch')
 class ProfileViewer(APIView):
-#     @csrf_exempt
+    parser_classes = (MultiPartParser, FormParser)
     def get(self, request, user_id):
             try:
                 profile = Profile.objects.get(user__username=user_id)
@@ -424,13 +423,12 @@ class ProfileViewer(APIView):
                     'user_major': profile.user_major,
                     'user_credit': profile.user_credit
                 }
-                return Response(data, status=status.HTTP_200_OK)
+                return Response(serializer.data, status=status.HTTP_200_OK)
 #                 return res
             except Profile.DoesNotExist:
                 print("fail")
                 return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-#
-#     @csrf_exempt
+
     def put(self, request, user_id):
             try:
                 print("valid")
@@ -443,9 +441,10 @@ class ProfileViewer(APIView):
                         'user_department': profile.user_department,
                         'user_major': profile.user_major,
                         'user_credit': profile.user_credit
+
                     }
                     print("valid")
-                    return Response(data, status=status.HTTP_200_OK)
+                    return Response(serializer.data, status=status.HTTP_200_OK)
                 print("not valid")
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             except Profile.DoesNotExist:

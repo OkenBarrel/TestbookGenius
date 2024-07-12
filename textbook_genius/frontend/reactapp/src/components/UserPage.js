@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useParams } from 'react-router-dom';
+
 // import './UserPage.css';
 import { Container, TextField, Typography, Button, Paper, Grid, Box, Avatar } from '@mui/material';
 import FileUpload from "./FileUpload";
@@ -22,9 +23,9 @@ const UserPage =()=> {
             username: '',
             department: '',
             major: '',
-            ProgramStartYear: '2024',
+            ProgramStartYear: '',
             credit: '',
-            avatarUrl: '/Avatar/DefaultAvatar.png'
+            avatarUrl: ''
         });
     const [isEditing, setIsEditing] = useState(false);
     function getCookie(name) {
@@ -52,13 +53,14 @@ const UserPage =()=> {
                 });
                 if (response.ok) {
                     const data = await response.json();
+                    console.log(data.user_avatar)
                     setUserInfo({
-                        username: data.username,
+                        username: data.user,
                         department: data.user_department,
                         major: data.user_major,
                         ProgramStartYear: '2024',
                         credit: data.user_credit,
-                        avatarUrl: '/Avatar/DefaultAvatar.png'
+                        avatarUrl: data.user_avatar
                     });
                 } else {
                     console.error('Error fetching user data:', response.statusText);
@@ -93,27 +95,30 @@ const UserPage =()=> {
         setIsEditing(false);
         try{
             const csrftoken = getCookie('csrftoken');
+            const formData = new FormData();
+            formData.append('user_major', userInfo.major);
+            formData.append('user_department', userInfo.department);
+            formData.append('user_credit', userInfo.credit);
+            if (userInfo.avatarFile) {
+                formData.append('user_avatar', userInfo.avatarFile);
+            }
             const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, {
-                method: 'put',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({
-                    user_major: userInfo.major,
-                    user_department: userInfo.department,
-                    user_credit: userInfo.credit
-                })
-            });
+                    method: 'put',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: formData
+                }
+            );
             if (response.ok) {
                 const data = await response.json();
                 setUserInfo({
-                    username: data.username,
+                    username: data.user,
                     department: data.user_department,
                     major: data.user_major,
-                    ProgramStartYear: '2024',
+                    ProgramStartYear: data.user_indate,
                     credit: data.user_credit,
-                    avatarUrl: userInfo.avatarUrl
+                    avatarUrl: data.avatarUrl
                 });
                 setIsEditing(false);
             } else {
@@ -123,8 +128,6 @@ const UserPage =()=> {
             console.error('Error updating user data:', error);
         }
     }
-
-
 
     return (
         <Container maxWidth="sm" style={{ marginTop: '20px' }}>
