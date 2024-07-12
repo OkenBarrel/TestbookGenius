@@ -1,5 +1,5 @@
 import {Button,DialogContent,Grid,Typography,TextField} from '@mui/material';
-import React,{Component} from "react";
+import React,{Component, useState} from "react";
 import CreateBookPage from './CreateBookPage';
 import Book from "./Book";
 import UpdateBookPage from './UpdateBookPage';
@@ -7,6 +7,7 @@ import LoginPage from './LoginPage';
 import RegisterPage from "./RegisterPage";
 import SearchPage from './SearchPage';
 import SearchResults from './SearchResults';
+import { getCookie } from './CSRFToken';
 import {
     BrowserRouter as Router,
     Routes,
@@ -38,7 +39,7 @@ function HomePage(props) {
           {/*<Button variant='contained' to="/update" component={Link}>修改书籍信息</Button>*/}
           <Button variant='contained' to="/register" component={Link}>注册</Button>
           <Button variant='contained' to="/login" component={Link}>登录</Button>
-          <Button variant='contained' to="/user/:userId" component={Link}>用户信息</Button>
+          <Button variant='contained' to={`/user/:${getCookie('user_id')}`} component={Link}>用户信息</Button>
           <Button variant='contained' to="/search" component={Link}>搜索</Button>
           <Button variant='contained' onClick={handleLogout}>退出登录</Button>
         </div>

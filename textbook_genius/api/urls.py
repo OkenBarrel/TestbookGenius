@@ -15,6 +15,6 @@ urlpatterns = [
     path('validation',validation.as_view()),
     path('search',SearchView.as_view(),name = 'search'),
     path('logout',loggout.as_view()),
-    path('user/<str:user_id>/', ProfileViewer.as_view(), name='user_profile'),
+    path('user', ProfileViewer.as_view(), name='user_profile'),
 
 ]

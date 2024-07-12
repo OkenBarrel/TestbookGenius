@@ -432,9 +432,10 @@ class loggin(APIView):
 @method_decorator(csrf_exempt, name='dispatch')
 class ProfileViewer(APIView):
 #     @csrf_exempt
-    def get(self, request, user_id):
+    def get(self, request):
+            user_id=request.GET.get('user_id')
             try:
-                profile = Profile.objects.get(user__username=user_id)
+                profile = Profile.objects.get(user__id=user_id)
                 serializer = ProfileSerializer(profile)
                 print("find")
 
