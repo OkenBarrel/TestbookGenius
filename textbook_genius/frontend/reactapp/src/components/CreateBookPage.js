@@ -62,6 +62,14 @@ function CreateBookPage(props){
     }
     async function handleSubmit(){
         console.log("handling submit")
+        if(isbn.length !=13){
+            setIsbnError("ISBN无效，请重新输入");
+            return;
+        }
+        if(!isbn||!title||!author||!pubdate||!cover||!douban_url||!teacher_name||!course_name||!department||!school_year||!semester){
+            setRelationError("请将信息填写完整");
+            return;
+        }
         const requestOption={
             method:"POST",
             headers:{
@@ -93,13 +101,8 @@ function CreateBookPage(props){
             setRelationError(data.msg);
             return;
         }
+        setRelationError("");
         navigate('/book/'+isbn);
-        // response.then((response)=>{
-        //     if(!response.ok){
-        //         setRelationError(response.statusText)
-        //     }
-        //     response.json()})
-        // .then((data)=>navigate('/book/'+data.isbn));
 
     };
 
@@ -190,6 +193,8 @@ function CreateBookPage(props){
                             {/* <FormHelperText>With label + helper text</FormHelperText> */}
                         </FormControl>
                         <Button variant="contained" onClick={handleSubmit}>创建</Button>
+                        {relationError && <Alert severity="error" style={{ marginTop: 20 }}>{relationError}</Alert>}
+
                     </Grid>
                     </Grid>
                 </Box>
