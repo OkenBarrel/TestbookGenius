@@ -8,8 +8,8 @@ import FileUpload from "./FileUpload";
 const UserPage =()=> {
     //TODO: Dummy data, in real situation, please using API to acquire user data.
 
-    // const { userId } = useParams();
-    const userId = 'testuser';
+    const { userId } = useParams();
+    // const userId = 'testuser';
     const [userInfo, setUserInfo] = useState(
         {
             // userID: 'testuser',
@@ -43,14 +43,19 @@ const UserPage =()=> {
         return cookieValue;
     }
     useEffect(() => {
-        const fetchUserData = async () => {
+        fetchUserData();
+    }, []);
+
+    const fetchUserData = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, {
-                    method: 'get',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                // , {
+                //     method: 'get',
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     }
+                // }
+                console.log(userId)
+                const response = await fetch("/api/user"+"?user_id="+userId);
                 if (response.ok) {
                     const data = await response.json();
                     console.log(data.user_avatar)
@@ -69,9 +74,6 @@ const UserPage =()=> {
                 console.error('Error fetching user data:', error);
             }
         };
-        fetchUserData();
-    }, [userId]);
-
 
     const handleFileSelect = (fileUrl) => {
         setUserInfo({

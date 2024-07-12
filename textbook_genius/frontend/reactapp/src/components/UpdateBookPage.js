@@ -9,6 +9,7 @@ import {
     Redirect,
     Switch
 } from "react-router-dom";
+import HelloComponent from './HelloComponent';
 import {getCsrfToken} from "./CSRFToken";
 
 function UpdateBookPage(props){
@@ -19,10 +20,6 @@ function UpdateBookPage(props){
     const[pubdate,setPubdate]=useState("");
     const[cover,setCover]=useState("");
     const[douban_url,setDouban]=useState("");
-      
-    /*
-    let res= fetch("/api/get-book"+"?isbn="+isbn)
-    let data=res.json()*/
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
@@ -41,7 +38,7 @@ function UpdateBookPage(props){
             setCover(data.cover);
             setDouban(data.douban_url);
         })
-    }, []);   
+    }, []);  
 
     async function handleSubmit(){
         console.log("handling submit")
@@ -70,11 +67,14 @@ function UpdateBookPage(props){
 
     return(
         <div className='updateBookPage'>
-            <Grid container spacing={3} align="center" justifyContent="center">
-                <Grid container spacing={2} item xs={6}>
+            <Grid container spacing={2} align="center">
+                {/*<Grid container spacing={2} item xs={12} justifyContent="flex-end">
+                    <HelloComponent/>
+                </Grid>*/}
+                <Grid container spacing={2} item xs={12}>
                     <Grid item xs={12} align="center">
                         <h1>This is update Book</h1>
-                    </Grid>  
+                    </Grid>
                     <Grid item xs={12} align="center">
                         <TextField value={isbn} label={"ISBN"}/>    
                     </Grid>
