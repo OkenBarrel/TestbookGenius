@@ -66,7 +66,7 @@ function CreateBookPage(props){
             setIsbnError("ISBN无效，请重新输入");
             return;
         }
-        if(!isbn||!title||!author||!pubdate||!cover||!douban_url||!teacher_name||!course_name||!department||!school_year||!semester){
+        if(!isbn||!title||!author||!pubdate||!cover||!douban_url||!teacher||!course||!department||!school_year||!semester){
             setRelationError("请将信息填写完整");
             return;
         }
