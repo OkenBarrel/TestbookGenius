@@ -229,6 +229,33 @@ class updateBook(APIView):
             return Response(BookSerializer(book).data,status.HTTP_200_OK)
         else:
             return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND) 
+        
+class markBook(APIView):
+    mark_serializer_class=MarkSerializer
+    def post(self,request,format=None):
+        #userid=request.session.get('_auth_user_id',None)
+        #userid=request.data.get("userid")
+        #bookisbn=request.data.get("bookisbn")
+        mark_data=request.data.get("mark")
+        print(request.data)
+        print(mark_data)
+        print(request.session.get('_auth_user_id',None))
+        print(request.session.get('user_id',None))
+        mark_serializer=self.mark_serializer_class(data=mark_data)
+        print(mark_serializer)
+        if mark_serializer.is_valid():
+            #userid=mark_serializer.data.get('userid')
+            print("here")
+            userid=request.session.get('user_id',None)
+            bookisbn=mark_serializer.data.get('bookisbn')
+            mark=Mark(userid=userid,bookisbn=bookisbn)
+            mark.save()
+            return Response(MarkSerializer(mark).data,status.HTTP_200_OK)
+        else:
+            print('mark')
+            print(mark_serializer.errors)
+            print(userid)
+            return Response({'msg':'收藏失败'},status.HTTP_404_NOT_FOUND)
 
 
 class getUseBook(APIView):
@@ -418,7 +445,7 @@ class loggin(APIView):
             print("session key:"+request.session.session_key)
             print(request.session.get('_auth_user_id',None))
             print(request.session.items()) #获取session键值对
-            data=request.session.items()
+            #data=request.session.items()
             res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
             res.set_cookie('username',username,httponly=False,secure=True)
             res.set_cookie('user_id',user.id,httponly=False,secure=True)

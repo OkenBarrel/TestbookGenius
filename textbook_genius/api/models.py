@@ -88,7 +88,7 @@ class Profile(models.Model):
         return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
 
 class Mark(models.Model):
-    markid=models.CharField(max_length=10,primary_key=True)
+   # markid=models.CharField(max_length=10,primary_key=True)
     userid = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
     bookisbn = models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
 

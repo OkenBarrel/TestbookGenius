@@ -18,7 +18,7 @@ const HelloComponent=()=>{
     const[user,setUser]=useState("Please Login")
 
     useEffect(() => {
-        fetch("/api/login")
+        //fetch("/api/login")
         /*.then(res=>{
             if(res.username==null){
                 console.log("user_id is null!")
@@ -35,6 +35,7 @@ const HelloComponent=()=>{
        else{
             setUser("Hello, "+getCookie('username'))
        }
+      
     }, []);
 
     return(
