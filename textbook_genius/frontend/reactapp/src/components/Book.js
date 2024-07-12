@@ -39,7 +39,7 @@ const Book=({relation})=>{
     useEffect(() => {
         console.log(isbn);
         getBookDetails();
-      }, []);
+    }, []);
 
     async function getBookDetails(){
         let res=await fetch("/api/get-book"+"?isbn="+isbn)
@@ -68,10 +68,10 @@ const Book=({relation})=>{
         // })
     }
 
-    useEffect(()=>{
+    /*useEffect(()=>{
         console.log(relation);
        
-    },[relation])
+    },[relation])*/
 
     const handleRequest = async (url, method, body) => {
         let requestOption = {

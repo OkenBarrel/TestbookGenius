@@ -19,10 +19,6 @@ function UpdateBookPage(props){
     const[pubdate,setPubdate]=useState("");
     const[cover,setCover]=useState("");
     const[douban_url,setDouban]=useState("");
-      
-    /*
-    let res= fetch("/api/get-book"+"?isbn="+isbn)
-    let data=res.json()*/
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
@@ -41,7 +37,14 @@ function UpdateBookPage(props){
             setCover(data.cover);
             setDouban(data.douban_url);
         })
-    }, []);   
+    }, []);  
+    
+    /*useEffect(() => {
+        fetch("/api/login")
+        .then(data=>{
+            setUser(data.user_id)
+        })
+    }, [])*/
 
     async function handleSubmit(){
         console.log("handling submit")
