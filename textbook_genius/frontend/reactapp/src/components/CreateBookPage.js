@@ -1,7 +1,8 @@
 import {Button,TextField,Grid, FormControl,FormHelperText, CardContent, CardMedia} from '@mui/material';
-import {Box,OutlinedInput} from '@mui/material';
+import {Box,OutlinedInput,Alert} from '@mui/material';
 import {Select, MenuItem,InputLabel,Card} from '@mui/material'
 import Typography from '@mui/material/Typography';
+
 
 import { useState,useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
@@ -26,6 +27,8 @@ function CreateBookPage(props){
     const[school_year,setSchoolyear]=useState("");
     const[semester,setSemester]=useState("");
     const[isbnError,setIsbnError]=useState("");
+
+    // const[doubanError,setDoubanError]=useState("");
     
     const navigate=useNavigate();
 
@@ -37,11 +40,16 @@ function CreateBookPage(props){
     
 
     async function handleSearchButton(){
-        let response= await fetch("/api/get-douban-book"+"?isbn="+isbn)
-        if(!response.ok){
-            setIsbnError(response.statusText);
+        if(isbn.length !=13){
+            setIsbnError("ISBN无效，请重新输入");
             return;
         }
+        let response= await fetch("/api/get-douban-book"+"?isbn="+isbn)
+        if(!response.ok){
+            setIsbnError(response.msg);
+            return;
+        }
+        setIsbnError("");
         await response.json()
         .then((data)=>{setTitle(data.title);
             setAuthor(data.author);
@@ -245,6 +253,7 @@ function CreateBookPage(props){
                                     <Typography variant='h6'>出版日期：{pubdate}</Typography>
                                 </Grid>
                             </Grid>
+                            {isbnError && <Alert severity="error" style={{ marginTop: 20 }}>{isbnError}</Alert>}
                         </CardContent>
                         <CardMedia
                         component="img"

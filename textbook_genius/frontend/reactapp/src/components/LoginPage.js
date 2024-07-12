@@ -38,7 +38,7 @@ const LoginPage = () => {
             const response=await fetch('/api/login',requestOption);
             if(!response.ok){
                 const errorData = await response.json();
-                setError(errorData.detail || 'Invalid username or password.');
+                setError(errorData.msg || 'Invalid username or password.');
                 return;
             }
             const data = await response.json();
