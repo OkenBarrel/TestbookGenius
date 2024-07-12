@@ -2,9 +2,6 @@ import {Button,DialogContent,Grid,Typography,TextField, Paper} from '@mui/materi
 import React,{Component, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
-
-
-
 import Alert from '@mui/material/Alert';
 
 
@@ -26,7 +23,7 @@ const LoginPage = () => {
             setError('Username and password are required.');
             return;
         };
-        setTimeout(() => {
+       try{
             const requestOption={
                 method:"POST",
                 headers:{
@@ -38,12 +35,14 @@ const LoginPage = () => {
                     password:password
                 })
             };
-            let response=fetch('/api/login',requestOption);
+            const response=await fetch('/api/login',requestOption);
             if(!response.ok){
-                setError(response.statusText);
+                const errorData = await response.json();
+                setError(errorData.detail || 'Invalid username or password.');
                 return;
             }
-
+            const data = await response.json();
+            setSuccess('Login successful!');
             // if (username === 'tw11' && password === 'password' && username === 'tw11') {
             //     setSuccess('Login successful!');
             //     // navigate(`/}`);
@@ -51,7 +50,9 @@ const LoginPage = () => {
             // } else {
             //     setError('Invalid username or password(For test purpose, please using tw11 to login).');
             // }
-        }, 1000);
+        }catch (error) {
+            setError('An error occurred. Please try again.');
+        }
     };
     return (
         <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>

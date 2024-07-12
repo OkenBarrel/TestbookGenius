@@ -1,10 +1,12 @@
 import {Button,DialogContent,Grid,Typography,TextField} from '@mui/material';
 import React,{Component} from "react";
 import CreateBookPage from './CreateBookPage';
-import Book from "./Book"
+import Book from "./Book";
 import UpdateBookPage from './UpdateBookPage';
 import LoginPage from './LoginPage';
-import RegisterPage from "./RegisterPage"
+import RegisterPage from "./RegisterPage";
+import SearchPage from './SearchPage';
+import SearchResults from './SearchResults';
 import {
     BrowserRouter as Router,
     Routes,
@@ -12,6 +14,7 @@ import {
     Link,
     Redirect,
 } from "react-router-dom";
+import UserPage from "./UserPage";
 
 function HomePage(props) {
   
@@ -25,6 +28,7 @@ function HomePage(props) {
           <Button variant='contained' to="/register" component={Link}>注册</Button>
           <Button variant='contained' to="/login" component={Link}>登录</Button>
           <Button variant='contained' to="/user/:userId" component={Link}>用户信息</Button>
+          <Button variant='contained' to="/search" component={Link}>搜索</Button>
         </div>
       );
     }
@@ -39,7 +43,8 @@ function HomePage(props) {
           <Route path="/register" element={<RegisterPage/>} />
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/user/:userId"/>
-          {/* <Route path=/> */}
+          <Route path="/search" element={<SearchPage/>}/>
+          <Route path="/search/results" element={<SearchResults/>}/>
         </Routes>
       </Router>
     );
