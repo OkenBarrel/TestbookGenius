@@ -313,12 +313,14 @@ class register(APIView):
                                     email=request.data.get('user_email'),
                                     password=request.data.get('user_password'))
         user.save()
+        """
         login(request,user)
-        request.session['user_id'] = request.data.get('user_name')
+        request.session['user_id'] = user.pk
         if not request.session.session_key:
             request.session.save()
         print("session key:"+request.session.session_key)
         print(request.session.get('user_id',None))
+        """
         vali.delete()
         return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
 
@@ -414,7 +416,21 @@ class loggin(APIView):
     def post(self,request):
         username=request.data.get('username')
         password=request.data.get('password')
+        
+        # user=authenticate(request=request,username=username,password=password)
+        # login(request,user)  #用户id对应写在_auth_user_id里
+        # request.session['user_id'] = user.pk
+        # request.session['is_login'] = True
+        # if not request.session.session_key:
+        #     request.session.save()
+        # print("session key:"+request.session.session_key)
+        # print(request.session.get('_auth_user_id',None))
+        # print(request.session.items()) #获取session键值对
+        # data=request.session.items()
+        # return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
 
+
+        
         print(username)
         print(password)
         user=authenticate(request=request,username=username,password=password)
