@@ -16,6 +16,17 @@ import {
 } from "react-router-dom";
 import UserPage from "./UserPage";
 
+async function handleLogout(){
+
+  let response=await fetch("api/loggout");
+  if(!response.ok){
+    console.log("log out failed");
+    return;
+  }
+  console.log("log out success");
+
+}
+
 function HomePage(props) {
   
     function renderHomePage() {
@@ -29,6 +40,7 @@ function HomePage(props) {
           <Button variant='contained' to="/login" component={Link}>登录</Button>
           <Button variant='contained' to="/user/:userId" component={Link}>用户信息</Button>
           <Button variant='contained' to="/search" component={Link}>搜索</Button>
+          <Button variant='contained' onClick={handleLogout}>退出登录</Button>
         </div>
       );
     }
@@ -42,7 +54,7 @@ function HomePage(props) {
           <Route path="/book/:isbn/update" element={<UpdateBookPage/>} />
           <Route path="/register" element={<RegisterPage/>} />
           <Route path="/login" element={<LoginPage/>}/>
-          <Route path="/user/:userId"/>
+          <Route path="/user/:userId" element={<UserPage/>}/>
           <Route path="/search" element={<SearchPage/>}/>
           <Route path="/search/results" element={<SearchResults/>}/>
         </Routes>

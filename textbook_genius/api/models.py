@@ -81,7 +81,8 @@ class Profile(models.Model):
     user_major = models.CharField(max_length=50, null=False, default="")
     user_department = models.CharField(max_length=50, null=False, default="")
     user_credit = models.IntegerField(null=False,default=100)
-    # user_indate = models.DateTimeField(auto_now_add=True)
+    #user_indate = models.CharField(max_length=4, null=False, default="")
+    #user_avatar = models.CharField(max_length=50, null=False, default="")
     # print(user_id)
     def __str__(self) -> str:
         return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
