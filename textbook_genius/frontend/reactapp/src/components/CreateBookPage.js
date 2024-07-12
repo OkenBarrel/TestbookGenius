@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import { useState,useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
+import SchoolYearSelect from './SelectSchoolYear';
 
 
 function CreateBookPage(props){
@@ -92,7 +93,7 @@ function CreateBookPage(props){
 
     return(
         <div className='createBookPage'>
-            <Box sx={{ display:'flex',flexDirection: 'row'}}>
+            <Box  alignContent="center" sx={{ display:'flex',flexDirection: 'row'}}>
                 <Box sx={{width:600,p: 2, border: '1px dashed grey'}}>{/*minWidth:400,maxWidth:400*/}
                 <Grid container spacing={1} item xs={6} >
                     <Grid item xs={12} align="center">
@@ -152,16 +153,17 @@ function CreateBookPage(props){
                     </Grid>
                     <Grid item xs={12} align="center">
                     {/* <TextField value={school_year} label={"学年"} onChange={(e)=>{setSchoolyear(e.target.value)}}/> */}
-                        <FormControl variant="outlined">
-                            <InputLabel htmlFor="school-year-input">学年</InputLabel>
+                        <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
+                            {/* <InputLabel htmlFor="school-year-input">学年</InputLabel>
                             <OutlinedInput
                                 id="school-year-input"
                                 value={school_year}
                                 onChange={(e) => { setSchoolyear(e.target.value) }}
                                 label="学年"
-                            />
+                            /> */}
+                            <SchoolYearSelect onChange={(e)=>{setSchoolyear(e.target.value)}} value={school_year}/>
                         </FormControl>
-                        <FormControl sx={{ m: 1, minWidth: 120 }}>
+                        <FormControl sx={{ m: 1, minWidth: 140 }}>
                             <InputLabel id="demo-simple-select-helper-label">学期</InputLabel>
                             <Select
                             labelId="demo-simple-select-helper-label"
