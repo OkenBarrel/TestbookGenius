@@ -121,9 +121,4 @@ class SearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Usebook
-        fields = ('book', 'teacher', 'course', 'school_year', 'semester', 'course_name', 'department')
-
-    def to_representation(self, instance):
-        # Customize representation if needed
-        representation = super().to_representation(instance)
-        return representation    
+        fields = ('book', 'teacher', 'course', 'school_year', 'semester')

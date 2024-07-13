@@ -14,7 +14,7 @@ urlpatterns = [
     path('login',loggin.as_view()),
     path('down-score-user',downScoreUser.as_view()),
     path('validation',validation.as_view()),
-    path('search',SearchView.as_view()),
+    path('search/results',SearchView.as_view()),
     path('logout',loggout.as_view()),
     path('user', ProfileViewer.as_view(), name='user_profile'),
     path('proxy-image', proxy_image.as_view(), name='proxy_image'),
