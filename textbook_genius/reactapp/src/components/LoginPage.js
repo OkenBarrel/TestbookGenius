@@ -40,7 +40,7 @@ const LoginPage = () => {
                     password:password
                 })
             };
-            const response=await fetch('http://172.27.194.74:8000/api/login',requestOption);
+            const response=await fetch('http://8.130.18.80:8000/api/login',requestOption);
             if(!response.ok){
                 const errorData = await response.json();
                 setError(errorData.msg || 'Invalid username or password.');

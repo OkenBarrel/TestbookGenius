@@ -26,7 +26,7 @@ function UpdateBookPage(props){
 
     useEffect(() => {
         console.log(isbn);
-        fetch("http://172.27.194.74:8000/api/get-book"+"?isbn="+isbn)
+        fetch("http://8.130.18.80:8000/api/get-book"+"?isbn="+isbn)
         .then(res=>{
             return res.json()
         })
@@ -60,7 +60,7 @@ function UpdateBookPage(props){
                 },
             }),
         };
-        let response=await fetch("http://172.27.194.74:8000/api/update-book",requestOption)
+        let response=await fetch("http://8.130.18.80:8000/api/update-book",requestOption)
         let data=await response.json();
         navigate('/book/'+isbn);
     }

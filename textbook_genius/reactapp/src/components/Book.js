@@ -42,7 +42,7 @@ const Book=({relation})=>{
     }, []);
 
     async function getBookDetails(){
-        let res=await fetch("http://172.27.194.74:8000/api/get-book"+"?isbn="+isbn)
+        let res=await fetch("http://8.130.18.80:8000/api/get-book"+"?isbn="+isbn)
         if(!res.ok){
             navigate("/");
             return;
@@ -172,7 +172,7 @@ const Book=({relation})=>{
                             maxWidth: 300, // 设定合适的 CSS 单位
                             objectFit: 'contain' // or 'scale-down', 'fill', 'cover'
                             }}
-                        image={`http://172.27.194.74:8000/api/proxy-image?url=${encodeURIComponent(cover)}`}
+                        image={`http://8.130.18.80:8000/api/proxy-image?url=${encodeURIComponent(cover)}`}
                         title="cover"
                         />
                     )}
