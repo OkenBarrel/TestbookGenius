@@ -89,7 +89,11 @@ class Profile(models.Model):
         # 如果对象已存在（即这是更新操作）
         if self.pk:
             # 获取当前对象
-            old_instance = Profile.objects.get(pk=self.pk)
+            try:
+                old_instance = Profile.objects.get(pk=self.pk)
+            except Exception:
+                super(Profile, self).save(*args, **kwargs)
+                return 
             old_image = old_instance.user_avatar
 
             # 如果旧图片和新图片不同，并且旧图片存在
