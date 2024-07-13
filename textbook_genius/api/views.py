@@ -232,29 +232,42 @@ class updateBook(APIView):
         
 class markBook(APIView):
     mark_serializer_class=MarkSerializer
+    book_serializer_class=BookSerializer
     def post(self,request,format=None):
-        #userid=request.session.get('_auth_user_id',None)
-        #userid=request.data.get("userid")
-        #bookisbn=request.data.get("bookisbn")
-        mark_data=request.data.get("mark")
         print(request.data)
-        print(mark_data)
-        print(request.session.get('_auth_user_id',None))
+        #print(request.session.get('_auth_user_id',None))
         print(request.session.get('user_id',None))
+        request_data=request.data.get("mark")
+
+        queryset=Book.objects.filter(isbn=request_data['bookisbn'])
+        if queryset.exists():
+            book=queryset[0]
+            print(book.isbn)
+        else:
+            return Response({'msg':'未找到该书籍'},status.HTTP_404_NOT_FOUND)
+       
+        queryset=User.objects.filter(id=request_data['userid'])
+        if queryset.exists():
+            user_mark=queryset[0]
+            print(user_mark.id)
+        else:
+            return Response({'msg':'未找到该用户'},status.HTTP_404_NOT_FOUND)
+
+        mark_data={
+            "userid":user_mark.id,
+            "bookisbn":book.isbn
+        }
+
         mark_serializer=self.mark_serializer_class(data=mark_data)
         print(mark_serializer)
         if mark_serializer.is_valid():
-            #userid=mark_serializer.data.get('userid')
-            print("here")
-            userid=request.session.get('user_id',None)
-            bookisbn=mark_serializer.data.get('bookisbn')
-            mark=Mark(userid=userid,bookisbn=bookisbn)
+            mark=Mark(userid_id=user_mark.id,bookisbn_id=book.isbn) #在外键字段后面需加_id
             mark.save()
+            print("ok")
             return Response(MarkSerializer(mark).data,status.HTTP_200_OK)
         else:
             print('mark')
             print(mark_serializer.errors)
-            print(userid)
             return Response({'msg':'收藏失败'},status.HTTP_404_NOT_FOUND)
 
 

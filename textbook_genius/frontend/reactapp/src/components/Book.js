@@ -35,6 +35,7 @@ const Book=({relation})=>{
     const[mark,setMark]=useState(false) //mark action
     const[markid,setMarkId]=useState('')
     const[userid,setUserId]=useState('')
+    const[username,setUserName]=useState('')
 
     const[relationerror,setRelationError]=useState('')
 
@@ -42,8 +43,10 @@ const Book=({relation})=>{
     const csrftoken=getCsrfToken();
 
     useEffect(() => {
-        console.log(isbn);
+        //console.log(isbn);
         getBookDetails();
+        setUserId(getCookie('user_id'))
+        setUserName(getCookie('username'))
     }, []);
 
     async function getBookDetails(){
@@ -73,10 +76,10 @@ const Book=({relation})=>{
         // })
     }
 
-    useEffect(()=>{
+    /*useEffect(()=>{
         console.log(relation);
        
-    },[relation])
+    },[relation])*/
 
     /*const handleRequest = async (url, method, body) => {
         let requestOption = {
@@ -107,8 +110,10 @@ const Book=({relation})=>{
                 return;
             }
             console.log("mark"+isbn);
+            console.log(getCookie('user_id'))
             setMark(true);
             setUserId(getCookie('user_id'))
+            setUserName(getCookie('username'))
             
             const requestOption={
                 method:"POST",
@@ -122,6 +127,20 @@ const Book=({relation})=>{
                         userid:userid,
                         bookisbn:isbn
                     }
+                   /* book:{
+                        isbn:isbn,
+                        title:title,
+                        author:author,
+                        publisher:publisher,
+                        pubdate:pubdate,
+                        cover:cover,
+                        douban_url:douban_url
+                    },
+                    User:{
+                        user_id:userid,
+                        username:username
+                    }*/
+
                 })
             };
             let response=await fetch("/api/mark-book",requestOption)

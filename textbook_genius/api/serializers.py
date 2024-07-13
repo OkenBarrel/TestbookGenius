@@ -75,6 +75,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 #         fields=('user_id','user','user_major','user_department','user_credit')
 
 class MarkSerializer(serializers.ModelSerializer):
+    userid = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    bookisbn = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
     class Meta:
         model = Mark
         fields=('userid','bookisbn')
