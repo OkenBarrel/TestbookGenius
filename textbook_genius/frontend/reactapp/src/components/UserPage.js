@@ -1,72 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useParams } from 'react-router-dom';
+import { getCookie } from './CSRFToken';
 
 // import './UserPage.css';
 import { Container, TextField, Typography, Button, Paper, Grid, Box, Avatar } from '@mui/material';
-import FileUpload from "./FileUpload";
+// import FileUpload from "./FileUpload";
+import InputFileUpload from './FileUpload';
 const UserPage =()=> {
     //TODO: Dummy data, in real situation, please using API to acquire user data.
 
     const { userId } = useParams();
+    const csrftoken = getCookie('csrftoken');
+    const[url,setUrl]=useState("");
     // const userId = 'testuser';
     const [userInfo, setUserInfo] = useState(
         {
-            // userID: 'testuser',
-            // name: 'Shit',
-            // department: 'LAS',
-            // major: 'Computer Science',
-            // ProgramStartYear: '2024',
-            // credit: '100',
-            // avatarUrl: '/Avatar/DefaultAvatar.png'
-            // userID: '',
             username: '',
+            user_id:'',
             department: '',
             major: '',
             ProgramStartYear: '',
             credit: '',
-            avatarUrl: ''
+            avatarFile: null,
         });
     const [isEditing, setIsEditing] = useState(false);
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
     useEffect(() => {
         fetchUserData();
     }, []);
 
     const fetchUserData = async () => {
             try {
-                // , {
-                //     method: 'get',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     }
-                // }
+    
                 console.log(userId)
                 const response = await fetch("/api/user"+"?user_id="+userId);
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data.user_avatar)
+                    console.log(data.avatar_url)
                     setUserInfo({
-                        username: data.user,
+                        username: data.username,
+                        user_id:userId,
                         department: data.user_department,
                         major: data.user_major,
                         ProgramStartYear: '2024',
                         credit: data.user_credit,
-                        avatarUrl: data.user_avatar
+                        avatarFile: ''
                     });
+                    setUrl(data.avatar_url)
                 } else {
                     console.error('Error fetching user data:', response.statusText);
                 }
@@ -75,11 +55,32 @@ const UserPage =()=> {
             }
         };
 
-    const handleFileSelect = (fileUrl) => {
-        setUserInfo({
-            ...userInfo,
-            avatarUrl: fileUrl
-        });
+    // const handleFileSelect = (fileUrl) => {
+    //     setUserInfo({
+    //         ...userInfo,
+    //         avatarUrl: fileUrl
+    //     });
+    // };
+    const handleFileSelect = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // 这里是文件的 base64 URL
+                const fileUrl = e.target.result;
+                
+                // 更新用户信息，包括文件对象和 URL
+                setUserInfo({
+                    ...userInfo,
+                    // avatarUrl: fileUrl, // 将 URL 存储在 avatarUrl 中
+                    avatarFile: file    // 也存储文件对象
+                });
+                setUrl(fileUrl);
+            };
+    
+            // 读取文件作为 Data URL
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleInputChange =(e)=> {
@@ -96,20 +97,22 @@ const UserPage =()=> {
         e.preventDefault();
         setIsEditing(false);
         try{
-            const csrftoken = getCookie('csrftoken');
             const formData = new FormData();
+            formData.append('user_id',userInfo.user_id)
             formData.append('user_major', userInfo.major);
             formData.append('user_department', userInfo.department);
             formData.append('user_credit', userInfo.credit);
             if (userInfo.avatarFile) {
                 formData.append('user_avatar', userInfo.avatarFile);
             }
-            const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`, {
-                    method: 'put',
-                    headers: {
-                        'X-CSRFToken': csrftoken
+            console.log(userInfo.avatarFile)
+            const response = await fetch("http://127.0.0.1:8000/api/user"+"?user_id="+userId, {
+                    method: 'PUT',
+                    headers:{
+                        // "Content-Type": "multipart/form-data",
+                        "X-CSRFToken": csrftoken
                     },
-                    body: formData
+                    body:formData
                 }
             );
             if (response.ok) {
@@ -120,7 +123,7 @@ const UserPage =()=> {
                     major: data.user_major,
                     ProgramStartYear: data.user_indate,
                     credit: data.user_credit,
-                    avatarUrl: data.avatarUrl
+                    avatarFile: data.avatarFile
                 });
                 setIsEditing(false);
             } else {
@@ -135,11 +138,12 @@ const UserPage =()=> {
         <Container maxWidth="sm" style={{ marginTop: '20px' }}>
             <Paper elevation={3} style={{ padding: '20px' }}>
                 <Box display="flex" justifyContent="center" mb={2}>
-                    <Avatar alt="User Avatar" src={userInfo.avatarUrl} sx={{ width: 80, height: 80 }} />
+                    <Avatar alt="User Avatar" src={url} sx={{ width: 80, height: 80 }} />
                 </Box>
                 {isEditing && (
                     <Box display="flex" justifyContent="center" mb={2}>
-                        <FileUpload onFileSelect={handleFileSelect} acceptedFileTypes="image/*" label="Change Avatar" />
+                        <InputFileUpload onChange={handleFileSelect}></InputFileUpload>
+                        {/* <FileUpload onFileSelect={handleFileSelect} acceptedFileTypes="image/*" label="Change Avatar" /> */}
                     </Box>
                 )}
                 <Typography variant="h4" component="h1" gutterBottom>

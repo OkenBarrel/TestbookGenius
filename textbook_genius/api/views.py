@@ -425,7 +425,7 @@ class loggin(APIView):
         else:
             return Response({"Bas Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(csrf_exempt, name='dispatch')
+# @method_decorator(csrf_exempt, name='dispatch')
 class ProfileViewer(APIView):
     parser_classes = (MultiPartParser, FormParser)
     def get(self, request):
@@ -439,31 +439,55 @@ class ProfileViewer(APIView):
                     'username': profile.user.username,
                     'user_department': profile.user_department,
                     'user_major': profile.user_major,
-                    'user_credit': profile.user_credit
+                    'user_credit': profile.user_credit,
+                    'avatar_url' : '/media/Avatar/trees.jpg'
                 }
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                #request.build_absolute_uri(profile.user_avatar.url) if profile.user_avatar else None
+                print(request.build_absolute_uri(profile.user_avatar.url))
+                return Response(data, status=status.HTTP_200_OK)
 #                 return res
             except Profile.DoesNotExist:
                 print("fail")
                 return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
 #
 #     @csrf_exempt
-    def put(self, request, user_id):
+    def put(self, request):
             try:
-                print("valid")
-                profile = Profile.objects.get(user__username=user_id)
-                serializer = ProfileSerializer(profile, data=request.data, partial=True)
+                print(request.data)
+                print(request.FILES)
+                
+
+                user_id=request.data.get('user_id')
+                user_major=request.data.get('user_major')
+                user_department=request.data.get('user_department')
+                user_credit=request.data.get('user_credit')
+                data={
+                    'user_id':user_id,
+                    'user_major':user_major,
+                    'user_department':user_department,
+                    'user_credit':user_credit
+                }
+                if 'user_avatar' in request.FILES:
+                    data['user_avatar'] = request.FILES['user_avatar']
+                
+                print('user')
+                print(user_id)
+                
+
+                profile = Profile.objects.get(user__id=user_id)
+                serializer = ProfileSerializer(profile, data=data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                    data = {
-                        'username': profile.user.username,
-                        'user_department': profile.user_department,
-                        'user_major': profile.user_major,
-                        'user_credit': profile.user_credit
-                    }
+                    # data = {
+                    #     'username': profile.user.username,
+                    #     'user_department': profile.user_department,
+                    #     'user_major': profile.user_major,
+                    #     'user_credit': profile.user_credit
+                    # }
                     print("valid")
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 print("not valid")
+                print(serializer.errors)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             except Profile.DoesNotExist:
                 print("except")
