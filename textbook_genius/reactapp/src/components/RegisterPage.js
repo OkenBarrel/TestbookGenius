@@ -32,6 +32,20 @@ const RegisterPage = () => {
       return;
     }
 
+    // 验证邮箱格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Email must be in a valid format (example@example.com).');
+      return;
+    }
+
+    // 验证密码：不能为纯数字，且至少8位
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setError('Password must be at least 8 characters long and contain both letters and numbers.');
+      return;
+    }
+
     const apiUrl = '/api/register';
 
     try {
