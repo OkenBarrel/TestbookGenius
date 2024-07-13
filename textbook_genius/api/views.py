@@ -65,6 +65,10 @@ from django.views.decorators.http import require_http_methods
 from urllib.parse import unquote
 from django.http import HttpResponse
 
+class test(APIView):
+    def get(self,request):
+        return Response("hello",status=status.HTTP_200_OK)
+
 # @require_http_methods(["GET"])
 class proxy_image(APIView):
     def get(self,request):
