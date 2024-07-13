@@ -81,7 +81,8 @@ class Profile(models.Model):
     user_major = models.CharField(max_length=50, null=False, default="")
     user_department = models.CharField(max_length=50, null=False, default="")
     user_credit = models.IntegerField(null=False,default=100)
-    # user_indate = models.DateTimeField(auto_now_add=True)
+    user_indate = models.CharField(max_length=4, null=False, default="")
+    user_avatar = models.ImageField(upload_to='Avatar/', null=False, blank=True, default='Avatar/DefaultAvatar.png')
     # print(user_id)
     def __str__(self) -> str:
         return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
@@ -94,8 +95,8 @@ class Mark(models.Model):
 class Comment(models.Model):
     com_id = models.CharField(max_length=50,null=False,unique=True,primary_key=True)
     info = models.CharField(max_length=200,null=False,unique=True)   
-    # relationship with book
-    book = models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
+    # relationship with usebook
+    usebook = models.ForeignKey(Usebook,on_delete=models.CASCADE)#on_update=models.CASCADE
     # relationship with user
     user_id = models.ForeignKey(User,on_delete=models.CASCADE) #on_update=models.CASCADE
     # relationship with user : props
