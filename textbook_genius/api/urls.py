@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import get_doubanBook,get_book,createBook,updateBook,upScoreUser,loggin,\
                     downScoreUser,getUseBook,register,validation,SearchView,loggout,ProfileViewer,\
-                    proxy_image
+                    proxy_image,getComment
+
 
 urlpatterns = [
     path('get-douban-book',get_doubanBook.as_view()),
@@ -15,6 +16,7 @@ urlpatterns = [
     path('down-score-user',downScoreUser.as_view()),
     path('validation',validation.as_view()),
     path('search',SearchView.as_view(),name = 'search'),
+    path('get-comment',getComment.as_view()),
     path('logout',loggout.as_view()),
     path('user', ProfileViewer.as_view(), name='user_profile'),
     path('proxy-image', proxy_image.as_view(), name='proxy_image'),
