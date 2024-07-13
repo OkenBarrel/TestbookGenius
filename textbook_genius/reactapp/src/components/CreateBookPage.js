@@ -50,7 +50,7 @@ function CreateBookPage(props){
             setIsbnError("ISBN无效，请重新输入");
             return;
         }
-        let response= await fetch("http://8.130.18.80:8000/api/get-douban-book"+"?isbn="+isbn,{
+        let response= await fetch("http://172.27.194.74:8000/api/get-douban-book"+"?isbn="+isbn,{
             method: 'GET', // 可以是 'POST', 'PUT' 等其他 HTTP 方法
             credentials: 'include', // 确保在跨域请求中发送凭证
         })
@@ -104,7 +104,7 @@ function CreateBookPage(props){
                 semester:semester
             }),
         };
-        let response=await fetch("http://8.130.18.80:8000/api/create-book",requestOption)
+        let response=await fetch("http://172.27.194.74:8000/api/create-book",requestOption)
         let data=await response.json();
         if(!response.ok){
             setRelationError(data.msg);
@@ -260,7 +260,7 @@ function CreateBookPage(props){
                             </Grid>
                             {isbnError && <Alert severity="error" style={{ marginTop: 20 }}>{isbnError}</Alert>}
                         </CardContent>
-                        {cover && (<img src={`http://8.130.18.80:8000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>
+                        {cover && (<img src={`http://172.27.194.74:8000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>
 )}
                         {/* <CardMedia
                         component="img"
