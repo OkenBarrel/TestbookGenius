@@ -440,9 +440,9 @@ class ProfileViewer(APIView):
                     'user_department': profile.user_department,
                     'user_major': profile.user_major,
                     'user_credit': profile.user_credit,
-                    'avatar_url' : '/media/Avatar/trees.jpg'
+                    'avatar_url' : request.build_absolute_uri(profile.user_avatar.url) if profile.user_avatar else None
+
                 }
-                #request.build_absolute_uri(profile.user_avatar.url) if profile.user_avatar else None
                 print(request.build_absolute_uri(profile.user_avatar.url))
                 return Response(data, status=status.HTTP_200_OK)
 #                 return res

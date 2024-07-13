@@ -125,6 +125,7 @@ const UserPage =()=> {
                     credit: data.user_credit,
                     avatarFile: data.avatarFile
                 });
+                setUrl(data.avatar_url)
                 setIsEditing(false);
             } else {
                 console.error('Error updating user data:', response.statusText);
