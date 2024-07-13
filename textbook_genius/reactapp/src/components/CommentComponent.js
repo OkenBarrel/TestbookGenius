@@ -24,7 +24,7 @@ const CommentComponet=({isbn})=>{
     },[]);
 
     async function getRelations(){
-        let response=await fetch("http://localhost:8000/api/get-useBook"+"?isbn="+isbn);
+        let response=await fetch("/api/get-useBook"+"?isbn="+isbn);
         if(!response.ok){
             console.log("get relations wrong!!");
             return;
@@ -41,7 +41,7 @@ const CommentComponet=({isbn})=>{
   
     const getComment = async (relationId) => {
         try {
-            const response = await fetch(`api/get-comment/${relationId}`);
+            const response = await fetch(`http://localhost:8000/api/get-comment/${relationId}`);
             if (!response.ok) {
                 throw new Error('网络响应错误');
             }
@@ -59,32 +59,86 @@ const CommentComponet=({isbn})=>{
             getComment(relationId);
         }
     }, [relations, value]);
+
+
+    const createComment = async (commentText) => {
+        // if (!isUserLoggedIn()) {
+        //     alert("请先登录！");
+        //     return;
+        // }验证信息格式？跳到登录
+
+        const userId = getCurrentUserId();
+        const relationId = relations[value].id; // 使用当前选中的useBook关系的ID
+
+        try {
+            const response = await fetch('http://localhost:8000/api/create-comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    usebook_id: relationId,
+                    info: commentText,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('网络响应错误');
+            }
+
+            const newComment = await response.json();
+            setComments([...comments, newComment]); // 更新评论列表以包含新评论
+            // 清空输入框或执行其他UI更新操作
+        } catch (error) {
+            console.error('创建评论失败:', error);
+        }
+    };
     
     return(
-        <Box sx={{display:'flex',flexDirection:'row'}}>
-            <Card>
-                <Tabs 
-                    value={value} onChange={handleChange}
-                    variant="scrollable" scrollButtons="auto"
-                >
-                    {relations.map((relation)=>(
-                        <Tab key={relation.id} label={relation.course.course_name+"-"+relation.teacher}></Tab>
-                    ))}
-                
-                </Tabs>
-            </Card>
-
-            <ScoreComponent relation={relations[value]}></ScoreComponent>
-            {/* 显示当前选中关系的评论 */}
-            <Box sx={{ width: '100%', typography: 'body1' }}>
+            <Box sx={{display:'flex',flexDirection:'row'}}>
+                <Card>
+                    <Tabs 
+                        value={value} onChange={handleChange}
+                        variant="scrollable" scrollButtons="auto"
+                    >
+                        {relations.map((relation)=>(
+                            <Tab label={relation.course.course_name+"-"+relation.teacher}></Tab>                                
+                        ))}
+                    
+                    </Tabs>
+                    <CustomTabPanel value={value} index={value}>
+                        <Box sx={{ width: '100%', typography: 'body1' }}>
+                            <ul>
+                                {comments.filter(comment => comment.relationId === relations[value].id).map((filteredComment, index) => (
+                                    <li key={index}>{filteredComment.info}</li> // 假设每个评论对象都有一个relationId属性与relation的id对应
+                                ))}
+                            </ul>
+                        </Box>
+                    </CustomTabPanel>
+                </Card>
+    
+                {console.log(relations[value])}
+                {<ScoreComponent relation={relations[value]}></ScoreComponent>
+                /*<Box sx={{ width: '100%', typography: 'body1' }}>
                 <ul>
                     {comments.map((comment, index) => (
-                        <li key={index}>{comment.content}</li> // 假设每个评论对象都有一个content属性
+                        <li key={index}>{comment.info}</li> // 每个评论对象都有一个info属性
                     ))}
                 </ul>
+                </Box> */}
+                <Box>
+                    <TextField
+                        label="写下你的评论"
+                        variant="outlined"
+                        fullWidth
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                    />
+                    <Button onClick={() => createComment(commentText)}>提交评论</Button>
+                </Box>
             </Box>
-        </Box>
-    )
-}
+        )
+    }
 
 export default CommentComponet;

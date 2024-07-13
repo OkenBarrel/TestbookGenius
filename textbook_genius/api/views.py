@@ -312,6 +312,29 @@ class getComment(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
+class createComment(APIView):
+    def post(self, request, format=None):
+        # 获取请求数据
+        comment_data = request.data.get("comment")
+        usebook_id = request.data.get("usebook_id")
+
+        # 验证数据完整性
+        if not all([comment_data, usebook_id]):
+            return Response({"msg": "缺少必要信息"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 查找关联对象
+        try:
+            usebook = Usebook.objects.get(id=usebook_id)
+        except Usebook.DoesNotExist as e:
+            return Response({"msg": "提供的信息无法找到对应的Usebook实例"}, status=status.HTTP_404_NOT_FOUND)
+
+        # 创建评论
+        comment = Comment(content=comment_data, usebook=usebook)
+        comment.save()
+
+        # 返回成功响应
+        return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
+
 from django.core.mail import send_mail
 
 class register(APIView):
