@@ -437,8 +437,8 @@ class loggin(APIView):
             print(request.session.items()) #获取session键值对
             data=request.session.items()
             res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
-            res.set_cookie('username',username,httponly=False,secure=True)
-            res.set_cookie('user_id',user.id,httponly=False,secure=True)
+            res.set_cookie('username',username,httponly=False)
+            res.set_cookie('user_id',user.id,httponly=False)
             return res
             # return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
         else:

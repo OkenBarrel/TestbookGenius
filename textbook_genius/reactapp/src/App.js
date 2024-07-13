@@ -12,6 +12,7 @@ import CreateBookPage from './components/CreateBookPage';
 import SearchPage from './components/SearchPage';
 import SearchResults from './components/SearchResults';
 import UpdateBookPage from './components/UpdateBookPage';
+import { getCookie } from './components/CSRFToken';
 
 import {Button,TextField} from '@mui/material';
 import { useState,useEffect } from 'react';
@@ -23,12 +24,17 @@ import {
   Redirect,
 } from "react-router-dom";
 function App(props) {
+  const[id,setId]=useState("");
+  useEffect(()=>{
+    const idd=getCookie('user_id');
+    setId(idd);
+  },[])
 
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route exact path="/" element={<HomePage/>} />
+          <Route exact path="/" element={<HomePage id={id}/>} />
           <Route path="/create" element={<CreateBookPage/>} />
           <Route path="/book/:isbn" element={<Book/>} />
           <Route path="/book/:isbn/update" element={<UpdateBookPage/>} />
