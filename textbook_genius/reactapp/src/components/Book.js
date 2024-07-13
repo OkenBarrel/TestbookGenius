@@ -42,7 +42,7 @@ const Book=({relation})=>{
     }, []);
 
     async function getBookDetails(){
-        let res=await fetch("/api/get-book"+"?isbn="+isbn)
+        let res=await fetch("http://localhost:8000/api/get-book"+"?isbn="+isbn)
         if(!res.ok){
             navigate("/");
             return;
@@ -165,18 +165,17 @@ const Book=({relation})=>{
                     </Grid>
                     </CardContent>
                 </Box>
-                <CardMedia
-                    component="img"
-                    sx={{ 
-                        maxWidth: '100',
-                        // maxHeight: '50%',
-                        // width: '100%',
-                        // height: '100%',
-                        objectFit: 'contain' // or 'scale-down', 'fill', 'cover'
-                      }}
-                    image={cover}
-                    title="cover"
-                />
+                    {cover && (
+                        <CardMedia
+                        component="img"
+                        sx={{ 
+                            maxWidth: 300, // 设定合适的 CSS 单位
+                            objectFit: 'contain' // or 'scale-down', 'fill', 'cover'
+                            }}
+                        image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`}
+                        title="cover"
+                        />
+                    )}
                 <Box align="center" justifyContent="center" alignItems="flex-end" sx={{ display: 'flex', flexDirection: 'column' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} align="center">
