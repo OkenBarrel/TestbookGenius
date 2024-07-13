@@ -32,7 +32,7 @@ const RegisterPage = () => {
       return;
     }
 
-    const apiUrl = '/api/register';
+    const apiUrl = 'http://localhost:8000/api/register';
 
     try {
       const response = await fetch(apiUrl, {
@@ -82,7 +82,7 @@ const RegisterPage = () => {
       })
 
     }
-    let response=await fetch("/api/validation",requestOption)
+    let response=await fetch("http://localhost:8000/api/validation",requestOption)
     let data=await response.json()
     if(!response.ok){
       console.log(response.statusText)

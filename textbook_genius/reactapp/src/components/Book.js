@@ -42,7 +42,7 @@ const Book=({relation})=>{
     }, []);
 
     async function getBookDetails(){
-        let res=await fetch("/api/get-book"+"?isbn="+isbn)
+        let res=await fetch("http://localhost:8000/api/get-book"+"?isbn="+isbn)
         if(!res.ok){
             navigate("/");
             return;

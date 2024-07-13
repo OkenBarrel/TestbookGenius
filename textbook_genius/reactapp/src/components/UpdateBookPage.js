@@ -26,7 +26,7 @@ function UpdateBookPage(props){
 
     useEffect(() => {
         console.log(isbn);
-        fetch("/api/get-book"+"?isbn="+isbn)
+        fetch("http://localhost:8000/api/get-book"+"?isbn="+isbn)
         .then(res=>{
             return res.json()
         })
@@ -60,7 +60,7 @@ function UpdateBookPage(props){
                 },
             }),
         };
-        let response=await fetch("/api/update-book",requestOption)
+        let response=await fetch("http://localhost:8000/api/update-book",requestOption)
         let data=await response.json();
         navigate('/book/'+isbn);
     }

@@ -34,12 +34,13 @@ const LoginPage = () => {
                     "Content-Type": "application/json",
                     "X-CSRFToken": csrftoken
                 },
+                credentials: 'include',
                 body:JSON.stringify({
                     username:username,
                     password:password
                 })
             };
-            const response=await fetch('/api/login',requestOption);
+            const response=await fetch('http://localhost:8000/api/login',requestOption);
             if(!response.ok){
                 const errorData = await response.json();
                 setError(errorData.msg || 'Invalid username or password.');

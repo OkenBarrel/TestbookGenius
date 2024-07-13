@@ -60,7 +60,26 @@ class get_book(APIView):
             return Response({'Book not found":"invalid ISBN.'},status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request':'isbn not found in request'},status=status.HTTP_400_BAD_REQUEST)
 
-    
+
+from django.views.decorators.http import require_http_methods
+from urllib.parse import unquote
+from django.http import HttpResponse
+
+# @require_http_methods(["GET"])
+class proxy_image(APIView):
+    def get(self,request):
+        print("Request received")
+        # 获取 URL 参数
+        image_url = unquote(request.GET.get('url'))
+        if not image_url:
+            return Response("No URL provided", status=400)
+        print("img:"+image_url)
+        # 发送 GET 请求到目标图片 URL
+        response = get(image_url, headers={'User-Agent': 'Mozilla/5.0'})
+        print(response.headers.get('Content-Type'))
+        # 返回目标图片的响应内容
+        return HttpResponse(response.content, content_type=response.headers.get('Content-Type'))
+
 class createBook(APIView):
     '''
     {
@@ -474,18 +493,19 @@ class ProfileViewer(APIView):
                 print(user_id)
                 
 
-                profile = Profile.objects.get(user__id=user_id)
+                profile = Profile.objects.get(user_id=user_id)
                 serializer = ProfileSerializer(profile, data=data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                    # data = {
-                    #     'username': profile.user.username,
-                    #     'user_department': profile.user_department,
-                    #     'user_major': profile.user_major,
-                    #     'user_credit': profile.user_credit
-                    # }
+                    data = {
+                        'username': profile.user.username,
+                        'user_department': profile.user_department,
+                        'user_major': profile.user_major,
+                        'user_credit': profile.user_credit,
+                        'avatar_url':request.build_absolute_uri(profile.user_avatar.url) if profile.user_avatar else None
+                    }
                     print("valid")
-                    return Response(serializer.data, status=status.HTTP_200_OK)
+                    return Response(data=data, status=status.HTTP_200_OK)
                 print("not valid")
                 print(serializer.errors)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
