@@ -260,7 +260,8 @@ function CreateBookPage(props){
                             </Grid>
                             {isbnError && <Alert severity="error" style={{ marginTop: 20 }}>{isbnError}</Alert>}
                         </CardContent>
-                        <img src={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>
+                        {cover && (<img src={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>
+)}
                         {/* <CardMedia
                         component="img"
                         image={cover}
