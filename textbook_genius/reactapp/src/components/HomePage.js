@@ -69,19 +69,6 @@ function HomePage(props) {
           <Button variant='contained' to="/search" component={Link}>搜索</Button>
           <Button variant='contained' onClick={handleLogout}>退出登录</Button>
         </div>
-      // <Router>
-      //   <Routes>
-      //     <Route path="/" element={renderHomePage()} />
-      //     <Route path="/create" element={<CreateBookPage/>} />
-      //     <Route path="/book/:isbn" element={<Book/>} />
-      //     <Route path="/book/:isbn/update" element={<UpdateBookPage/>} />
-      //     <Route path="/register" element={<RegisterPage/>} />
-      //     <Route path="/login" element={<LoginPage/>}/>
-      //     <Route path="/user/:userId" element={<UserPage/>}/>
-      //     <Route path="/search" element={<SearchPage/>}/>
-      //     <Route path="/search/results" element={<SearchResults/>}/>
-      //   </Routes>
-      // </Router>
 
     );
   }
