@@ -109,6 +109,11 @@ class Mark(models.Model):
     markid=models.CharField(max_length=10,primary_key=True)
     userid = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
     bookisbn = models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
+    class Meta:
+        unique_together=('userid','bookisbn')
+
+    def __str__(self) -> str:
+        return 'book: '+self.bookisbn.title+' user: '+self.userid.username
 
 class Comment(models.Model):
     com_id = models.CharField(max_length=50,null=False,unique=True,primary_key=True)

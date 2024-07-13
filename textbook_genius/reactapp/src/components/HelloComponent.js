@@ -35,6 +35,7 @@ const HelloComponent=()=>{
        else{
             setUser("Hello, "+getCookie('username'))
        }
+      
     }, []);
 
     return(
