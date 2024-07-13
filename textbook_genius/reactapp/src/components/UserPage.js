@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getCookie } from './CSRFToken';
 
 // import './UserPage.css';
-import { Container, TextField, Typography, Button, Paper, Grid, Box, Avatar } from '@mui/material';
+import { Container, TextField, Typography, Button, Paper, Grid, Box, Avatar, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 // import FileUpload from "./FileUpload";
 import InputFileUpload from './FileUpload';
 const UserPage =()=> {
@@ -184,15 +184,27 @@ const UserPage =()=> {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                label="Department"
-                                name="department"
-                                value={userInfo.department}
-                                onChange={handleInputChange}
-                                fullWidth
-                                variant="outlined"
-                                disabled={!isEditing}
-                            />
+                            <FormControl fullWidth variant="outlined" disabled={!isEditing}>
+                                <InputLabel id="department-label">Department</InputLabel>
+                                <Select
+                                    labelId="department-label"
+                                    name="department"
+                                    value={userInfo.department}
+                                    onChange={handleInputChange}
+                                    label="Department"
+                                >
+                                    <MenuItem value="理学部">理学部</MenuItem>
+                                    <MenuItem value="信息学部">信息学部</MenuItem>
+                                    <MenuItem value="文法学部">文法学部</MenuItem>
+                                    <MenuItem value="经管学部">经管学部</MenuItem>
+                                    <MenuItem value="环生学部">环生学部</MenuItem>
+                                    <MenuItem value="城建学部">城建学部</MenuItem>
+                                    <MenuItem value="材制学部">材制学部</MenuItem>
+                                    <MenuItem value="艺设学院">艺设学院</MenuItem>
+                                    <MenuItem value="马克思学院">马克思学院</MenuItem>
+                                    <MenuItem value="素质教育学院">素质教育学院</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
