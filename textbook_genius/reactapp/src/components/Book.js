@@ -1,5 +1,6 @@
 import React, { Component, useState,useEffect } from "react";
 import {Button,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
+import Alert from '@mui/material/Alert';
 import StarIcon from '@mui/icons-material/Star';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -14,7 +15,7 @@ import {
 } from "react-router-dom";
 import CommentComponet from "./CommentComponent";
 import ScoreComponent from "./ScoreComponet";
-
+import { getCookie } from './CSRFToken';
 import { getCsrfToken } from './CSRFToken';
 
 const Book=({relation})=>{
@@ -31,14 +32,21 @@ const Book=({relation})=>{
     const[buy_bookchina,setBookchina]=useState("")
     const[buy_jie,setJie]=useState("")
 
-    const[mark,setMark]=useState(false)
+    const[mark,setMark]=useState(false) //mark action
+    const[markid,setMarkId]=useState('')
+    const[userid,setUserId]=useState('')
+    const[username,setUserName]=useState('')
+
+    const[relationerror,setRelationError]=useState('')
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
 
     useEffect(() => {
-        console.log(isbn);
+        //console.log(isbn);
         getBookDetails();
+        setUserId(getCookie('user_id'))
+        setUserName(getCookie('username'))
     }, []);
 
     async function getBookDetails(){
@@ -73,7 +81,7 @@ const Book=({relation})=>{
        
     },[relation])*/
 
-    const handleRequest = async (url, method, body) => {
+    /*const handleRequest = async (url, method, body) => {
         let requestOption = {
             method: method,
             headers: {
@@ -88,21 +96,60 @@ const Book=({relation})=>{
             return false;
         }
         return true;
-    };
+    };*/
 
     async function handleMark(){
-        console.log("mark");
-        /*const body = { 
-            usebook: relation?.id
-        };*/
+        
         if (mark) {
             // 取消收藏
-           // const success = await handleRequest("/api/scoreUser", "DELETE", body);
             setMark(false);
         } else {
             // 进行收藏
-           // const success = await handleRequest("/api/scoreUser", "POST", body);
+            if(getCookie('username')==null){
+                setRelationError('Please Login First');
+                return;
+            }
+            console.log("mark"+isbn);
+            console.log(getCookie('user_id'))
             setMark(true);
+            setUserId(getCookie('user_id'))
+            setUserName(getCookie('username'))
+            
+            const requestOption={
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken
+                },
+                body:JSON.stringify({
+                    mark:{
+                       // markid:markid,
+                        userid:userid,
+                        bookisbn:isbn
+                    }
+                   /* book:{
+                        isbn:isbn,
+                        title:title,
+                        author:author,
+                        publisher:publisher,
+                        pubdate:pubdate,
+                        cover:cover,
+                        douban_url:douban_url
+                    },
+                    User:{
+                        user_id:userid,
+                        username:username
+                    }*/
+
+                })
+            };
+            let response=await fetch("/api/mark-book",requestOption)
+            let data=await response.json();
+            if(!response.ok){
+                setRelationError(data.msg);
+                return;
+            }
+            
         }
     }
 

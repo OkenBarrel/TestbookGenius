@@ -247,6 +247,46 @@ class updateBook(APIView):
             return Response(BookSerializer(book).data,status.HTTP_200_OK)
         else:
             return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
+        
+class markBook(APIView):
+    mark_serializer_class=MarkSerializer
+    book_serializer_class=BookSerializer
+    def post(self,request,format=None):
+        print(request.data)
+        #print(request.session.get('_auth_user_id',None))
+        print(request.session.get('user_id',None))
+        request_data=request.data.get("mark")
+
+        queryset=Book.objects.filter(isbn=request_data['bookisbn'])
+        if queryset.exists():
+            book=queryset[0]
+            print(book.isbn)
+        else:
+            return Response({'msg':'未找到该书籍'},status.HTTP_404_NOT_FOUND)
+       
+        queryset=User.objects.filter(id=request_data['userid'])
+        if queryset.exists():
+            user_mark=queryset[0]
+            print(user_mark.id)
+        else:
+            return Response({'msg':'未找到该用户'},status.HTTP_404_NOT_FOUND)
+
+        mark_data={
+            "userid":user_mark.id,
+            "bookisbn":book.isbn
+        }
+
+        mark_serializer=self.mark_serializer_class(data=mark_data)
+        print(mark_serializer)
+        if mark_serializer.is_valid():
+            mark=Mark(userid_id=user_mark.id,bookisbn_id=book.isbn) #在外键字段后面需加_id
+            mark.save()
+            print("ok")
+            return Response(MarkSerializer(mark).data,status.HTTP_200_OK)
+        else:
+            print('mark')
+            print(mark_serializer.errors)
+            return Response({'msg':'收藏失败'},status.HTTP_404_NOT_FOUND)
 
 
 class getUseBook(APIView):
@@ -436,7 +476,7 @@ class loggin(APIView):
             print("session key:"+request.session.session_key)
             print(request.session.get('_auth_user_id',None))
             print(request.session.items()) #获取session键值对
-            data=request.session.items()
+            #data=request.session.items()
             res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
             res.set_cookie('username',username,httponly=False)
             res.set_cookie('user_id',user.id,httponly=False)
