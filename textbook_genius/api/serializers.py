@@ -67,12 +67,17 @@ class UsebookSerializer(serializers.ModelSerializer):
         # }
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
-#     user_id=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    # user = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
+    user_id=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model=Profile
-        fields = ('user', 'user_major', 'user_department', 'user_credit')
-#         fields=('user_id','user','user_major','user_department','user_credit')
+        fields = ('user','user_id', 'user_major', 'user_department', 'user_credit','user_indate', 'user_avatar')
+    def get_user_avatar(self, obj):
+            request = self.context.get('request')
+            if obj.user_avatar:
+                return request.build_absolute_uri(obj.user_avatar.url)
+            return None
+
 
 class MarkSerializer(serializers.ModelSerializer):
     class Meta:

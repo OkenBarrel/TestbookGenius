@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8e875ffe-f16a-4440-afab-f2e7ea19085d" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/textbook_genius/api/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/api/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js" afterDir="false" />
+    </list>
+    <list id="c2224f17-430e-4519-b168-3d1829835ec4" name="Changes by tong" comment="">
+      <change beforePath="$PROJECT_DIR$/textbook_genius/api/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/api/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/textbook_genius/api/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/api/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/textbook_genius/api/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/api/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/textbook_genius/textbook_genius/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/textbook_genius/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/textbook_genius/textbook_genius/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/textbook_genius/urls.py" afterDir="false" />
+    </list>
+    <list id="151e3159-9671-4241-84e7-e20de0b8da5e" name="tong 进行的更改" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;KaedeOoO&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/OkenBarrel/SE-project.git&quot;,
+    &quot;accountId&quot;: &quot;a480589d-0863-4bff-a9c6-67045c95b79d&quot;
+  }
+}</component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js">
+      <ranges>
+        <range start1="3" end1="3" start2="3" end2="4" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="24" end1="25" start2="25" end2="26" changelist="8e875ffe-f16a-4440-afab-f2e7ea19085d" />
+        <range start1="26" end1="27" start2="27" end2="28" changelist="8e875ffe-f16a-4440-afab-f2e7ea19085d" />
+        <range start1="54" end1="54" start2="55" end2="56" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="55" end1="56" start2="57" end2="58" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="60" end1="61" start2="62" end2="63" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="95" end1="95" start2="97" end2="104" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="96" end1="107" start2="105" end2="112" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="110" end1="111" start2="115" end2="116" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="113" end1="114" start2="118" end2="119" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="115" end1="116" start2="120" end2="121" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+        <range start1="126" end1="128" start2="131" end2="131" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
+      </ranges>
+    </file>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2ixpkdNl8GyY7JtN0c8AIR8f7kv" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feat-loginn",
+    "last_opened_file_path": "E:/SP/SE-project/textbook_genius/media/Avatar",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "E:\\WebStorm 2024.1.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\SP\SE-project\textbook_genius\media\Avatar" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\SP\SE-project\textbook_genius\frontend\reactapp\src" />
+      <recent name="E:\SP\SE-project\textbook_genius\frontend\reactapp" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.18034.50" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="8e875ffe-f16a-4440-afab-f2e7ea19085d" name="更改" comment="" />
+      <created>1720442230280</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1720442230280</updated>
+      <workItem from="1720442232142" duration="855000" />
+      <workItem from="1720443517690" duration="3505000" />
+      <workItem from="1720672863854" duration="2103000" />
+      <workItem from="1720685429441" duration="8995000" />
+      <workItem from="1720751390498" duration="13746000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

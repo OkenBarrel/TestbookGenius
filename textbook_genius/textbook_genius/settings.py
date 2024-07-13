@@ -59,7 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'frontend/reactapp/build'),
+            os.path.join(BASE_DIR, 'reactapp/build'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -124,7 +125,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend/reactapp/build/static'),
+    os.path.join(BASE_DIR, 'reactapp/build/static'),
 ]
 
 # Default primary key field type
@@ -147,6 +148,12 @@ LOGGING = {
         'level': 'INFO',
     }
 }
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+print(MEDIA_ROOT)
+
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # 使用 Redis 作为消息代理
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # 使用 Redis 作为结果后端
