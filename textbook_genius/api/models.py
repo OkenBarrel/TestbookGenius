@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import string
 import random
 import datetime
+import os
 
 def generate_unique_code():
     length=6
@@ -84,6 +85,19 @@ class Profile(models.Model):
     user_indate = models.CharField(max_length=4, null=False, default="")
     user_avatar = models.ImageField(upload_to='Avatar/', null=False, blank=True, default='Avatar/DefaultAvatar.png')
     # print(user_id)
+    def save(self, *args, **kwargs):
+        # 如果对象已存在（即这是更新操作）
+        if self.pk:
+            # 获取当前对象
+            old_instance = Profile.objects.get(pk=self.pk)
+            old_image = old_instance.user_avatar
+
+            # 如果旧图片和新图片不同，并且旧图片存在
+            if old_image and old_image != self.user_avatar:
+                # 删除旧图片
+                if os.path.isfile(old_image.path):
+                    os.remove(old_image.path)
+        super(Profile, self).save(*args, **kwargs)
     def __str__(self) -> str:
         return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
 

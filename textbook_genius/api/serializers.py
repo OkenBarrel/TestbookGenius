@@ -67,7 +67,7 @@ class UsebookSerializer(serializers.ModelSerializer):
         # }
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # user = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
+    # user_name = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
     user_id=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model=Profile
