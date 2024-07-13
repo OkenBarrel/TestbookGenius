@@ -536,7 +536,7 @@ class ProfileViewer(APIView):
                 print(user_id)
                 
 
-                profile = Profile.objects.get(user_id=user_id)
+                profile = Profile.objects.get(user__id=user_id)
                 serializer = ProfileSerializer(profile, data=data, partial=True)
                 if serializer.is_valid():
                     serializer.save()

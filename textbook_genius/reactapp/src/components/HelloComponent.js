@@ -1,49 +1,47 @@
-import {Button,DialogContent,TextField,Grid, Box, Card, CardContent} from '@mui/material';
-import { useState,useEffect } from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link,
-    Redirect,
-    Switch
-} from "react-router-dom";
+import {Button, DialogContent, TextField, Grid, Box, Card, CardContent} from '@mui/material';
+import { useState, useEffect } from 'react';
+import {useParams, useNavigate, Link} from 'react-router-dom';
 import { getCookie } from './CSRFToken';
 import {getCsrfToken} from "./CSRFToken";
 
-const HelloComponent=()=>{
-    const csrftoken=getCsrfToken();
+const HelloComponent = () => {
+    const csrftoken = getCsrfToken();
 
-    const[user,setUser]=useState("Please Login")
+    const [user, setUser] = useState("Please Login");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        // fetch("/api/login")
-        /*.then(res=>{
-            if(res.username==null){
-                console.log("user_id is null!")
-                setUser("Please Login")
-            }
-            else{
-                setUser("Hello, "+res.username)
-            }
-        })*/
-       if(getCookie('username')==null){
-            console.log("user_id is null!")
-            setUser("Please Login")
-       }
-       else{
-            setUser("Hello, "+getCookie('username'))
-       }
-      
+        const username = getCookie('username');
+        const userid = getCookie('userid');
+        
+        if (username == null) {
+            console.log("user_id is null!");
+            setUser("Please Login");
+            setIsLoggedIn(false);
+        } else {
+            setUser("Hello, " + username);
+            setIsLoggedIn(true);
+            setUserId(userid);
+        }
     }, []);
 
-    return(
-        <Grid container spacing={1} item xs={12} >
-            <Grid item xs={12}>
-                <h3>{user}</h3>
+    return (
+        <Box border = "0px dotted #acf" width = "100%">
+            <Grid alignSelf="flex-end">
+                {isLoggedIn ? (
+                    <Link to={`/user/${getCookie('userid')}`} style={{ textDecoration: 'none' }} color="primary">
+                        <h3>{user}</h3>
+                    </Link>
+                ) : (
+                    <Link to="/login" style={{ textDecoration: 'none' }} color="primary">
+                        <h3>{user}</h3>
+                    </Link>
+                )}
             </Grid>
-        </Grid>
-    )
+        </Box>
+
+    );
 }
+
 export default HelloComponent;

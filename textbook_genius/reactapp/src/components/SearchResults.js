@@ -38,7 +38,7 @@ const SearchResults = () => {
   }, [query]);
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', padding: 20 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', padding: 10 }}>
       <Grid container>
         <Grid item xs={12}>
           <NavigateButton />

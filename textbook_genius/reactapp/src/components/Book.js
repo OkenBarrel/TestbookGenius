@@ -14,9 +14,12 @@ import {
     Redirect
 } from "react-router-dom";
 import CommentComponet from "./CommentComponent";
+import Home from "./Navigate"
 import ScoreComponent from "./ScoreComponet";
 import { getCookie } from './CSRFToken';
 import { getCsrfToken } from './CSRFToken';
+import HelloComponent from "./HelloComponent";
+import Search from "./Search";
 
 const Book=({relation})=>{
     const { isbn } = useParams();
@@ -155,97 +158,103 @@ const Book=({relation})=>{
 
     return(
         <div>
-            <Grid container spacing={2} sx={{display:'flex',alignItems:'center', flexDirection:'row'}}>
-                <Grid item xs={12} align="center">
-                    <Button variant="contained" to="/" component={Link}>返回主页</Button>
+            <Grid container spacing="10px" sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
+                <Grid item width = "100%">
+                    <Box border = "0px dotted #acf" width = "100%">
+                        <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px', marginLeft: '5%' }}>
+                            <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px'}}>
+                                <Home />
+                            </Grid>
+                            <Grid item xs={4} sm={4} md={4} align="right">
+                                <HelloComponent />
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Grid>
+                <Grid width = "90%" style={{ marginTop: '5px'}}>
+                    <Search/>
                 </Grid>
                 <Grid item xs={12} align="center">
-                    <h2>This is Book {title}</h2>
+                    <h1>{title}</h1>
+                </Grid>
+                <Grid item width ="90%">
+                    <Card variant="outlined"  align="center" jutifyContent="center" sx={{display:"flex",maxHeight: 400}}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            <CardContent sx={{ flex: '1 0 auto' }}>
+                                <Grid container spacing={1} item xs={12} >
+                                    <Grid item xs={12}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
+                                            <p >标题:</p>
+                                            <p >{title}</p>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
+                                            <p>作者:</p>
+                                            <p>{author}</p>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
+                                            <p>出版社:</p>
+                                            <p>{publisher}</p>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
+                                            <p>出版日期:</p>
+                                            <p>{pubdate}</p>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item spacing={2} xs={12} align="Left">
+                                        <Button variant='contained' to="./update" component={Link}>修改书籍信息</Button>
+                                        <Tooltip title="收藏书籍">
+                                            <IconButton type="button" onClick={handleMark}>
+                                                <StarIcon variant="contained" style={{ color: mark ? "#ffcc00" : "#353838" }}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                            </Grid>
+                            </CardContent>
+                        </Box>
+                        {cover && (
+                            <CardMedia
+                            component="img"
+                            sx={{ 
+                                maxWidth: 300, // 设定合适的 CSS 单位
+                                objectFit: 'contain' // or 'scale-down', 'fill', 'cover'
+                                }}
+                            image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`}
+                            title="cover"
+                            />
+                        )}
+                        <Box align="center" justifyContent="center" alignItems="flex-end" sx={{ display: 'flex', flexDirection: 'column' }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} align="center">
+                                    <Button variant="contained" to={buy_dang} component={Link}>当当网购买</Button>
+                                </Grid>
+                                <Grid item xs={12} align="center">
+                                    <Button variant="contained" to={buy_bookchina} component={Link}>中国图书网购买</Button>
+                                </Grid>
+                                <Grid item xs={12} align="center">
+                                    <Button variant="contained" to={buy_kong} component={Link}>孔夫子旧书网购买</Button>
+                                </Grid>
+                                <Grid item xs={12} align="center">
+                                    <Button variant="contained" to={buy_jie} component={Link}>旧书街购买</Button>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Card>
+                </Grid>
+                <Grid item>
+                    <Box alignContent="center" style={{ marginTop: '5px'}}>
+                        <CommentComponet isbn={isbn}/>
+                    </Box>
                 </Grid>
             </Grid>
-            
-            {/*<h2>This is Book {title}</h2>*/}
-            <Card variant="outlined"  align="center" jutifyContent="center" sx={{display:"flex",maxWidth: 1400,maxHeight: 400}}>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <CardContent sx={{ flex: '1 0 auto' }}>
-                    {/* <Grid container spacing={3} align="center" justifyContent={"center"}> */}
-                        <Grid container spacing={1} item xs={12} >
-                            <Grid item xs={12}>
-                                <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                    <p >标题:</p>
-                                    <p >{title}</p>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                    <p>作者:</p>
-                                    <p>{author}</p>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                    <p>出版社:</p>
-                                    <p>{publisher}</p>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                    <p>出版日期:</p>
-                                    <p>{pubdate}</p>
-                                </Box>
-                            </Grid>
-                            <Grid item spacing={2} xs={12} align="center">
-                                <Button variant='contained' to="./update" component={Link}>修改书籍信息</Button>
-                                <Tooltip title="收藏书籍">
-                                    <IconButton type="button" onClick={handleMark}>
-                                        <StarIcon variant="contained" style={{ color: mark ? "#ffcc00" : "#353838" }}/>
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-                        {/* </Grid> */}
 
-                        {/* <Grid item xs={6}>
-                            <Box height={200} width={200} sx={{ p: 2, border: '1px dashed grey' }}>
-                                <img src={cover}/>
-                            </Box>
-                        </Grid> */}
-                    </Grid>
-                    </CardContent>
-                </Box>
-                    {cover && (
-                        <CardMedia
-                        component="img"
-                        sx={{ 
-                            maxWidth: 300, // 设定合适的 CSS 单位
-                            objectFit: 'contain' // or 'scale-down', 'fill', 'cover'
-                            }}
-                        image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`}
-                        title="cover"
-                        />
-                    )}
-                <Box align="center" justifyContent="center" alignItems="flex-end" sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} align="center">
-                            <Button variant="contained" to={buy_dang} component={Link}>当当网购买</Button>
-                        </Grid>
-                        <Grid item xs={12} align="center">
-                            <Button variant="contained" to={buy_bookchina} component={Link}>中国图书网购买</Button>
-                        </Grid>
-                        <Grid item xs={12} align="center">
-                            <Button variant="contained" to={buy_kong} component={Link}>孔夫子旧书网购买</Button>
-                        </Grid>
-                        <Grid item xs={12} align="center">
-                            <Button variant="contained" to={buy_jie} component={Link}>旧书街购买</Button>
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Card>
             
-            {/* <Card> */}
-            <CommentComponet isbn={isbn}/>
 
-            {/* </Card> */}
-            
             
         </div>
     );

@@ -36,8 +36,8 @@ const Search = () => {
             onKeyPress={handleKeyPress}
           />
         </Grid>
-        <Grid item xs={1} sm={1} md={1} align="right" sx={{paddingTop: 30}}>
-          <Button variant="contained" color="primary" onClick={handleSearch}>
+        <Grid item xs={1} sm={1} md={1} align="center" sx={{paddingTop: 30}}>
+          <Button variant="contained" color="primary" onClick={handleSearch} sx={{ width: '100%' }}>
             搜索
           </Button>
         </Grid>
