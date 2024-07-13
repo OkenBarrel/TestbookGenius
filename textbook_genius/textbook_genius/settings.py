@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1)ej8a^oi24^5gm+p(v5s7dy-l)a4i-3f1cjb)7i%%43lp)e94'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F']#'127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F'
+ALLOWED_HOSTS = ['*',]#'localhost','127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F'
 
 
 # Application definition
@@ -94,9 +94,11 @@ CORS_ORIGIN_WHITELIST = [
     # 'http://google.com',
     # 'http://hostname.example.com',
     'http://localhost:8000',
+    'http://localhost:80',
     'http://localhost:3000',
     'http://127.0.0.1:8000',
     'http://127.0.0.1:3000',
+    'http://127.0.0.1:80',
     'https://api.douban.com',
     'https://img1.doubanio.com',
     # 'http://127.0.0.1:9000'
@@ -141,7 +143,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'reactapp/build/static'),
 ]
-
+STATIC_ROOT='/usr/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
