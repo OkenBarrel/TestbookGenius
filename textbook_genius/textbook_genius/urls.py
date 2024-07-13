@@ -24,11 +24,12 @@ from django.views.static import serve
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('api.urls')),
-    path(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT}),
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
-
+    # path(r'^media/(?P<path>.*)$',TemplateView.as_view(template_name='index.html')),
+    # re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     # path('',include('frontend.urls'))
-    # path('', TemplateView.as_view(template_name='index.html'))
+    path('', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
     
 ]
 if settings.DEBUG:
