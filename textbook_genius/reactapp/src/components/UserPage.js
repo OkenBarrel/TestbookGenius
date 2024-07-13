@@ -33,7 +33,7 @@ const UserPage =()=> {
             try {
     
                 console.log(userId)
-                const response = await fetch("/api/user"+"?user_id="+userId);
+                const response = await fetch("http://127.0.0.1:8000/api/user"+"?user_id="+userId);
                 if (response.ok) {
                     const data = await response.json();
                     console.log(data.avatar_url)
