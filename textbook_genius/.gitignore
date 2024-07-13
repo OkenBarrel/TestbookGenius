@@ -1,6 +1,8 @@
-textbook_genius/api/migrations/__pycache__/
-textbook_genius/textbook_genius/__pycache__/
-textbook_genius/frontend/__pycache__/
+/api/migrations/__pycache__
+/textbook_genius/__pycache__
+*/__pycache__/
 *.pyc
 *.idea/
 *.vscode/
+testLocal/
+*.sqlite3
