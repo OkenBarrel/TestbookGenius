@@ -32,9 +32,7 @@ const RegisterPage = () => {
       return;
     }
 
-<<<<<<< HEAD
     const apiUrl = 'http://localhost:8000/api/register';
-=======
     // 验证邮箱格式
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -48,9 +46,6 @@ const RegisterPage = () => {
       setError('Password must be at least 8 characters long and contain both letters and numbers.');
       return;
     }
-
-    const apiUrl = '/api/register';
->>>>>>> b63e090e257065e9192d30e51a837b89066d098c
 
     try {
       const response = await fetch(apiUrl, {
