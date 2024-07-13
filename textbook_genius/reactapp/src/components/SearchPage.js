@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import Search from './Search';
 import NavigateButton from './Navigate';
 
@@ -10,13 +10,13 @@ const SearchPage = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      height="100vh"
+      height="40vh"
       width="100%"
     >
-        <Box mb={6}>
+        <Box width="80%" alignItems="left">
             <NavigateButton />
         </Box>
-        <Box mb={1}>
+        <Box width="80%">
             <Search />
         </Box>
     </Box>

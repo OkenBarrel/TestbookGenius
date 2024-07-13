@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view,renderer_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import JSONParser
+from rest_framework import filters
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
     CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
     UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer,\
@@ -600,22 +601,24 @@ class validation(APIView):
         vali.delete()
         return Response({"OK":"Deleted."},status=status.HTTP_202_ACCEPTED)
 
-class SearchView(APIView):
+class SearchView(generics.ListAPIView):
+    queryset = Usebook.objects.all()
     serializer_class = SearchSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['book__title', 'teacher__teacher_name', 'course__course_name', 'course__department']
 
-    def get(self, request):
-        query_params = request.query_params
-        query = query_params.get('query', '')
-
-        title_filter = Q(book__title__icontains=query)
-        course_filter = Q(course__course_name__icontains=query)
-        department_filter = Q(course__department__icontains=query)
-
-        search_results = Usebook.objects.filter(title_filter | course_filter | department_filter).select_related('book', 'teacher', 'course').distinct()
-
-        serialized_results = self.serializer_class(search_results, many=True).data
-
-        return Response(serialized_results, status=status.HTTP_200_OK)
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Custom filtering based on search fields
+        query = self.request.query_params.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(book__title__icontains=query) |
+                Q(teacher__teacher_name__icontains=query) |
+                Q(course__course_name__icontains=query) |
+                Q(course__department__icontains=query)
+            )
+        return queryset
 
 class loggout(APIView):
     def post(self,request):

@@ -18,12 +18,12 @@ const SearchResults = () => {
       setLoading(true);
       try {
         if (query) {
-          const response = await fetch(`http://localhost:8000/api/search?query=${encodeURIComponent(query)}`);
+          const response = await fetch(`/search/result?query=${encodeURIComponent(query)}`);
           if (!response.ok) {
             throw new Error('Failed to fetch data');
           }
           const data = await response.json();
-          setResults(data);
+          setResults(data.results); 
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -40,7 +40,7 @@ const SearchResults = () => {
       <Grid container>
         <Grid item xs={12}>
           <NavigateButton />
-          <Search /> 
+          <Search />
         </Grid>
         <div style={{ marginTop: '20px' }}>
           <Grid item xs={12}>

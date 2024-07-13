@@ -6,20 +6,20 @@ const Navigate = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/search');
+    navigate('/');
   };
 
   return (
     <Grid container spacing={0} alignItems="flex-end">
       <Grid item>
-        <Link to="/search" style={{ textDecoration: 'none' }}>
+        <Link to="/" style={{ textDecoration: 'none' }}>
           <Typography variant="h5" onClick={handleClick} >
             TextbookGenius
           </Typography>
         </Link>
       </Grid>
       <Grid item>
-        <Link to="/search" style={{ textDecoration: 'none' }}>
+        <Link to="/" style={{ textDecoration: 'none' }}>
           <Typography variant="subtitle2" onClick={handleClick} >
             北工大教材资源整合平台
           </Typography>
