@@ -50,7 +50,7 @@ function CreateBookPage(props){
             setIsbnError("ISBN无效，请重新输入");
             return;
         }
-        let response= await fetch("/api/get-douban-book"+"?isbn="+isbn)
+        let response= await fetch("http://localhost:8000/api/get-douban-book"+"?isbn="+isbn)
         if(!response.ok){
             setIsbnError(response.msg);
             return;
@@ -101,7 +101,7 @@ function CreateBookPage(props){
                 semester:semester
             }),
         };
-        let response=await fetch("/api/create-book",requestOption)
+        let response=await fetch("http://localhost:8000/api/create-book",requestOption)
         let data=await response.json();
         if(!response.ok){
             setRelationError(data.msg);
