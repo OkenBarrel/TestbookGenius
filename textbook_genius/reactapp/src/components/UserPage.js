@@ -13,6 +13,7 @@ const UserPage =()=> {
     const { userId } = useParams();
     const csrftoken = getCookie('csrftoken');
     const[url,setUrl]=useState("");
+    const [originalUserInfo, setOriginalUserInfo] = useState(null);
     // const userId = 'testuser';
     const [userInfo, setUserInfo] = useState(
         {
@@ -91,6 +92,14 @@ const UserPage =()=> {
         });
     };
     const clickEditHandler = ()=>{
+        if (isEditing) {
+
+            setUserInfo(originalUserInfo);
+            setUrl(originalUserInfo.avatarUrl);
+        } else {
+
+            setOriginalUserInfo({ ...userInfo, avatarUrl: url });
+        }
         setIsEditing(!isEditing);
     };
     const clickSubmitHandler= async (e)=>{
