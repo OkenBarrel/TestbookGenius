@@ -93,12 +93,12 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
     # 'http://google.com',
     # 'http://hostname.example.com',
-    'http://localhost:8000',
-    'http://localhost:80',
-    'http://localhost:3000',
-    'http://127.0.0.1:8000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:80',
+    'http://8.130.18.80:8000',
+    'http://8.130.18.80:80',
+    'http://8.130.18.80:3000',
+    # 'http://127.0.0.1:8000',
+    # 'http://127.0.0.1:3000',
+    # 'http://127.0.0.1:80',
     'https://api.douban.com',
     'https://img1.doubanio.com',
     # 'http://127.0.0.1:9000'
