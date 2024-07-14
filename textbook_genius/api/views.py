@@ -749,19 +749,18 @@ class SearchView(APIView):
         }, status=status.HTTP_200_OK)
 
 class loggout(APIView):
-    def post(self,request):
-        if not request.user.is_active() or  request.user is None:
+    def get(self,request):
+        print(request.user.id)
+        print(request.user.is_active)
+        if not request.user.is_active or request.user is None:
             return Response({'msg':'未登录，无需注销'},status=status.HTTP_406_NOT_ACCEPTABLE)
         del request.session['user_id']
-        del request.session['username']
+        # del request.session['username']
         logout(request=request)
-
-        return Response({'success':'成功注销'},status=status.HTTP_200_OK)
-    def get(self,request):
-        if request.user is None:
-            return Response({'msg':'未登录，无需注销'},status=status.HTTP_406_NOT_ACCEPTABLE)
-        logout(request=request)
-        return Response({'success':'成功注销'},status=status.HTTP_200_OK)
+        res=JsonResponse({'success':'成功注销'},status=status.HTTP_200_OK)
+        res.delete_cookie('username')
+        res.delete_cookie('user_id')
+        return res
     
 
 class is_loggedin(APIView):
@@ -777,4 +776,4 @@ class is_loggedin(APIView):
         except Exception:
             pass
             
-        return Response({'msg':'not logged'},status=status.HTTP_200_OK)
+        return Response({'msg':'not logged'},status=status.HTTP_404_NOT_FOUND)
