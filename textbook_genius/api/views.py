@@ -8,10 +8,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
-    CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
+    CommentSerializer,UsebookSerializer,MarkSerializer,\
     UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer,\
     ValidationCodeSerializer,SearchSerializer
-from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
+from .models import Room,Book,Teacher,Course,Comment,Usebook,Mark,\
                     UpScoreUserRelation, Profile,DownScoreUserRelation,ValidationCode
 from requests import Request,post,get,patch
 from django.db.models import Count
@@ -27,10 +27,7 @@ from django.http import JsonResponse
 from rest_framework.parsers import MultiPartParser, FormParser
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
-
-import logging
-
-logger = logging.getLogger(__name__)
+from django.db import transaction
 
 class RoomView(generics.ListAPIView):
     queryset = Room.objects.all()
@@ -113,6 +110,7 @@ class createBook(APIView):
     useBook_serializer_class=UsebookSerializer
     course_serializer_class=CourseSerializer
     teacher_serializer_class=TeacherSerializer
+    @transaction.atomic
     def post(self,request,format=None):
         school_year=request.data.get("school_year")
         if len(school_year)!=9:
@@ -413,6 +411,80 @@ class getUseBook(APIView):
             response_data[idx]['downvote_count'] = usebook.downvote_count
 
         return Response(response_data,status=status.HTTP_200_OK)
+    
+class getComment(APIView):
+    def get(self, request, format=None):
+        # 通过URL参数获取Usebook的ID
+        usebook_id = request.GET.get('usebook_id')
+        # user_id = request.COOKIES.get('user_id')
+        print("获取的usebook_id:", usebook_id)
+        
+        # 根据Usebook的ID查询评论
+        comments = Comment.objects.filter(usebook__id=usebook_id)
+        
+        # 如果没有找到评论，返回404
+        if not comments.exists():
+            return Response({"msg": "没有找到评论"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 序列化查询到的评论数据
+        serializer = CommentSerializer(comments, many=True)
+        print(serializer.data)
+
+        # # 手动构建每个评论的JSON数据
+        # comments_data = []
+        # for comment in comments:
+        #     comment_data = {
+        #         'user_id': comment.user.id,
+        #         'comment_text': comment.text,
+        #         'usebook_id': comment.usebook.id
+        #     }
+        #     comments_data.append(comment_data)
+
+        # 返回序列化后的数据
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class createComment(APIView):
+    '''
+    user , info , usebook
+    '''
+    def post(self, request, format=None):
+        # 获取请求数据
+        # user_id=request.COOKIES.get('user_id')
+        user_id=request.data.get('user')
+        print(user_id)
+        comment_data = request.data.get("info")
+        print(comment_data)
+        usebook_id = request.data.get("usebook")
+        print(usebook_id)
+
+        # 验证数据完整性
+        if not all([user_id,comment_data, usebook_id]):
+            return Response({"msg": "缺少必要信息"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 查找关联对象
+        try:
+            usebook = Usebook.objects.get(id=usebook_id)
+        except Usebook.DoesNotExist as e:
+            return Response({"msg": "提供的信息无法找到对应的Usebook实例"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"msg": "用户不存在"}, status=status.HTTP_404_NOT_FOUND)
+
+        # 创建评论
+        comment = Comment(user=user, info=comment_data, usebook=usebook)
+        comment.save()
+        data={
+            'user':user_id,
+            'info':comment_data,
+            'usebook':usebook_id
+        }
+
+        # 返回成功响应
+        return Response(data, status=status.HTTP_201_CREATED)
+
 
 class getOneUseBook(APIView):
     '''
@@ -475,13 +547,14 @@ class register(APIView):
         validation:
     }
     '''
+    @transaction.atomic
     def post(self, request):
         print(request.data)
         vali=get_object_or_404(ValidationCode,email=request.data.get('user_email'))
         if vali.code!=request.data.get('validation'):
             return Response({"msg":"验证码错误"},status=status.HTTP_404_NOT_FOUND)
         history=User.objects.filter(email=request.data.get('email')).first()
-        if history is not None:
+        if User.objects.filter(email=request.data.get('email')).exists():
             return Response({"Conflict":"Already registered"},status=status.HTTP_409_CONFLICT)
 
 
@@ -491,6 +564,7 @@ class register(APIView):
                                     password=request.data.get('user_password'))
         user.save()
         indate=request.data.get('user_indate')
+        #Profile.objects.create(user=user)
         Profile.objects.create(user=user,user_indate=indate)###
         """
         login(request,user)
@@ -503,44 +577,6 @@ class register(APIView):
         vali.delete()
         return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
 
-        #     send_mail(
-        #     "Testing for email validation",
-        #     "Here is the message.",
-        #     "3014033378@qq.com",
-        #     [request.data.get('user_email')],
-        #     fail_silently=False,
-        # )
-        # serializer=ProfileSerializer()
-        # user=authenticate(request=request,username=username,password=password)
-        # if user is not None:
-            # login(request,user)
-            # if not request.session.session_key:
-            #     request.session.save()
-            # print("session key:"+request.session.session_key)
-            #print("usernsme:"+request.session['user_name'])
-            #print(request.session.session_key)
-            # return Response({"username":user.get_username(),"email":user.get_email_field_name()})
-        # else:
-        #     print("error")
-        #     return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
-            #return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
-        # except Exception:
-
-
-
-        # serializer = UserSerializer(data=request.data)
-        # if serializer.is_valid():
-        #     print(serializer.data)
-        #     user_name= serializer.data.get('user_name')
-        #     user_password= serializer.data.get('user_password')
-        #     user_email= serializer.data.get('user_email')
-        #     user=User(user_name = user_name, user_password = user_password, user_email = user_email)
-        #     print(user.user_id)
-        #     user.save()
-        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # else:
-        #     print(serializer.errors)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class upScoreUser(APIView):
     '''
@@ -646,6 +682,17 @@ class ProfileViewer(APIView):
 #
 #     @csrf_exempt
     def put(self, request):
+            '''
+            {
+                username: '',
+                user_id:'',
+                department: '',
+                major: '',
+                ProgramStartYear: '',
+                credit: '',
+                avatarFile: null,
+            }
+            '''
             try:
                 print(request.data)
                 print(request.FILES)
@@ -655,6 +702,12 @@ class ProfileViewer(APIView):
                 user_major=request.data.get('user_major')
                 user_department=request.data.get('user_department')
                 user_credit=request.data.get('user_credit')
+                # data={
+                #     'user':user_id,
+                #     'user_major':user_major,
+                #     'user_department':user_department,
+                #     'user_credit':user_credit
+                # }
                 data={
                     'user_id':user_id,
                     'user_indate':user_indate,
@@ -662,6 +715,7 @@ class ProfileViewer(APIView):
                     'user_department':user_department,
                     'user_credit':user_credit
                 }
+                print(data)
                 if 'user_avatar' in request.FILES:
                     data['user_avatar'] = request.FILES['user_avatar']
                 
@@ -750,25 +804,28 @@ class validation(APIView):
             email:
         }
     '''
+    @transaction.atomic
     def post(self,request):
         # email=request.data.get('email')
         print(request.data)
-        history=ValidationCode.objects.filter(email=request.data.get('email')).first()
-        if history :
+        if ValidationCode.objects.filter(email=request.data.get('email')).exists() :
             return Response({"msg":"验证码已发送"},status=status.HTTP_409_CONFLICT)
         serializer=ValidationCodeSerializer(data=request.data)
         if not serializer.is_valid():
             return
         email=serializer.data.get('email')
         code=ValidationCode(email=email)
+        try:
+            send_mail(
+                "This is for validation",
+                "Here is the validation code {0}.".format(code.code),
+                "3014033378@qq.com",
+                [email],
+                fail_silently=False,
+            )
+        except Exception:
+            return Response({'msg':'无效邮箱，请重新输入'},status=status.HTTP_404_NOT_FOUND)
         code.save()
-        send_mail(
-            "This is for validation",
-            "Here is the code code {0}.".format(code.code),
-            "3014033378@qq.com",
-            [email],
-            fail_silently=False,
-        )
         return Response({"email":email},status=status.HTTP_200_OK)
     def delete(self,request):
         email=request.data.get('email')

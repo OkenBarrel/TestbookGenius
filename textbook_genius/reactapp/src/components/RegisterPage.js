@@ -38,7 +38,6 @@ const RegisterPage = () => {
     }
 
     const apiUrl = 'http://localhost:8000/api/register';
-    const apiurl_profile = 'http://localhost:8000/api/user';
 
     try {
       const response = await fetch(apiUrl, {
@@ -121,7 +120,7 @@ const RegisterPage = () => {
           email: email 
         }),
       };
-      fetch('/api/validation', requestOption);
+      fetch('http://localhost:8000/api/validation', requestOption);
     }
   }, [timeLeft, isRegistered]);
 

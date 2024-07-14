@@ -114,6 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+            "OPTIONS": {
+            "min_length": 8,
+            },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -177,7 +180,7 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # 使用 Redis 作为结果�
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'# 发送邮件配置
 EMAIL_HOST = 'smtp.qq.com'# 服务器名称
-EMAIL_PORT = 25# 服务端口
+EMAIL_PORT = 587# 服务端口
 EMAIL_HOST_USER = '3014033378@qq.com' # 填写自己邮箱
 EMAIL_HOST_PASSWORD = 'dysnadatkagtdhcb'# 在邮箱中设置的客户端授权密码
 EMAIL_FROM = 'TextbookGenius'# 收件人看到的发件人
