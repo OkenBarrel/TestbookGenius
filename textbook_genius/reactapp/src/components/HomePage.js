@@ -1,16 +1,10 @@
 import {Button,DialogContent,Grid,Typography,TextField,Box} from '@mui/material';
 import React,{Component, useEffect, useState} from "react";
-import CreateBookPage from './CreateBookPage';
-import Book from "./Book";
-import UpdateBookPage from './UpdateBookPage';
-import LoginPage from './LoginPage';
-import RegisterPage from "./RegisterPage";
 import SearchHome from './SearchHome';
 import NavigateButton from './Navigate';
-
-import SearchResults from './SearchResults';
 import HelloComponent from './HelloComponent';
 import { getCookie,getCsrfToken } from './CSRFToken';
+import {Avatar}  from '@mui/material';
 import {
     HashRouter as Router,
     Link,
@@ -23,6 +17,7 @@ function HomePage() {
   const [out,setOut]=useState(false);
   const[user_id,setId]=useState(null);
   const[user_name,setName]=useState(null);
+  const[avatar_url,setUrl]=useState(null);
 
   async function handleLogout(){
     const csrftoken=getCsrfToken();
@@ -44,6 +39,7 @@ function HomePage() {
     }
     setName(getCookie('username'));
     setId(getCookie('user_id'));
+    setUrl(null);
   
   }
   
@@ -62,7 +58,8 @@ function HomePage() {
     let response=await fetch("http://localhost:8000/api/is-loggedin",{
       credentials:'include'
     });
-    
+    let data=await response.json()
+    setUrl(data.avatar_url)
 
   }
   
@@ -87,7 +84,8 @@ function HomePage() {
                 <Grid item xs={3} sm={3} md={3} lg={3} xl={3} justifyContent="flex-end">
                   <Box display="flex" justifyContent="flex-end">
                     {console.log("name"+user_name)}
-                    <HelloComponent user_name={user_name} id={user_id} />
+                    <Avatar src={avatar_url} sx={{ width: 55, height: 55 }}></Avatar>
+                    <HelloComponent user_name={user_name} id={user_id}/>
                   </Box>
                 </Grid>
               </Grid>
