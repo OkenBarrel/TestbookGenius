@@ -680,7 +680,6 @@ class ProfileViewer(APIView):
     def put(self, request):
             '''
             {
-                username: '',
                 user_id:'',
                 department: '',
                 major: '',
@@ -695,25 +694,24 @@ class ProfileViewer(APIView):
                 
 
                 user_id=request.data.get('user_id')
-                username=request.data.get('username')
                 user_major=request.data.get('user_major')
                 user_department=request.data.get('user_department')
                 user_credit=request.data.get('user_credit')
-                # data={
-                #     'user':user_id,
-                #     'user_major':user_major,
-                #     'user_department':user_department,
-                #     'user_credit':user_credit
-                # }
                 data={
-                    'user':{
-                       'id':user_id,
-                       'username':username
-                    },
+                    'user':user_id,
                     'user_major':user_major,
                     'user_department':user_department,
                     'user_credit':user_credit
                 }
+                # data={
+                #     'user':{
+                #        'id':user_id,
+                #        'username':username
+                #     },
+                #     'user_major':user_major,
+                #     'user_department':user_department,
+                #     'user_credit':user_credit
+                # }
                 print(data)
                 if 'user_avatar' in request.FILES:
                     data['user_avatar'] = request.FILES['user_avatar']
@@ -891,6 +889,7 @@ class is_loggedin(APIView):
         # print(request.session['user_id'])
         # print(request.user)
         try:
+            print(request.session['is_login'])
             if(request.session['is_login']):
                 profile = Profile.objects.get(user__id=request.user.id)
                 data={
