@@ -21,6 +21,10 @@ import { getCsrfToken } from './CSRFToken';
 import HelloComponent from "./HelloComponent";
 import Search from "./Search";
 
+const openNewTab = (url) =>{
+    window.open(url,'_blank');
+}
+
 const Book=({relation})=>{
     const { isbn } = useParams();
     const [title,setTitle]=useState("");
@@ -231,16 +235,16 @@ const Book=({relation})=>{
                         <Box align="center" justifyContent="center" alignItems="flex-end" sx={{ display: 'flex', flexDirection: 'column' }}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} align="center">
-                                    <Button variant="contained" to={buy_dang} component={Link}>当当网购买</Button>
+                                    <Button variant="contained" onClick={() => openNewTab(buy_dang)}>当当网购买</Button>
                                 </Grid>
                                 <Grid item xs={12} align="center">
-                                    <Button variant="contained" to={buy_bookchina} component={Link}>中国图书网购买</Button>
+                                    <Button variant="contained" onClick={() => openNewTab(buy_bookchina)}>中国图书网购买</Button>
                                 </Grid>
                                 <Grid item xs={12} align="center">
-                                    <Button variant="contained" to={buy_kong} component={Link}>孔夫子旧书网购买</Button>
+                                    <Button variant="contained" onClick={() => openNewTab(buy_kong)}>孔夫子旧书网购买</Button>
                                 </Grid>
                                 <Grid item xs={12} align="center">
-                                    <Button variant="contained" to={buy_jie} component={Link}>旧书街购买</Button>
+                                    <Button variant="contained" onClick={() => openNewTab(buy_jie)}>旧书街购买</Button>
                                 </Grid>
                             </Grid>
                         </Box>
