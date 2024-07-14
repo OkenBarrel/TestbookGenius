@@ -10,7 +10,9 @@ const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordHint, setPasswordHint] = useState('密码至少包含8个字符，且包括字母、数字和特殊字符(_@!*&%$#^)中的至少一个。');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [ConfirmPasswordHint, setConfirmPasswordHint]= useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [valiCode, setValiCode] = useState('');
@@ -43,13 +45,7 @@ const RegisterPage = () => {
       return;
     }
 
-    // 验证密码：不能为纯数字，且至少8位
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[_@!*&%$#^])[A-Za-z\d_@!*&%$#^]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      setError('Password must be at least 8 characters long and contain both letters and numbers.');
-      return;
-    }
-
+   
     try {
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -80,6 +76,36 @@ const RegisterPage = () => {
     } catch (error) {
       console.error('Registration error:', error);
       setError('Registration failed. Please try again.');
+    }
+  };
+
+   // 验证密码：不能为纯数字，且至少8位
+   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[_@!*&%$#^])[A-Za-z\d_@!*&%$#^]{8,}$/;
+   const handlePasswordChange = (event) => {
+
+     const input = event.target.value;
+     console.log(input);
+     setPassword(input);
+     const isValid = passwordRegex.test(input);
+     console.log(isValid);
+     if (isValid) {
+       setPasswordHint('密码格式正确。');
+     } else {
+       setPasswordHint('请确保密码至少包含8个字符，且包括字母、数字和特殊字符(_@!*&%$#^)中的至少一个。');
+     }
+   };
+
+   // 验证确认密码：必须与密码相同
+  const handleConfirmPasswordChange = (event) => {
+    const input = event.target.value;
+    console.log(input);
+    setConfirmPassword(input);
+    const isMatch = input === password; // 确认密码必须与之前输入的密码相同
+    console.log(isMatch);
+    if (isMatch) {
+      setConfirmPasswordHint('密码匹配。');
+    } else {
+      setConfirmPasswordHint('密码不匹配，请确保两次输入的密码相同。');
     }
   };
 
@@ -173,20 +199,24 @@ const RegisterPage = () => {
             <TextField
               label="Password"
               type="password"
-              fullWidth
+              onChange={handlePasswordChange}
+              fullWidth 
+              error={passwordHint !== '密码至少包含8个字符，且包括字母、数字和特殊字符(_@!*&%$#^)中的至少一个。' && passwordHint !== '密码格式正确。' }
+              helperText={passwordHint}
               margin="normal"
-              variant="outlined"
+              variant="outlined"              
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
             />
             <TextField
               label="Confirm Password"
               type="password"
+              onChange={handleConfirmPasswordChange}
               fullWidth
+              error={ConfirmPasswordHint && ConfirmPasswordHint !== '密码匹配。' }
+              helperText={ConfirmPasswordHint}
               margin="normal"
               variant="outlined"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <TextField
               label="Validation"
