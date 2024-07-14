@@ -29,7 +29,7 @@ function UpdateBookPage(props){
     const csrftoken=getCsrfToken();
 
     const getLog=async ()=>{
-        let response=await fetch("http://localhost:8000/api/is-loggedin",{
+        let response=await fetch("http://8.130.18.80:80/api/is-loggedin",{
           credentials:'include'
         });
         let data=await response.json()
