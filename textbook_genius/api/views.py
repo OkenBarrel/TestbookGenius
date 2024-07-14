@@ -254,7 +254,6 @@ class markBook(APIView):
     def post(self,request,format=None):
         print(request.data)
         #print(request.session.get('_auth_user_id',None))
-        print(request.session.get('user_id',None))
         request_data=request.data.get("mark")
 
         queryset=Book.objects.filter(isbn=request_data['bookisbn'])
@@ -263,28 +262,42 @@ class markBook(APIView):
             print(book.isbn)
         else:
             return Response({'msg':'未找到该书籍'},status.HTTP_404_NOT_FOUND)
-       
+        
         queryset=User.objects.filter(id=request_data['userid'])
         if queryset.exists():
             user_mark=queryset[0]
             print(user_mark.id)
         else:
             return Response({'msg':'未找到该用户'},status.HTTP_404_NOT_FOUND)
-
+        
+        #user_id=request.COOKIES.get('user_id')
         mark_data={
             "userid":user_mark.id,
             "bookisbn":book.isbn
         }
 
         mark_serializer=self.mark_serializer_class(data=mark_data)
-        print(mark_serializer)
+        #print(mark_serializer)
         if mark_serializer.is_valid():
-            mark=Mark(userid_id=user_mark.id,bookisbn_id=book.isbn) #在外键字段后面需加_id
+            user_id=mark_serializer.data.get('userid')
+            book_isbn=mark_serializer.data.get('bookisbn')
+           #user=get_object_or_404(User, id=user_id)
+            #book=get_object_or_404(Book, isbn=book_isbn)
+            queryset=User.objects.filter(id=user_id)
+            if queryset.exists():
+                user=queryset[0]
+                print(user)
+            queryset=Book.objects.filter(isbn=book_isbn)
+            if queryset.exists():
+                book=queryset[0]
+                print(book)
+            mark=Mark(userid=user,bookisbn=book) 
             mark.save()
+            print(mark)
             print("ok")
             return Response(MarkSerializer(mark).data,status.HTTP_200_OK)
         else:
-            print('mark')
+            print('error')
             print(mark_serializer.errors)
             return Response({'msg':'收藏失败'},status.HTTP_404_NOT_FOUND)
 
