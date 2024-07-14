@@ -1,6 +1,6 @@
 import {Button,DialogContent,Grid,Typography,TextField, Paper, Box} from '@mui/material';
 import React,{Component, useState} from "react";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
 import Alert from '@mui/material/Alert';
 import Home from './Navigate';
@@ -50,7 +50,7 @@ const LoginPage = () => {
             }
             const data = await response.json();
             setSuccess('Login successful!');
-            navigate(-1);
+            navigate('/');
             // if (username === 'tw11' && password === 'password' && username === 'tw11') {
             //     setSuccess('Login successful!');
             //     // navigate(`/}`);
@@ -79,7 +79,7 @@ const LoginPage = () => {
             <Grid item justifyContent="center" >
                 <Paper elevation={3} style={{ padding: 20, maxWidth: 600 }}>
                     <Typography variant="h4" component="h1" gutterBottom>
-                        Login
+                        用户登录
                     </Typography>
                     <form noValidate autoComplete="off">
                         <TextField
@@ -106,14 +106,23 @@ const LoginPage = () => {
                             style={{ marginTop: 20 }}
                             onClick={handleLogin}
                         >
-                            Login
+                            登录
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            style={{ marginTop: 20 }}
+                            component={Link}
+                            to={`/register`} 
+                        >
+                            注册
                         </Button>
                     </form>
                     {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
                     {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
                 </Paper>
             </Grid>
-    
         </Grid>
     );
 }

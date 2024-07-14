@@ -10,7 +10,7 @@ const SearchPage = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      height="40vh"
+      height="62vh"
       width="100%"
     >
         <Box width="80%" alignItems="left">

@@ -15,6 +15,8 @@ import {
     HashRouter as Router,
     Link,
 } from "react-router-dom";
+import UserPage from "./UserPage";
+import { AlignHorizontalRight } from '@mui/icons-material';
 import { useReducer } from 'react'
 
 function HomePage() {
@@ -66,8 +68,8 @@ function HomePage() {
   
     function renderHomePage() {
       return (
-        <div>
-          <Grid container spacing={2} direction={'column'}>
+        <div paddling="10%">
+          <Grid container spacing={2} direction={'column'} >
             <Grid item>
               <Grid container spacing={2} direction="row" justifyContent={'center'}>
                 <Grid item margin={1.5} xs={7} sm={7} md={7} lg={7} xl={7}>
@@ -76,7 +78,6 @@ function HomePage() {
                     {!getCookie('user_id')&&(<Button variant='contained' to="/login" component={Link}>登录</Button>)}
                     <Button variant='contained' to="/register" component={Link}>注册</Button>
                     <Button variant='contained' to={`/user/${getCookie('user_id')}`} component={Link}>用户信息</Button>
-                    <Button variant='contained' to="/search" component={Link}>搜索</Button>
                     <Button variant='contained' 
                       onClick={handleLogout}>
                       退出登录
