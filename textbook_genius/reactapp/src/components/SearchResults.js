@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Grid, Card, CardContent, CardMedia, Typography, Box } from '@mui/material';
+import { Grid, Card, CardContent, CardMedia, Typography, Box, Avatar, Link } from '@mui/material';
 import Search from './Search';
 import NavigateButton from './Navigate';
 import HelloComponent from './HelloComponent';
@@ -17,8 +17,48 @@ const SearchResults = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [out,setOut]=useState(false);
+  const [user_id,setId]=useState(null);
+  const [user_name,setName]=useState(null);
+  const [avatar_url,setUrl]=useState(null);
+
+  async function handleLogout(){
+    const csrftoken=getCsrfToken();
+  
+    const requestOption={
+  
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken
+      },
+      credentials: 'include',
+    }
+  
+    let response=await fetch("http://localhost:8000/api/logout",requestOption);
+    if(!response.ok){
+      console.log("log out failed");
+      return;
+    }
+    setName(getCookie('username'));
+    setId(getCookie('user_id'));
+    setUrl(null);
+  
+  }
+  
+  const getLog=async ()=>{
+    let response=await fetch("http://localhost:8000/api/is-loggedin",{
+      credentials:'include'
+    });
+    let data=await response.json()
+    setUrl(data.avatar_url)
+
+  }
 
   useEffect(() => {
+    getLog();
+    setName(getCookie('username'));
+    setId(getCookie('user_id'));
     const fetchSearchResults = async () => {
       setLoading(true);
       try {
@@ -47,17 +87,37 @@ const SearchResults = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', padding: 5 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center'}} paddingLeft = "5%" paddingRight = "10%" >
       <Grid container>
         <Grid item width="100%">
           <Grid item width = "100%">
               <Box border = "0px dotted #acf" width = "100%">
                   <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}}>
                       <Grid item xs={7} sm={7} md={7} align="left" >
-                          <NavigateButton />
+                        <NavigateButton />
                       </Grid>
-                      <Grid item xs={4} sm={4} md={4} align="right" >
-                      <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
+                      <Grid item xs={4} sm={4} md={4} lg={4} xl={4} align="right" container justifyContent="flex-end">
+                        <Box
+                          justifyContent="flex-end"
+                          border="0px solid"
+                          display="flex"
+                          alignItems="center"
+                          textAlign="right"
+                          width="100%"
+                          marginRight="5%"
+                        >
+                          <Grid container direction="row" justifyContent="flex-end" alignItems="center">
+                            <Grid item>
+                              {console.log("name"+user_name)}
+                              <Link to={`/user/${user_id}`} >
+                                <Avatar src={avatar_url} sx={{ width: 55, height: 55 }}></Avatar>
+                              </Link>
+                            </Grid>
+                            <Grid item marginLeft="5%">
+                              <HelloComponent user_name={user_name} id={user_id}/>
+                            </Grid>
+                          </Grid>
+                        </Box>
                       </Grid>
                   </Grid>
               </Box>

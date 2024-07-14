@@ -36,22 +36,33 @@ const CommentComponet=({isbn})=>{
         // console.log(ids)
     }
     return(
-        <Box width="100%" flexDirection="row">
-            <Grid container width = "100%" minHeight="200px">
-                <Card>
-                    <Tabs 
-                        value={value} onChange={handleChange}
-                        variant="scrollable" scrollButtons="auto"
-                    >
-                        {relations.map((relation)=>(
-                            <Tab label={relation.course.course_name+"-"+relation.teacher}></Tab>
-                        ))}
-                    
-                    </Tabs>
-                </Card>
-                {console.log(relations[value])}
-                <Grid item> 
-                    <ScoreComponent relation={relations[value]}></ScoreComponent>
+        <Box border="0px solid" width="100%" display="flex" justifyContent="center" alignItems="center">
+            <Grid container xs={12} sm={12} md={12} width="100%" minHeight="200px" display="flex" justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%' }}>
+                <Grid item xs={8} sm={8} md={8} justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%', height:'100%' }}>
+                    <Grid container direction="column" sx={{ width: '100%' }}>
+                        <Grid item sx={{ width: '100%' }}>
+                            <Card sx={{ border: "0px solid", width: '100%' }}>
+                                <Tabs 
+                                    value={value} 
+                                    onChange={handleChange}
+                                    variant="scrollable" 
+                                    scrollButtons="auto"
+                                >
+                                    {relations.map((relation) => (
+                                        <Tab key={relation.course.course_name + "-" + relation.teacher} label={relation.course.course_name + "-" + relation.teacher} />
+                                    ))}
+                                </Tabs>
+                            </Card>
+                        </Grid>
+                        <Grid item sx={{ width: '100%' }}>
+                            <Card sx={{ border: "0px solid", height: "150px", width: '100%' }}>
+                                {console.log(relations[value])}
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={4} sm={4} md={4} display="flex" justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%',height:'230px' }}> 
+                    <ScoreComponent relation={relations[value]} />
                 </Grid>
             </Grid>
         </Box>
