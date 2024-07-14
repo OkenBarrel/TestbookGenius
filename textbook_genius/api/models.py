@@ -32,7 +32,7 @@ class Book(models.Model):
     doubanUrl, (doubanRating)...(info from external API
     '''
     
-    isbn=models.CharField(max_length=13,null=False,unique=True,primary_key=True)
+    isbn=models.CharField(max_length=13,null=False,default="0000000000",unique=True,primary_key=True)
     title=models.CharField(max_length=50,default="",unique=False)
     author=models.JSONField(max_length=50,default="")
     publisher=models.CharField(max_length=50,default="")
@@ -106,14 +106,15 @@ class Profile(models.Model):
         return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
 
 class Mark(models.Model):
-    markid=models.CharField(max_length=10,primary_key=True)
     userid = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
     bookisbn = models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
     class Meta:
+        managed= True
         unique_together=('userid','bookisbn')
 
     def __str__(self) -> str:
         return 'book: '+self.bookisbn.title+' user: '+self.userid.username
+
 
 class Comment(models.Model):
     com_id = models.CharField(max_length=50,null=False,unique=True,primary_key=True)
