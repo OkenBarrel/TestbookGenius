@@ -120,7 +120,11 @@ class SearchSerializer(serializers.ModelSerializer):
     book = BookSerializer()
     teacher = TeacherSerializer()
     course = CourseSerializer()
+    cover = serializers.SerializerMethodField()
 
     class Meta:
         model = Usebook
-        fields = ('book', 'teacher', 'course', 'school_year', 'semester')
+        fields = ('book', 'teacher', 'course', 'school_year', 'semester', 'cover')
+
+    def get_cover(self, obj):
+        return obj.book.cover if obj.book else None

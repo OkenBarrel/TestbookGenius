@@ -4,7 +4,7 @@ import {useParams, useNavigate, Link} from 'react-router-dom';
 import { getCookie } from './CSRFToken';
 import {getCsrfToken} from "./CSRFToken";
 
-const HelloComponent = () => {
+const HelloComponent = ({user_name,id}) => {
     const csrftoken = getCsrfToken();
 
     const [user, setUser] = useState("Please Login");
@@ -12,8 +12,20 @@ const HelloComponent = () => {
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        const username = getCookie('username');
-        const userid = getCookie('userid');
+        // const username = getCookie('username');
+        // const userid = getCookie('userid');
+        // const username;
+        // const userid;
+        let username;
+        let userid;
+        if(user_name===null && id===null){
+            username = getCookie('username');
+            userid = getCookie('user_id');
+            
+        }else{
+            username = user_name;
+            userid = id;
+        }
         
         if (username == null) {
             console.log("user_id is null!");
@@ -24,13 +36,14 @@ const HelloComponent = () => {
             setIsLoggedIn(true);
             setUserId(userid);
         }
-    }, []);
+    }, [user_name,id]);
 
     return (
         <Box border = "0px dotted #acf" width = "100%">
             <Grid alignSelf="flex-end">
                 {isLoggedIn ? (
-                    <Link to={`/user/${getCookie('user_id')}`} component={Link} style={{ textDecoration: 'none' }} color="primary">
+                    // getCookie('user_id')
+                    <Link to={`/user/${userId}`} component={Link} style={{ textDecoration: 'none' }} color="primary">
                         <h3>{user}</h3>
                     </Link>
                 ) : (

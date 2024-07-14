@@ -13,42 +13,51 @@ import HelloComponent from './HelloComponent';
 import { getCookie,getCsrfToken } from './CSRFToken';
 import {
     HashRouter as Router,
-    Routes,
-    Route,
     Link,
-    Redirect,
 } from "react-router-dom";
 import UserPage from "./UserPage";
-
-async function handleLogout(){
-  const csrftoken=getCsrfToken();
-
-  const requestOption={
-
-    method: "GET",
-    headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrftoken
-    },
-    credentials: 'include',
-  }
-
-  let response=await fetch("http://localhost:8000/api/logout",requestOption);
-  if(!response.ok){
-    console.log("log out failed");
-    return;
-  }
-  console.log("log out success");
-
-}
+import { AlignHorizontalRight } from '@mui/icons-material';
+import { useReducer } from 'react'
 
 function HomePage() {
+  const [out,setOut]=useState(false);
+  const[user_id,setId]=useState(null);
+  const[user_name,setName]=useState(null);
+
+  async function handleLogout(){
+    const csrftoken=getCsrfToken();
+  
+    const requestOption={
+  
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken
+      },
+      credentials: 'include',
+    }
+  
+    let response=await fetch("http://localhost:8000/api/logout",requestOption);
+    if(!response.ok){
+      console.log("log out failed");
+      return;
+    }
+    setName(getCookie('username'));
+    setId(getCookie('user_id'));
+  
+  }
+  
 
   useEffect(()=>{
     getLog();
-
+    setName(getCookie('username'));
+    setId(getCookie('user_id'));
 
   },[]);
+  // useEffect(()=>{
+  //   renderHomePage()
+  // },[out]);
+
   const getLog=async ()=>{
     let response=await fetch("http://localhost:8000/api/is-loggedin",{
       credentials:'include'
@@ -59,8 +68,8 @@ function HomePage() {
   
     function renderHomePage() {
       return (
-        <div>
-          <Grid container spacing={2} direction={'column'}>
+        <div paddling="10%">
+          <Grid container spacing={2} direction={'column'} >
             <Grid item>
               <Grid container spacing={2} direction="row" justifyContent={'center'}>
                 <Grid item margin={1.5} xs={7} sm={7} md={7} lg={7} xl={7}>
@@ -69,13 +78,16 @@ function HomePage() {
                     {!getCookie('user_id')&&(<Button variant='contained' to="/login" component={Link}>登录</Button>)}
                     <Button variant='contained' to="/register" component={Link}>注册</Button>
                     <Button variant='contained' to={`/user/${getCookie('user_id')}`} component={Link}>用户信息</Button>
-                    <Button variant='contained' to="/search" component={Link}>搜索</Button>
-                    <Button variant='contained' onClick={handleLogout}>退出登录</Button>
+                    <Button variant='contained' 
+                      onClick={handleLogout}>
+                      退出登录
+                    </Button>
                   </Box>
                 </Grid>
                 <Grid item xs={3} sm={3} md={3} lg={3} xl={3} justifyContent="flex-end">
                   <Box display="flex" justifyContent="flex-end">
-                    <HelloComponent />
+                    {console.log("name"+user_name)}
+                    <HelloComponent user_name={user_name} id={user_id} />
                   </Box>
                 </Grid>
               </Grid>
