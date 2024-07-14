@@ -14,8 +14,18 @@ const HelloComponent = ({user_name,id}) => {
     useEffect(() => {
         // const username = getCookie('username');
         // const userid = getCookie('userid');
-        const username = user_name;
-        const userid = id;
+        // const username;
+        // const userid;
+        let username;
+        let userid;
+        if(user_name===null && id===null){
+            username = getCookie('username');
+            userid = getCookie('user_id');
+            
+        }else{
+            username = user_name;
+            userid = id;
+        }
         
         if (username == null) {
             console.log("user_id is null!");
