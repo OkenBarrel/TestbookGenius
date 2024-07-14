@@ -750,12 +750,31 @@ class SearchView(APIView):
 
 class loggout(APIView):
     def post(self,request):
-        if request.user is None:
+        if not request.user.is_active() or  request.user is None:
             return Response({'msg':'未登录，无需注销'},status=status.HTTP_406_NOT_ACCEPTABLE)
+        del request.session['user_id']
+        del request.session['username']
         logout(request=request)
+
         return Response({'success':'成功注销'},status=status.HTTP_200_OK)
     def get(self,request):
         if request.user is None:
             return Response({'msg':'未登录，无需注销'},status=status.HTTP_406_NOT_ACCEPTABLE)
         logout(request=request)
         return Response({'success':'成功注销'},status=status.HTTP_200_OK)
+    
+
+class is_loggedin(APIView):
+    def get(self,request):
+        # print(request.session['user_id'])
+        # print(request.user)
+        try:
+            if(request.session['is_login']):
+                res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
+                res.set_cookie('username',request.user.get_username(),httponly=False)
+                res.set_cookie('user_id',request.user.id,httponly=False)
+                return res
+        except Exception:
+            pass
+            
+        return Response({'msg':'not logged'},status=status.HTTP_200_OK)
