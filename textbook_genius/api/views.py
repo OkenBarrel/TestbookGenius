@@ -255,7 +255,7 @@ class updateBook(APIView):
 class markBook(APIView):
     mark_serializer_class=MarkSerializer
     book_serializer_class=BookSerializer
-    def post(self,request,format=None):
+    def post(self,request):
         print(request.data)
         #print(request.session.get('_auth_user_id',None))
         request_data=request.data.get("mark")
@@ -304,7 +304,32 @@ class markBook(APIView):
             print('error')
             print(mark_serializer.errors)
             return Response({'msg':'收藏失败'},status.HTTP_404_NOT_FOUND)
+        
+    def delete(self,request):
+        request_data=request.data.get("mark")
+        print(request_data)
 
+        queryset=Book.objects.filter(isbn=request_data['bookisbn'])
+        if queryset.exists():
+            book=queryset[0]
+            book_isbn=book.isbn
+            print(book_isbn)
+        else:
+            return Response({'msg':'未找到该书籍'},status.HTTP_404_NOT_FOUND)
+        queryset=User.objects.filter(id=request_data['userid'])
+        if queryset.exists():
+            user_mark=queryset[0]
+            user_id=user_mark.id
+            print(user_id)
+        else:
+            return Response({'msg':'未找到该用户'},status.HTTP_404_NOT_FOUND)
+        
+        mark_del = Mark.objects.filter(userid=user_id,bookisbn=book_isbn)
+        if not mark_del:
+            return Response({'msg':'收藏关系不存在'},status.HTTP_404_NOT_FOUND)
+        mark_del.delete()
+        return Response({'msg':'取消收藏成功！'},status.HTTP_200_OK)
+        
 
 class getUseBook(APIView):
     def get(self,request,format=None):
