@@ -810,7 +810,6 @@ class validation(APIView):
         # email=request.data.get('email')
         print(request.data)
         if ValidationCode.objects.filter(email=request.data.get('email')).exists() :
-        if ValidationCode.objects.filter(email=request.data.get('email')).exists() :
             return Response({"msg":"验证码已发送"},status=status.HTTP_409_CONFLICT)
         serializer=ValidationCodeSerializer(data=request.data)
         if not serializer.is_valid():
