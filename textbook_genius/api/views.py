@@ -800,7 +800,7 @@ class validation(APIView):
             email:
         }
     '''
-    @transaction.atomic
+    # @transaction.atomic
     def post(self,request):
         # email=request.data.get('email')
         print(request.data)
@@ -887,7 +887,7 @@ class loggout(APIView):
 class is_loggedin(APIView):
     def get(self,request):
         # print(request.session['user_id'])
-        # print(request.user)
+        print(request.user)
         try:
             print(request.session['is_login'])
             if(request.session['is_login']):

@@ -12,7 +12,7 @@ function Texbook(props) {
   // const[couserName,setCourseName]=useState("");
 
   async function handleSearchISBN(){
-    let response= await fetch("http://localhost:8000/api/get-douban-book"+"?isbn="+isbn)
+    let response= await fetch("http://192.168.225.149:80/api/get-douban-book"+"?isbn="+isbn)
     console.log(await response.json().then((data)=>{setInfo(data.title);
                                                     }))
   }

@@ -32,7 +32,7 @@ function HomePage() {
       credentials: 'include',
     }
   
-    let response=await fetch("http://localhost:8000/api/logout",requestOption);
+    let response=await fetch("http://192.168.225.149:80/api/logout",requestOption);
     if(!response.ok){
       console.log("log out failed");
       return;
@@ -52,7 +52,7 @@ function HomePage() {
   },[]);
 
   const getLog=async ()=>{
-    let response=await fetch("http://localhost:8000/api/is-loggedin",{
+    let response=await fetch("http://192.168.225.149:80/api/is-loggedin",{
       credentials:'include'
     });
     let data=await response.json()

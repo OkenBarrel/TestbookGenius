@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1)ej8a^oi24^5gm+p(v5s7dy-l)a4i-3f1cjb)7i%%43lp)e94
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F', 'Lino-LAPTOP']#'127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F'
+ALLOWED_HOSTS = ['*',]#'127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F'
 
 
 # Application definition
@@ -88,8 +88,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://127.0.0.1']
-
+CSRF_TRUSTED_ORIGINS = ['http://localhost:80','http://127.0.0.1:80',]
+# 'http://192.168.225.56:3000','http://192.168.225.56'
 
 CORS_ORIGIN_ALLOW_ALL=True
 CORS_ALLOW_CREDENTIALS = True

@@ -35,7 +35,7 @@ const SearchResults = () => {
       credentials: 'include',
     }
   
-    let response=await fetch("http://localhost:8000/api/logout",requestOption);
+    let response=await fetch("http://192.168.225.149:80/api/logout",requestOption);
     if(!response.ok){
       console.log("log out failed");
       return;
@@ -47,7 +47,7 @@ const SearchResults = () => {
   }
   
   const getLog=async ()=>{
-    let response=await fetch("http://localhost:8000/api/is-loggedin",{
+    let response=await fetch("http://192.168.225.149:80/api/is-loggedin",{
       credentials:'include'
     });
     let data=await response.json()
@@ -63,7 +63,7 @@ const SearchResults = () => {
       setLoading(true);
       try {
         if (query) {
-          const response = await fetch(`http://localhost:8000/api/search/results?query=${encodeURIComponent(query)}&page=${page}`);
+          const response = await fetch(`http://192.168.225.149:80/api/search/results?query=${encodeURIComponent(query)}&page=${page}`);
           if (!response.ok) {
             throw new Error('Failed to fetch data');
           }
@@ -160,7 +160,7 @@ const SearchResults = () => {
                                     minWidth: 150,
                                     objectFit: 'contain' 
                                     }}
-                                image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(result.book.cover)}`}
+                                image={`http://192.168.225.149:80/api/proxy-image?url=${encodeURIComponent(result.book.cover)}`}
                                 title="cover"
                                 />                                  
                               </Box>
