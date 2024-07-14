@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Button, Grid, Typography, TextField, Paper, Box } from "@mui/material";
+import { Button, Grid, FormControl,Typography, TextField, Paper, Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from 'react-router-dom';
 import { getCookie,getCsrfToken } from './CSRFToken';
 import Home from './Navigate';
 import HelloComponent from './HelloComponent';
+import IndateSelect from './SelectIndate';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [indate,setIndate] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,7 +28,7 @@ const RegisterPage = () => {
     setSuccess('');
 
     // Validate inputs
-    if (!email || !username || !password || !confirmPassword) {
+    if (!email || !username || !password || !confirmPassword || !indate) {
       setError('Email, username, password, and confirm password are required.');
       return;
     }
@@ -36,6 +38,7 @@ const RegisterPage = () => {
     }
 
     const apiUrl = 'http://localhost:8000/api/register';
+    const apiurl_profile = 'http://localhost:8000/api/user';
 
     try {
       const response = await fetch(apiUrl, {
@@ -48,6 +51,7 @@ const RegisterPage = () => {
           user_name: username, 
           user_password: password,
           user_email: email,
+          user_indate: indate,
           validation: valiCode
         }),
       });
@@ -157,6 +161,9 @@ const RegisterPage = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
+            <FormControl variant="outlined" sx={{ m: 0, minWidth: 600 }}>
+                <IndateSelect onChange={(e)=>{setIndate(e.target.value)}} value={indate}/>
+            </FormControl>
             <TextField
               label="Password"
               type="password"

@@ -470,6 +470,7 @@ class register(APIView):
     {
         user_name:,
         user_email:,
+        user_indate:,
         user_password:,
         validation:
     }
@@ -489,7 +490,8 @@ class register(APIView):
                                     email=request.data.get('user_email'),
                                     password=request.data.get('user_password'))
         user.save()
-        Profile.objects.create(user=user)###
+        indate=request.data.get('user_indate')
+        Profile.objects.create(user=user,user_indate=indate)###
         """
         login(request,user)
         request.session['user_id'] = user.pk
@@ -628,6 +630,7 @@ class ProfileViewer(APIView):
 
                 data = {
                     'username': profile.user.username,
+                    'user_indate': profile.user_indate,
                     'user_department': profile.user_department,
                     'user_major': profile.user_major,
                     'user_credit': profile.user_credit,
@@ -646,14 +649,15 @@ class ProfileViewer(APIView):
             try:
                 print(request.data)
                 print(request.FILES)
-                
 
                 user_id=request.data.get('user_id')
+                user_indate=request.data.get('user_indate')
                 user_major=request.data.get('user_major')
                 user_department=request.data.get('user_department')
                 user_credit=request.data.get('user_credit')
                 data={
                     'user_id':user_id,
+                    'user_indate':user_indate,
                     'user_major':user_major,
                     'user_department':user_department,
                     'user_credit':user_credit
@@ -671,6 +675,7 @@ class ProfileViewer(APIView):
                     serializer.save()
                     data = {
                         'username': profile.user.username,
+                        'user_indate': profile.user_indate,
                         'user_department': profile.user_department,
                         'user_major': profile.user_major,
                         'user_credit': profile.user_credit,
