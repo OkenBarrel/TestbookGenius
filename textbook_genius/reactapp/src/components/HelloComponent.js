@@ -30,7 +30,7 @@ const HelloComponent = () => {
         <Box border = "0px dotted #acf" width = "100%">
             <Grid alignSelf="flex-end">
                 {isLoggedIn ? (
-                    <Link to={`/user/${getCookie('userid')}`} style={{ textDecoration: 'none' }} color="primary">
+                    <Link to={`/user/${getCookie('user_id')}`} component={Link} style={{ textDecoration: 'none' }} color="primary">
                         <h3>{user}</h3>
                     </Link>
                 ) : (
