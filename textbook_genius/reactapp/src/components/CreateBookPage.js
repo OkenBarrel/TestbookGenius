@@ -209,55 +209,16 @@ function CreateBookPage(props){
                                     <h1>This is create book</h1>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <TextField value={title} label={"标题"} onChange={(e)=>{setTitle(e.target.value)}}/> */}
-                                    {/* <FormControl  variant="outlined">
-                                        <InputLabel htmlFor="title-input">标题</InputLabel>
-                                        <OutlinedInput
-                                            id="title-input"
-                                            value={title}
-                                            onChange={(e) => { setTitle(e.target.value) }}
-                                            label="标题"
-                                        />
-                                    </FormControl> */}
                                     <Typography variant='h3'>书名：{title}</Typography>
 
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/> */}
-                                    {/* <FormControl  variant="outlined">
-                                        <InputLabel htmlFor="author-input">作者</InputLabel>
-                                        <OutlinedInput
-                                            id="author-input"
-                                            value={author}
-                                            onChange={(e) => { setAuthor(e.target.value) }}
-                                            label="作者"
-                                        />
-                                    </FormControl> */}
                                     <Typography variant='h6'>作者：{author}</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
-                                {/* <TextField value={publisher} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/> */}
-                                    {/* <FormControl  variant="outlined">
-                                        <InputLabel htmlFor="publisher-input">出版社</InputLabel>
-                                        <OutlinedInput
-                                            id="publisher-input"
-                                            value={publisher}
-                                            onChange={(e) => { setPublisher(e.target.value) }}
-                                            label="出版社"
-                                        />
-                                    </FormControl> */}
                                     <Typography variant='h6'>出版社：{publisher}</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <FormControl  variant="outlined"> */}
-                                        {/* <InputLabel htmlFor="publisher-input">{出版日期}</InputLabel>
-                                        <OutlinedInput
-                                            id="publisher-input"
-                                            value={pubdate}
-                                            onChange={(e) => { setPubdate(e.target.value) }}
-                                            label="出版日期"
-                                        />
-                                    </FormControl> */}
                                     <Typography variant='h6'>出版日期：{pubdate}</Typography>
                                 </Grid>
                             </Grid>
@@ -265,13 +226,6 @@ function CreateBookPage(props){
                         </CardContent>
                         {cover && (<img src={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>
 )}
-                        {/* <CardMedia
-                        component="img"
-                        image={cover}
-                        title='cover'
-                        crossOrigin="anonymous"
-                        referrer="same-origin"
-                        /> */}
                     </Box>
                 </Card>
             </Box>
