@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Q
+from django.core.paginator import Paginator
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view,renderer_classes
@@ -15,6 +16,7 @@ from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
 from requests import Request,post,get,patch
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
+from itertools import chain
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
@@ -653,13 +655,33 @@ class SearchView(APIView):
         title_filter = Q(book__title__icontains=query)
         course_filter = Q(course__course_name__icontains=query)
         department_filter = Q(course__department__icontains=query)
+        teacher_filter = Q(teacher__teacher_name__icontains=query)
+        isbn_filter = Q(book__isbn__icontains=query)
 
-        search_results = Usebook.objects.filter(title_filter | course_filter | department_filter).select_related('book', 'teacher', 'course').distinct()
+        search_results1 = Usebook.objects.filter(title_filter).select_related('book', 'teacher', 'course')
+        search_results2 = Usebook.objects.filter(course_filter).select_related('book', 'teacher', 'course')
+        search_results3 = Usebook.objects.filter(teacher_filter).select_related('book', 'teacher', 'course')
+        search_results4 = Usebook.objects.filter(department_filter).select_related('book', 'teacher', 'course')
+        search_results5 = Usebook.objects.filter(isbn_filter).select_related('book', 'teacher', 'course')
+        
+        combined_results = list(chain(search_results1, search_results2, search_results3, search_results4, search_results5))
+        search_results = list({result.id: result for result in combined_results}.values())
 
-        serialized_results = self.serializer_class(search_results, many=True).data
-        print(f"Serialized results: {serialized_results}") 
+        items_per_page = 5
+        paginator = Paginator(search_results, items_per_page)
+        page_number = request.query_params.get('page', 1)
+        page_obj = paginator.get_page(page_number)
 
-        return Response(serialized_results, status=status.HTTP_200_OK)
+        serialized_results = self.serializer_class(page_obj.object_list, many=True).data
+        print(f"Serialized results: {serialized_results}")
+
+        return Response({
+            'results': serialized_results,
+            'count': paginator.count,
+            'num_pages': paginator.num_pages,
+            'current_page': page_number
+        }, status=status.HTTP_200_OK)
+
 class loggout(APIView):
     def post(self,request):
         if request.user is None:
