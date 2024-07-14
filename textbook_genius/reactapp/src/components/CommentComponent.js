@@ -2,7 +2,8 @@ import React, { Component, useState,useEffect } from "react";
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Card from '@mui/material/Card'
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 import { useParams, useNavigate } from 'react-router-dom';
 import ScoreComponent from "./ScoreComponet";
 import { getCookie } from './CSRFToken';
@@ -62,6 +63,7 @@ const CommentComponet=({isbn})=>{
             getComment(data[0].id); // 直接使用第一个relation的id调用getComment
         }
     }
+
   
     const getComment = async (relationId) => {
         try {
@@ -124,17 +126,18 @@ const CommentComponet=({isbn})=>{
     };
     
     return(
-            <Box sx={{display:'flex',flexDirection:'row'}}>
-                <Card>
-                    <Tabs 
-                        value={value} onChange={handleChange}
-                        variant="scrollable" scrollButtons="auto"
-                    >
-                        {relations.map((relation)=>(
-                            <Tab label={relation.course.course_name+"-"+relation.teacher}></Tab>                                
-                        ))}
-                    
-                    </Tabs>
+            <Box width="100%" flexDirection="row">
+            <Grid container width = "100%" minHeight="200px">
+                    <Card>
+                        <Tabs 
+                            value={value} onChange={handleChange}
+                            variant="scrollable" scrollButtons="auto"
+                        >
+                            {relations.map((relation)=>(
+                                <Tab label={relation.course.course_name+"-"+relation.teacher}></Tab>                                
+                            ))}
+                        
+                        </Tabs>
                     <CustomTabPanel value={value} index={value}>
                         <Box sx={{ width: '100%', typography: 'body1' }}>
                             <ul>
@@ -144,10 +147,10 @@ const CommentComponet=({isbn})=>{
                             </ul>
                         </Box>
                     </CustomTabPanel>
-                </Card>
-    
-                {console.log(relations[value])}
-                {<ScoreComponent relation={relations[value]}></ScoreComponent>
+                    </Card>
+                        {console.log(relations[value])}
+                <Grid item> 
+                        {<ScoreComponent relation={relations[value]}></ScoreComponent>
                 /*<Box sx={{ width: '100%', typography: 'body1' }}>
                 <ul>
                     {comments.map((comment, index) => (
@@ -165,7 +168,9 @@ const CommentComponet=({isbn})=>{
                     />
                     <Button onClick={() => createComment(content)}>提交评论</Button>
                 </Box>
-            </Box>
+                    </Grid>
+            </Grid>
+        </Box>
         )
     }
 

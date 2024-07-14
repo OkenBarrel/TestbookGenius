@@ -9,6 +9,7 @@ import {useNavigate} from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
 import SchoolYearSelect from './SelectSchoolYear';
 import { getCookie } from './CSRFToken';
+import Home from './Navigate';
 
 
 function CreateBookPage(props){
@@ -117,8 +118,11 @@ function CreateBookPage(props){
 
     return(
         <div className='createBookPage'>
+            <Box>
+                <Home />
+            </Box>
             <Box  alignContent="center" sx={{ display:'flex',flexDirection: 'row'}}>
-                <Box sx={{width:600,p: 2, border: '1px dashed grey'}}>{/*minWidth:400,maxWidth:400*/}
+                <Box sx={{width:600,p: 2, border: '1px dashed grey'}}>
                 <Grid container spacing={1} item xs={6} >
                     <Grid item xs={12} align="center">
                         <h1>This is create Use</h1>
@@ -128,7 +132,6 @@ function CreateBookPage(props){
                                     <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
                                 </Grid>
                     <Grid item xs={12} align="center">
-                    {/* <TextField value={teacher} label={"老师"} onChange={(e)=>{setTeacher(e.target.value)}}/> */}
                         <FormControl  variant="outlined">
                             <InputLabel htmlFor="teacher-input">老师</InputLabel>
                             <OutlinedInput

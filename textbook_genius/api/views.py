@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Q
+from django.core.paginator import Paginator
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view,renderer_classes
@@ -15,6 +16,7 @@ from .models import Room,Book,Teacher,Course,Comment,Usebook,Mark,\
 from requests import Request,post,get,patch
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
+from itertools import chain
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
@@ -26,6 +28,9 @@ from rest_framework.parsers import MultiPartParser, FormParser
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class RoomView(generics.ListAPIView):
     queryset = Room.objects.all()
@@ -246,6 +251,59 @@ class updateBook(APIView):
             return Response(BookSerializer(book).data,status.HTTP_200_OK)
         else:
             return Response({'Bad Request':'invalid'},status.HTTP_404_NOT_FOUND)
+        
+class markBook(APIView):
+    mark_serializer_class=MarkSerializer
+    book_serializer_class=BookSerializer
+    def post(self,request,format=None):
+        print(request.data)
+        #print(request.session.get('_auth_user_id',None))
+        request_data=request.data.get("mark")
+
+        queryset=Book.objects.filter(isbn=request_data['bookisbn'])
+        if queryset.exists():
+            book=queryset[0]
+            print(book.isbn)
+        else:
+            return Response({'msg':'未找到该书籍'},status.HTTP_404_NOT_FOUND)
+        
+        queryset=User.objects.filter(id=request_data['userid'])
+        if queryset.exists():
+            user_mark=queryset[0]
+            print(user_mark.id)
+        else:
+            return Response({'msg':'未找到该用户'},status.HTTP_404_NOT_FOUND)
+        
+        #user_id=request.COOKIES.get('user_id')
+        mark_data={
+            "userid":user_mark.id,
+            "bookisbn":book.isbn
+        }
+
+        mark_serializer=self.mark_serializer_class(data=mark_data)
+        #print(mark_serializer)
+        if mark_serializer.is_valid():
+            user_id=mark_serializer.data.get('userid')
+            book_isbn=mark_serializer.data.get('bookisbn')
+           #user=get_object_or_404(User, id=user_id)
+            #book=get_object_or_404(Book, isbn=book_isbn)
+            queryset=User.objects.filter(id=user_id)
+            if queryset.exists():
+                user=queryset[0]
+                print(user)
+            queryset=Book.objects.filter(isbn=book_isbn)
+            if queryset.exists():
+                book=queryset[0]
+                print(book)
+            mark=Mark(userid=user,bookisbn=book) 
+            mark.save()
+            print(mark)
+            print("ok")
+            return Response(MarkSerializer(mark).data,status.HTTP_200_OK)
+        else:
+            print('error')
+            print(mark_serializer.errors)
+            return Response({'msg':'收藏失败'},status.HTTP_404_NOT_FOUND)
 
 
 class getUseBook(APIView):
@@ -263,6 +321,7 @@ class getUseBook(APIView):
                     "semester": 学期,
                     "upvote_count": 1,实用投票票数
                     "downvote_count": 0,不实用投票票数
+                    "id":关系主键
                 },
             ]
         '''
@@ -341,6 +400,56 @@ class createComment(APIView):
 
         # 返回成功响应
         return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
+
+
+class getOneUseBook(APIView):
+    '''
+    输入
+    {
+        use_id
+        user_id
+    }
+    输出
+    {
+    
+    
+    }
+    '''
+    
+    def get(self,request):
+        use_id=request.GET.get('use_id')
+        print(use_id)
+        user_id=request.GET.get('user_id')
+        print(user_id)
+        try:
+            use=Usebook.objects.get(id=use_id)
+        except Usebook.DoesNotExist:
+            return Response({'msg':'关系未找到'},status=status.HTTP_404_NOT_FOUND)
+        # use=get_object_or_404(Usebook,id=use_id)
+        upvote_count = UpScoreUserRelation.objects.filter(useBook=use).count()
+        downvote_count = DownScoreUserRelation.objects.filter(useBook=use).count()
+        try:
+            user=User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            data={
+                'use_id':None,
+                'upvote':upvote_count,
+                'downvote':downvote_count,
+                'is_upvoted':False,
+                'is_downvoted':False
+            }
+            return Response(data=data,status=status.HTTP_200_OK)
+
+        data={
+            'use_id':use_id,
+            'upvote':upvote_count,
+            'downvote':downvote_count,
+            'is_upvoted':UpScoreUserRelation.objects.filter(user=user, useBook=use).exists(),
+            'is_downvoted':DownScoreUserRelation.objects.filter(user=user, useBook=use).exists()
+        }
+
+        return Response(data=data,status=status.HTTP_200_OK)
+
 
 from django.core.mail import send_mail
 
@@ -486,7 +595,7 @@ class loggin(APIView):
             print("session key:"+request.session.session_key)
             print(request.session.get('_auth_user_id',None))
             print(request.session.items()) #获取session键值对
-            data=request.session.items()
+            #data=request.session.items()
             res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
             res.set_cookie('username',username,httponly=False)
             res.set_cookie('user_id',user.id,httponly=False)
@@ -544,7 +653,7 @@ class ProfileViewer(APIView):
                 print(user_id)
                 
 
-                profile = Profile.objects.get(user_id=user_id)
+                profile = Profile.objects.get(user__id=user_id)
                 serializer = ProfileSerializer(profile, data=data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
@@ -604,11 +713,13 @@ class downScoreUser(APIView):
 
     def delete(self,request):
         usebook_id = request.data.get('useBook')
+        # user_id=request.data.get('user_id')
+        print(usebook_id)
         user_id=request.COOKIES.get('user_id')
         if not usebook_id:
             return Response({"Bad Request": "usebook ID not provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        scoreUser = DownScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id).first()
+        scoreUser = DownScoreUserRelation.objects.filter(useBook__id=usebook_id,user__id=user_id).first()
         if not scoreUser:
             return Response({"Bad Request": "Invalid usebook relation."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -655,27 +766,66 @@ class SearchView(APIView):
     serializer_class = SearchSerializer
 
     def get(self, request):
-        query_params = request.query_params
-        query = query_params.get('query', '')
+        query = request.query_params.get('query', '')
+        print(f"Received query: {query}")
 
         title_filter = Q(book__title__icontains=query)
         course_filter = Q(course__course_name__icontains=query)
         department_filter = Q(course__department__icontains=query)
+        teacher_filter = Q(teacher__teacher_name__icontains=query)
+        isbn_filter = Q(book__isbn__icontains=query)
 
-        search_results = Usebook.objects.filter(title_filter | course_filter | department_filter).select_related('book', 'teacher', 'course').distinct()
+        search_results1 = Usebook.objects.filter(title_filter).select_related('book', 'teacher', 'course')
+        search_results2 = Usebook.objects.filter(course_filter).select_related('book', 'teacher', 'course')
+        search_results3 = Usebook.objects.filter(teacher_filter).select_related('book', 'teacher', 'course')
+        search_results4 = Usebook.objects.filter(department_filter).select_related('book', 'teacher', 'course')
+        search_results5 = Usebook.objects.filter(isbn_filter).select_related('book', 'teacher', 'course')
+        
+        combined_results = list(chain(search_results1, search_results2, search_results3, search_results4, search_results5))
+        search_results = list({result.id: result for result in combined_results}.values())
 
-        serialized_results = self.serializer_class(search_results, many=True).data
+        items_per_page = 5
+        paginator = Paginator(search_results, items_per_page)
+        page_number = request.query_params.get('page', 1)
+        page_obj = paginator.get_page(page_number)
 
-        return Response(serialized_results, status=status.HTTP_200_OK)
+        serialized_results = self.serializer_class(page_obj.object_list, many=True).data
+        print(f"Serialized results: {serialized_results}")
+
+        return Response({
+            'results': serialized_results,
+            'count': paginator.count,
+            'num_pages': paginator.num_pages,
+            'current_page': page_number
+        }, status=status.HTTP_200_OK)
 
 class loggout(APIView):
     def post(self,request):
-        if request.user is None:
+        if not request.user.is_active() or  request.user is None:
             return Response({'msg':'未登录，无需注销'},status=status.HTTP_406_NOT_ACCEPTABLE)
+        del request.session['user_id']
+        del request.session['username']
         logout(request=request)
+
         return Response({'success':'成功注销'},status=status.HTTP_200_OK)
     def get(self,request):
         if request.user is None:
             return Response({'msg':'未登录，无需注销'},status=status.HTTP_406_NOT_ACCEPTABLE)
         logout(request=request)
         return Response({'success':'成功注销'},status=status.HTTP_200_OK)
+    
+
+class is_loggedin(APIView):
+    def get(self,request):
+        # print(request.session['user_id'])
+        # print(request.user)
+        try:
+            if(request.session['is_login']):
+                res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
+                res.set_cookie('username',request.user.get_username(),httponly=False)
+                res.set_cookie('user_id',request.user.id,httponly=False)
+                return res
+        except Exception:
+            pass
+            
+        return Response({'msg':'not logged'},status=status.HTTP_200_OK)

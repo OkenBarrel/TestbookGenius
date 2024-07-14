@@ -1,7 +1,9 @@
 import React, { useState,useEffect } from "react";
-import { Button, Grid, Typography, TextField, Paper } from "@mui/material";
+import { Button, Grid, Typography, TextField, Paper, Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { getCsrfToken } from "./CSRFToken";
+import Home from './Navigate';
+import HelloComponent from './HelloComponent';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -144,79 +146,93 @@ const RegisterPage = () => {
   }, [timeLeft, isRegistered]);
 
   return (
-    <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
-      <Paper elevation={3} style={{ padding: 20, maxWidth: 400 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Register
-        </Typography>
-        <form noValidate autoComplete="off">
-          <TextField
-            label="Email Address"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            label="Username"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <TextField
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <TextField
-            label="Validation"
-            // type="password"
-            margin="normal"
-            variant="outlined"
-            value={valiCode}
-            error={validationError}
-            helperText={validationError}
-            onChange={(e) => setValiCode(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            style={{ marginTop: 20 }}
-            onClick={handleValidation}
-          >
-            {timeLeft === 0 ? '获取验证码' : timeLeft}
-            {/* {timeLeft=120?"获取验证码":timeLeft} */}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            style={{ marginTop: 20 }}
-            onClick={handleRegister}
-          >
+    <Grid container justifyContent="center" spacing="50px" style={{ minHeight: '100vh' }}>
+      <Grid item width = "100%">
+          <Box border = "0px dotted #acf" width = "100%">
+              <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px', marginLeft: '5%' }}>
+                  <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px'}}>
+                      <Home />
+                  </Grid>
+                  <Grid item xs={4} sm={4} md={4} align="right">
+                      <HelloComponent />
+                  </Grid>
+              </Grid>
+          </Box>
+      </Grid>
+      <Grid item justifyContent="center" alignItems="center" style={{ minHeight: '100vh', marginTop: '8%' }}>
+        <Paper elevation={3} style={{ padding: 20, maxWidth: 600 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
             Register
-          </Button>
-        </form>
-        {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
-        {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
-      </Paper>
+          </Typography>
+          <form noValidate autoComplete="off">
+            <TextField
+              label="Email Address"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              label="Username"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <TextField
+              label="Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <TextField
+              label="Confirm Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <TextField
+              label="Validation"
+              // type="password"
+              margin="normal"
+              variant="outlined"
+              value={valiCode}
+              error={validationError}
+              helperText={validationError}
+              onChange={(e) => setValiCode(e.target.value)}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              style={{ marginTop: 20 }}
+              onClick={handleValidation}
+            >
+              {timeLeft === 0 ? '获取验证码' : timeLeft}
+              {/* {timeLeft=120?"获取验证码":timeLeft} */}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ marginTop: 20 }}
+              onClick={handleRegister}
+            >
+              Register
+            </Button>
+          </form>
+          {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
+          {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
+        </Paper>
+      </Grid>
     </Grid>
   );
 };
