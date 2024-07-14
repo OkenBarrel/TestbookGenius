@@ -22,11 +22,7 @@ const SearchResults = () => {
       setLoading(true);
       try {
         if (query) {
-<<<<<<< HEAD
           const response = await fetch(`http://8.130.18.80:80/api/search?query=${encodeURIComponent(query)}`);
-=======
-          const response = await fetch(`http://localhost:8000/api/search/results?query=${encodeURIComponent(query)}&page=${page}`);
->>>>>>> 1709571c09594b844ba04bfdbf7a53e8ee6d2efb
           if (!response.ok) {
             throw new Error('Failed to fetch data');
           }
@@ -105,7 +101,7 @@ const SearchResults = () => {
                                       minWidth: 150,
                                       objectFit: 'contain' 
                                       }}
-                                  image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(result.book.cover)}`}
+                                  image={`http://8.130.18.80:80/api/proxy-image?url=${encodeURIComponent(result.book.cover)}`}
                                   title="cover"
                                   />                                  
                                 </Box>

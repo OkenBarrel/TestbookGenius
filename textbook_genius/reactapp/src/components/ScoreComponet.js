@@ -88,13 +88,8 @@ const ScoreComponent=({relation})=>{
         };
         if (yes) {
             // 取消点赞
-<<<<<<< HEAD
             console.log("yes"+yes);
             const success = await handleRequest("http://8.130.18.80:80/api/up-score-user", "DELETE", body);
-=======
-            // console.log("yes"+yes);
-            const success = await handleRequest("http://localhost:8000/api/up-score-user", "DELETE", body);
->>>>>>> 1709571c09594b844ba04bfdbf7a53e8ee6d2efb
             if (success) {
                 setYes(false);
                 setYesCount(yesCount-1)

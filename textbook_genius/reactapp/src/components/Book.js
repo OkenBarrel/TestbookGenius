@@ -164,7 +164,7 @@ const Book=({relation})=>{
                     }
                 })
             };
-            let response=await fetch("http://localhost:8000/api/mark-book",requestOption)
+            let response=await fetch("http://8.130.18.80:80/api/mark-book",requestOption)
             let data=await response.json();
             if(!response.ok){
                 setRelationError(data.msg);
@@ -196,7 +196,7 @@ const Book=({relation})=>{
                     }
                 })
             };
-            let response=await fetch("http://localhost:8000/api/mark-book",requestOption)
+            let response=await fetch("http://8.130.18.80:80/api/mark-book",requestOption)
             let data=await response.json();
             if(!response.ok){
                 setRelationError(data.msg);
@@ -274,7 +274,7 @@ const Book=({relation})=>{
                                 maxWidth: 300, // 设定合适的 CSS 单位
                                 objectFit: 'contain' // or 'scale-down', 'fill', 'cover'
                                 }}
-                            image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`}
+                            image={`http://8.130.18.80:80/api/proxy-image?url=${encodeURIComponent(cover)}`}
                             title="cover"
                             />
                         )}

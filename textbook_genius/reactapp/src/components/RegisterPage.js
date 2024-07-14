@@ -84,20 +84,12 @@ const RegisterPage = () => {
       body: JSON.stringify({ 
         email: email
       })
-<<<<<<< HEAD
-
     }
     let response=await fetch("http://8.130.18.80:80/api/validation",requestOption)
     let data=await response.json()
     if(!response.ok){
       console.log(response.statusText)
-=======
-    };
-    let response = await fetch("http://localhost:8000/api/validation", requestOption);
-    let data = await response.json();
-    if (!response.ok) {
-      console.log(response.statusText);
->>>>>>> 1709571c09594b844ba04bfdbf7a53e8ee6d2efb
+  
       setValidationError(data.msg);
       return;
     }

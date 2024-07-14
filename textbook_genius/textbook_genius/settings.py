@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['http://8.130.18.80:80','http://8.130.18.80:8000','http://127.0.0.1']
 
 
 CORS_ORIGIN_ALLOW_ALL=True
