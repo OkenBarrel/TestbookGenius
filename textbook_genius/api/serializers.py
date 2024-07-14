@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Room, Book, Teacher, Course, Usebook, Profile , Mark ,\
-                    Comment, Like, UpScoreUserRelation,DownScoreUserRelation,ValidationCode
+                    Comment, UpScoreUserRelation,DownScoreUserRelation,ValidationCode
 from django.contrib.auth.models import User
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -70,7 +70,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username']
 
+
 class ProfileSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())  # 或者使用 IntegerField
+    user_avatar = serializers.ImageField()
+    # user = UserSerializer()
     # user_name = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
     user_id=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
@@ -81,14 +85,41 @@ class ProfileSerializer(serializers.ModelSerializer):
             if obj.user_avatar:
                 return request.build_absolute_uri(obj.user_avatar.url)
             return None
-    def update(self, instance, validated_data):
-        user_data = validated_data.pop('user')
-        user_serializer = UserSerializer(instance=instance.user, data=user_data, partial=True)
-        
-        if user_serializer.is_valid():
-            user_serializer.save()
+    # def update(self, instance, validated_data):
+    #     print('into')
+    #     user_data = validated_data.pop('user')
+    #     user = instance.user
 
-        return super().update(instance, validated_data)
+    #     # 检查用户名是否改变
+    #     print(user.username)
+    #     new_username = user_data.get('username', user.username)
+    #     print(user.username)
+    #     print(new_username)
+    #     if user.username != new_username:
+    #         print(user.username)
+    #         print(new_username)
+    #         user.username = new_username
+    #         try:
+    #             user.save()
+    #         except Exception as e:
+    #             raise serializers.ValidationError({"user": str(e)})
+    #     print(user.username)
+    #     print(new_username)
+    #     # 更新 Profile 模型
+    #     instance.user_major = validated_data.get('user_major', instance.user_major)
+    #     instance.user_department = validated_data.get('user_department', instance.user_department)
+    #     instance.user_credit = validated_data.get('user_credit', instance.user_credit)
+    #     instance.user_avatar = validated_data.get('user_avatar', instance.user_avatar)
+    #     instance.save()
+    #     return instance
+    # def update(self, instance, validated_data):
+    #     user_data = validated_data.pop('user')
+    #     user_serializer = UserSerializer(instance=instance.user, data=user_data, partial=True)
+        
+    #     if user_serializer.is_valid():
+    #         user_serializer.save()
+
+    #     return super().update(instance, validated_data)
 
 
 class MarkSerializer(serializers.ModelSerializer):
@@ -101,12 +132,12 @@ class MarkSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields=('com_id','info','book','user_id','com_date')
+        fields=('info','usebook','user','com_date')
 
-class LikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Like
-        fields=('user','comment','like','dislike')
+# class LikeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Like
+#         fields=('user','comment','like','dislike')
 
 class UpScoreUserRelationSerializer(serializers.ModelSerializer):
     useBook=serializers.PrimaryKeyRelatedField(queryset=Usebook.objects.all())

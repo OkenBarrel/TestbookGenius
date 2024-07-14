@@ -113,7 +113,10 @@ const UserPage =()=> {
         setIsEditing(false);
         try{
             const formData = new FormData();
-            formData.append('username',userInfo.username);
+            // formData.append('username',userInfo.username)
+            // if(userInfo.username===getCookie('username')){
+            //     formData.append('username',userInfo.username)
+            // }
             formData.append('user_id',userInfo.user_id)
             formData.append('user_major', userInfo.major);
             formData.append('user_department', userInfo.department);
@@ -134,7 +137,7 @@ const UserPage =()=> {
             if (response.ok) {
                 const data = await response.json();
                 setUserInfo({
-                    username: data.username,
+                    // username: data.username,
                     department: data.user_department,
                     major: data.user_major,
                     ProgramStartYear: data.user_indate,
@@ -193,7 +196,7 @@ const UserPage =()=> {
 
                         <form onSubmit={clickSubmitHandler}>
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <TextField
                                         label="Name"
                                         name="username"
@@ -203,7 +206,7 @@ const UserPage =()=> {
                                         variant="outlined"
                                         disabled={!isEditing}
                                     />
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12}>
                                     <FormControl fullWidth variant="outlined" disabled={!isEditing}>
                                         <InputLabel id="department-label">Department</InputLabel>

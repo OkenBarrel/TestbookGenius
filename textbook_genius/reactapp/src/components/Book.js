@@ -40,10 +40,8 @@ const Book=({relation})=>{
     const[buy_jie,setJie]=useState("")
 
     const[mark,setMark]=useState(false) //mark action
-    const[userid,setUserId]=useState('')
+    const[user_id,setUserId]=useState('')
     const[username,setUserName]=useState('')
-
-    const[relationerror,setRelationError]=useState('')
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
@@ -51,7 +49,7 @@ const Book=({relation})=>{
     useEffect(() => {
         getBookDetails();
         setUserId(getCookie('user_id'))
-        setUserName(getCookie('username'))
+        //setUserName(getCookie('username'))
     }, []);
 
     async function getBookDetails(){
@@ -75,10 +73,25 @@ const Book=({relation})=>{
 
     }
 
-    /*useEffect(()=>{
+    useEffect(()=>{
         console.log(relation);
-       
+        setUserId(getCookie('user_id'))
+        //setUserName(getCookie('username'))
+        getMarkDetail(relation?.id);
     },[relation])
+
+    const getMarkDetail =async ()=>{
+
+        let response=await fetch("http://127.0.0.1:8000/api/get-mark-status"+"?userid="+getCookie('user_id')+"&bookisbn="+isbn,{
+            credentials:'include'
+        });
+        if(!response.ok){
+            return;
+        }
+        let data=await response.json();
+        setMark(data?.ismark);
+
+    };
 
     const handleRequest = async (url, method, body) => {
         let requestOption = {
@@ -101,7 +114,7 @@ const Book=({relation})=>{
     async function handleMark(){
         console.log("mark");
         const body ={
-            userid:userid,
+            userid:user_id,
             bookisbn:isbn
         };
         if (mark) {
@@ -118,91 +131,6 @@ const Book=({relation})=>{
             if (success) {
                 setMark(true);
             }     
-        }
-    }*/
-
-    /*useEffect(()=>{
-        console.log(relation);
-       
-    },[relation])*/
-
-    /*const handleRequest = async (url, method, body) => {
-        let requestOption = {
-            method: method,
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrftoken
-            },
-            body: JSON.stringify(body)
-        };
-        let response = await fetch(url, requestOption);
-        if (!response.ok) {
-            console.log(`${method} request failed`);
-            return false;
-        }
-        return true;
-    };*/
-
-    async function handleMark(){
-        console.log('mark')
-        if (mark) {
-            // 取消收藏
-            setMark(false);
-            setUserId(getCookie('user_id'))
-            setUserName(getCookie('username'))
-
-            const requestOption={
-                method:"DELETE",
-                headers:{
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken
-                },
-                body:JSON.stringify({
-                    mark:{
-                        userid:userid,
-                        bookisbn:isbn
-                    }
-                })
-            };
-            let response=await fetch("http://8.130.18.80:80/api/mark-book",requestOption)
-            let data=await response.json();
-            if(!response.ok){
-                setRelationError(data.msg);
-                return;
-            }
-        } else {
-            // 进行收藏
-            if(getCookie('username')==null){
-                setRelationError('Please Login First');
-                return;
-            }
-            console.log("mark"+isbn);
-            console.log(getCookie('user_id'))
-            setMark(true);
-            setUserId(getCookie('user_id'))
-            setUserName(getCookie('username'))
-            
-            const requestOption={
-                method:"POST",
-                headers:{
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken
-                },
-                body:JSON.stringify({
-                    mark:{
-                       // markid:markid,
-                        userid:userid,
-                        bookisbn:isbn
-                    }
-                })
-            };
-            let response=await fetch("http://8.130.18.80:80/api/mark-book",requestOption)
-            let data=await response.json();
-            if(!response.ok){
-                setRelationError(data.msg);
-                return;
-            }
-            
         }
     }
 
