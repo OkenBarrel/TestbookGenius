@@ -1,8 +1,10 @@
-import {Button,DialogContent,Grid,Typography,TextField, Paper} from '@mui/material';
+import {Button,DialogContent,Grid,Typography,TextField, Paper, Box} from '@mui/material';
 import React,{Component, useState} from "react";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
 import Alert from '@mui/material/Alert';
+import Home from './Navigate';
+import HelloComponent from './HelloComponent';
 
 
 const LoginPage = () => {
@@ -48,7 +50,7 @@ const LoginPage = () => {
             }
             const data = await response.json();
             setSuccess('Login successful!');
-            navigate(-1);
+            navigate('/');
             // if (username === 'tw11' && password === 'password' && username === 'tw11') {
             //     setSuccess('Login successful!');
             //     // navigate(`/}`);
@@ -61,42 +63,66 @@ const LoginPage = () => {
         }
     };
     return (
-        <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
-            <Paper elevation={3} style={{ padding: 20, maxWidth: 400 }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Login
-                </Typography>
-                <form noValidate autoComplete="off">
-                    <TextField
-                        label="Username"
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <TextField
-                        label="Password"
-                        type="password"
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        style={{ marginTop: 20 }}
-                        onClick={handleLogin}
-                    >
-                        Login
-                    </Button>
-                </form>
-                {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
-                {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
-            </Paper>
+        <Grid container justifyContent="center" spacing="100px" style={{ minHeight: '100%' }}>
+            <Grid item width = "100%">
+                <Box border = "0px dotted #acf" width = "100%">
+                    <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px', marginLeft: '5%' }}>
+                        <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px'}}>
+                            <Home />
+                        </Grid>
+                        <Grid item xs={4} sm={4} md={4} align="right">
+                            <HelloComponent />
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Grid>
+            <Grid item justifyContent="center" >
+                <Paper elevation={3} style={{ padding: 20, maxWidth: 600 }}>
+                    <Typography variant="h4" component="h1" gutterBottom>
+                        用户登录
+                    </Typography>
+                    <form noValidate autoComplete="off">
+                        <TextField
+                            label="Username"
+                            fullWidth
+                            margin="normal"
+                            variant="outlined"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        <TextField
+                            label="Password"
+                            type="password"
+                            fullWidth
+                            margin="normal"
+                            variant="outlined"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            style={{ marginTop: 20 }}
+                            onClick={handleLogin}
+                        >
+                            登录
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            style={{ marginTop: 20 }}
+                            component={Link}
+                            to={`/register`} 
+                        >
+                            注册
+                        </Button>
+                    </form>
+                    {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
+                    {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
+                </Paper>
+            </Grid>
         </Grid>
     );
 }

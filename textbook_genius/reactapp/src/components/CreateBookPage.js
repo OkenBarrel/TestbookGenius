@@ -9,6 +9,7 @@ import {useNavigate} from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
 import SchoolYearSelect from './SelectSchoolYear';
 import { getCookie } from './CSRFToken';
+import Home from './Navigate';
 
 
 function CreateBookPage(props){
@@ -39,13 +40,17 @@ function CreateBookPage(props){
     //     console.log(school_year)
     // },[school_year]);
     
-
+    useEffect(()=>{
+        if(getCookie('username')==null){
+            navigate('/login',{replace:true,state:{from:'createBook'}})
+        }
+    },[])
     async function handleSearchButton(){
         console.log("username: "+getCookie('username'))
-        if(getCookie('username')==null){
-            navigate('/login',{state:{from:'createBook'}})
-            return;
-        }
+        // if(getCookie('username')==null){
+        //     navigate('/login',{state:{from:'createBook'}})
+        //     return;
+        // }
         if(isbn.length !=13){
             setIsbnError("ISBN无效，请重新输入");
             return;
@@ -71,6 +76,10 @@ function CreateBookPage(props){
     }
     async function handleSubmit(){
         console.log("handling submit")
+        // if(getCookie('username')==null){
+        //     navigate('/login',{state:{from:'createBook'}})
+        //     return;
+        // }
         if(isbn.length !=13){
             setIsbnError("ISBN无效，请重新输入");
             return;
@@ -117,8 +126,11 @@ function CreateBookPage(props){
 
     return(
         <div className='createBookPage'>
+            <Box>
+                <Home />
+            </Box>
             <Box  alignContent="center" sx={{ display:'flex',flexDirection: 'row'}}>
-                <Box sx={{width:600,p: 2, border: '1px dashed grey'}}>{/*minWidth:400,maxWidth:400*/}
+                <Box sx={{width:600,p: 2, border: '1px dashed grey'}}>
                 <Grid container spacing={1} item xs={6} >
                     <Grid item xs={12} align="center">
                         <h1>This is create Use</h1>
@@ -128,7 +140,6 @@ function CreateBookPage(props){
                                     <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
                                 </Grid>
                     <Grid item xs={12} align="center">
-                    {/* <TextField value={teacher} label={"老师"} onChange={(e)=>{setTeacher(e.target.value)}}/> */}
                         <FormControl  variant="outlined">
                             <InputLabel htmlFor="teacher-input">老师</InputLabel>
                             <OutlinedInput
@@ -206,55 +217,16 @@ function CreateBookPage(props){
                                     <h1>This is create book</h1>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <TextField value={title} label={"标题"} onChange={(e)=>{setTitle(e.target.value)}}/> */}
-                                    {/* <FormControl  variant="outlined">
-                                        <InputLabel htmlFor="title-input">标题</InputLabel>
-                                        <OutlinedInput
-                                            id="title-input"
-                                            value={title}
-                                            onChange={(e) => { setTitle(e.target.value) }}
-                                            label="标题"
-                                        />
-                                    </FormControl> */}
                                     <Typography variant='h3'>书名：{title}</Typography>
 
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/> */}
-                                    {/* <FormControl  variant="outlined">
-                                        <InputLabel htmlFor="author-input">作者</InputLabel>
-                                        <OutlinedInput
-                                            id="author-input"
-                                            value={author}
-                                            onChange={(e) => { setAuthor(e.target.value) }}
-                                            label="作者"
-                                        />
-                                    </FormControl> */}
                                     <Typography variant='h6'>作者：{author}</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
-                                {/* <TextField value={publisher} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/> */}
-                                    {/* <FormControl  variant="outlined">
-                                        <InputLabel htmlFor="publisher-input">出版社</InputLabel>
-                                        <OutlinedInput
-                                            id="publisher-input"
-                                            value={publisher}
-                                            onChange={(e) => { setPublisher(e.target.value) }}
-                                            label="出版社"
-                                        />
-                                    </FormControl> */}
                                     <Typography variant='h6'>出版社：{publisher}</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <FormControl  variant="outlined"> */}
-                                        {/* <InputLabel htmlFor="publisher-input">{出版日期}</InputLabel>
-                                        <OutlinedInput
-                                            id="publisher-input"
-                                            value={pubdate}
-                                            onChange={(e) => { setPubdate(e.target.value) }}
-                                            label="出版日期"
-                                        />
-                                    </FormControl> */}
                                     <Typography variant='h6'>出版日期：{pubdate}</Typography>
                                 </Grid>
                             </Grid>
@@ -262,13 +234,6 @@ function CreateBookPage(props){
                         </CardContent>
                         {cover && (<img src={`http://8.130.18.80:80/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>
 )}
-                        {/* <CardMedia
-                        component="img"
-                        image={cover}
-                        title='cover'
-                        crossOrigin="anonymous"
-                        referrer="same-origin"
-                        /> */}
                     </Box>
                 </Card>
             </Box>
