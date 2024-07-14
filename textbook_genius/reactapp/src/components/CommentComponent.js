@@ -4,10 +4,15 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
+import List from '@mui/material/List';
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import { useParams, useNavigate } from 'react-router-dom';
 import ScoreComponent from "./ScoreComponet";
 import { getCookie } from './CSRFToken';
 import {getCsrfToken} from "./CSRFToken";
+import CommentIcon from '@mui/icons-material/Comment'; 
 
 import {Button,TextField} from '@mui/material';
 
@@ -150,7 +155,22 @@ const CommentComponet=({isbn})=>{
     return(
         <Box border="0px solid" width="100%" display="flex" justifyContent="center" alignItems="center">
             <Grid container xs={12} sm={12} md={12} width="100%" minHeight="200px" display="flex" justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%' }}>
-                <Grid item xs={8} sm={8} md={8} justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%', height:'100%' }}>
+                <Grid item style={{marginTop: '20px', width: '90%'}}> 
+                    <Grid container direction='row' justifyContent="center" >
+                        <Grid item align="left" >
+                            <TextField
+                                label="写下你的评论"
+                                variant="outlined"
+                                fullWidth
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                            />                                
+                        </Grid>
+                    <Grid item align="right" alignContent="center">
+                        <Button variant="outlined" onClick={() => createComment(content)} sx={{height:"40px"}}>提交评论</Button>
+                    </Grid>
+                </Grid>
+                </Grid><Grid item xs={8} sm={8} md={8} justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%', height:'100%' }}>
                     <Grid container direction="column" sx={{ width: '100%' }}>
                         <Grid item sx={{ width: '100%' }}>
                             <Card sx={{ border: "0px solid", width: '100%' }}>
@@ -167,36 +187,32 @@ const CommentComponet=({isbn})=>{
                             </Card>
                         </Grid>
                         <Grid item sx={{ width: '100%' }}>
-                            <Card sx={{ border: "0px solid", height: "150px", width: '100%' }}>
+                            <Card sx={{ border: "0px solid", minHeight: "150px", width: '100%' }}>
                                 {console.log(relations[value])}
                                 <CustomTabPanel value={value} index={value}>
                                     <Box sx={{ width: '100%', typography: 'body1' }}>
-                                        <ul>
-                                            {comments.filter(comment => comment.relationId === relations.id).map((filteredComment, index) => (
-                                                <li key={index}>{filteredComment.info}</li> // 假设每个评论对象都有一个relationId属性与relation的id对应
-                                            ))}
-                                        </ul>
+                                        <Grid container sx={{border: "0px dotted"}}>
+                                            <List sx={{ width: '100%' }}>
+                                                {comments.filter(comment => comment.relationId === relations.id).map((filteredComment, index) => (
+                                                    <ListItem key={index} sx={{ borderBottom: '1px solid #ddd', padding: '10px 0' }}>
+                                                        <ListItemIcon>
+                                                            <CommentIcon />
+                                                        </ListItemIcon>
+                                                        <ListItemText primary={filteredComment.info} />
+                                                    </ListItem>
+                                                ))}
+                                            </List>
+                                        </Grid>
                                     </Box>
                                 </CustomTabPanel>
                             </Card>
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={4} sm={4} md={4} display="flex" justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%',height:'230px' }}> 
+                <Grid item xs={4} sm={4} md={4} display="flex" justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%',Height:'230px' }}> 
                     <ScoreComponent relation={relations[value]} />
                 </Grid>
-                    <Grid item style={{marginTop: '20px'}}> 
-                    <Box>
-                        <TextField
-                            label="写下你的评论"
-                            variant="outlined"
-                            fullWidth
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                        />
-                        <Button onClick={() => createComment(content)}>提交评论</Button>
-                    </Box>
-                </Grid>
+
             </Grid>
         </Box>
     )

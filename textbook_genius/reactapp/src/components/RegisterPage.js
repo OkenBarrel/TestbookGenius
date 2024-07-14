@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Grid, Typography, TextField, Paper, Box } from "@mui/material";
+import { Button, Grid, Typography, TextField, Paper, Box, Link, Avatar } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from 'react-router-dom';
 import { getCookie,getCsrfToken } from './CSRFToken';
@@ -19,9 +19,27 @@ const RegisterPage = () => {
   const [timeLeft, setTimeLeft] = useState(0); // 120秒的倒计时
   const [isRegistered, setIsRegistered] = useState(false);
   const [validationError, setValidationError] = useState('');
+  const[user_id,setId]=useState(null);
+  const[user_name,setName]=useState(null);
+  const[avatar_url,setUrl]=useState(null);
 
   const csrftoken = getCsrfToken(); 
   const navigate = useNavigate();
+
+  const getLog=async ()=>{
+    let response=await fetch("http://localhost:8000/api/is-loggedin",{
+      credentials:'include'
+    });
+    let data=await response.json()
+    setUrl(data.avatar_url)
+
+  }
+
+  useEffect(()=>{
+      getLog();
+      setName(getCookie('username'));
+      setId(getCookie('user_id'));
+  },[]);
 
   const handleRegister = async () => {
     setError('');
@@ -161,96 +179,121 @@ const RegisterPage = () => {
   }, [timeLeft, isRegistered]);
 
   return (
-    <Grid container justifyContent="center" spacing="30px" style={{ minHeight: '100vh' }}>
-      <Grid item width="100%">
-        <Box border="0px dotted #acf" width="100%">
-          <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'row' }} style={{ marginTop: '5px', marginLeft: '5%' }}>
-            <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px' }}>
-              <Home />
-            </Grid>
-            <Grid item xs={4} sm={4} md={4} align="right">
-              <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
-            </Grid>
-          </Grid>
-        </Box>
+    <Grid container sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
+      <Grid item width = "100%">
+          <Box width="90%" display="flex" justifyContent="right" sx={{marginTop: '10px', marginLeft: '5%', marginRight: '5%' }}>
+              <Grid container alignItems="center" justifyContent="space-between">
+                  <Grid item align="left" style={{ marginTop: '16px'}}>
+                      <Home />
+                  </Grid>
+                  <Grid item align="right">
+                      <Box width="100%" sx={{ textAlign: 'right',minWidth:'200px' }}>
+                          <Grid container alignItems="flex-end" justifyContent="space-between">
+                              <Grid item>
+                                  <Box>
+                                      {console.log("name" + user_name)}
+                                      <Link to={`/user/${user_id}`}>
+                                          <Avatar src={avatar_url} sx={{ width: 55, height: 55 }} />
+                                      </Link>
+                                  </Box>
+                              </Grid>
+                              <Grid item>
+                                  <Box>
+                                      <HelloComponent user_name={user_name} id={user_id} /> 
+                                  </Box>
+                              </Grid>
+                          </Grid>
+                      </Box>
+                  </Grid>
+              </Grid>
+          </Box>
       </Grid>
-      <Grid item justifyContent="center" alignItems="center" style={{ minHeight: '100vh', marginTop: '10px' }}>
-        <Paper elevation={3} style={{ padding: 20, maxWidth: 600 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Register
-          </Typography>
-          <form noValidate autoComplete="off">
-            <TextField
-              label="Email Address"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              label="Username"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <TextField
-              label="Password"
-              type="password"
-              onChange={handlePasswordChange}
-              fullWidth 
-              error={passwordHint !== '密码至少包含8个字符，且包括字母、数字和特殊字符(_@!*&%$#^)中的至少一个。' && passwordHint !== '密码格式正确。' }
-              helperText={passwordHint}
-              margin="normal"
-              variant="outlined"              
-              value={password}
-            />
-            <TextField
-              label="Confirm Password"
-              type="password"
-              onChange={handleConfirmPasswordChange}
-              fullWidth
-              error={ConfirmPasswordHint && ConfirmPasswordHint !== '密码匹配。' }
-              helperText={ConfirmPasswordHint}
-              margin="normal"
-              variant="outlined"
-              value={confirmPassword}
-            />
-            <TextField
-              label="Validation"
-              margin="normal"
-              variant="outlined"
-              value={valiCode}
-              error={validationError}
-              helperText={validationError}
-              onChange={(e) => setValiCode(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              style={{ marginTop: 20 }}
-              onClick={handleValidation}
-            >
-              {timeLeft === 0 ? '获取验证码' : timeLeft}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              style={{ marginTop: 20 }}
-              onClick={handleRegister}
-            >
-              Register
-            </Button>
-          </form>
-          {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
-          {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
-        </Paper>
+      <Grid container alignItems="center" justifyContent="center" >
+          <Box width ="60%" alignItems="center" justifyContent="center" border="0px solid">
+            <Paper elevation={3} sx={{ padding: '10px', marginTop:'40px' }}>
+              <Grid container width='100%' justifyContent="center" sx={{padding: '10px',marginBottom: '30px'}}>
+                <Grid item width="100%">
+                  <h1>用户注册</h1>                                
+                </Grid>
+                <Grid item width="100%">
+                  <form noValidate autoComplete="off">
+                  <TextField
+                    label="Email Address"
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <TextField
+                    label="Username"
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  <TextField
+                    label="Password"
+                    type="password"
+                    onChange={handlePasswordChange}
+                    fullWidth 
+                    error={passwordHint !== '密码至少包含8个字符，且包括字母、数字和特殊字符(_@!*&%$#^)中的至少一个。' && passwordHint !== '密码格式正确。' }
+                    helperText={passwordHint}
+                    margin="normal"
+                    variant="outlined"              
+                    value={password}
+                  />
+                  <TextField
+                    label="Confirm Password"
+                    type="password"
+                    onChange={handleConfirmPasswordChange}
+                    fullWidth
+                    error={ConfirmPasswordHint && ConfirmPasswordHint !== '密码匹配。' }
+                    helperText={ConfirmPasswordHint}
+                    margin="normal"
+                    variant="outlined"
+                    value={confirmPassword}
+                  />
+                  <TextField
+                    label="Validation"
+                    margin="normal"
+                    variant="outlined"
+                    value={valiCode}
+                    error={validationError}
+                    helperText={validationError}
+                    onChange={(e) => setValiCode(e.target.value)}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    style={{ marginTop: 20 }}
+                    onClick={handleValidation}
+                  >
+                    {timeLeft === 0 ? '获取验证码' : timeLeft}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    style={{ marginTop: 20 }}
+                    onClick={handleRegister}
+                  >
+                    Register
+                  </Button>
+                  </form>
+                </Grid>
+                <Grid item width="100%">
+                  {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
+                  {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
+                </Grid>
+              </Grid>
+            </Paper>
+          </Box>
       </Grid>
     </Grid>
+
   );
 };
 

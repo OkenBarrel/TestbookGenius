@@ -1,4 +1,4 @@
-import {Button,TextField,Grid, FormControl,FormHelperText, CardContent, CardMedia} from '@mui/material';
+import {Button,TextField,Grid, FormControl,FormHelperText, CardContent, CardMedia, Link, Avatar} from '@mui/material';
 import {Box,OutlinedInput,Alert} from '@mui/material';
 import {Select, MenuItem,InputLabel,Card} from '@mui/material'
 import Typography from '@mui/material/Typography';
@@ -9,7 +9,7 @@ import {useNavigate} from 'react-router-dom';
 import { getCsrfToken } from './CSRFToken';
 import SchoolYearSelect from './SelectSchoolYear';
 import { getCookie } from './CSRFToken';
-import NavigateButton from './Navigate';
+import Home from './Navigate';
 import HelloComponent from './HelloComponent';
 import Search from './Search';
 
@@ -30,6 +30,9 @@ function CreateBookPage(props){
     const[school_year,setSchoolyear]=useState("");
     const[semester,setSemester]=useState("");
     const[isbnError,setIsbnError]=useState("");
+    const[user_id,setId]=useState(null);
+    const[user_name,setName]=useState(null);
+    const[avatar_url,setUrl]=useState(null);
 
     // const[doubanError,setDoubanError]=useState("");
     
@@ -41,11 +44,24 @@ function CreateBookPage(props){
     //     console.log(school_year)
     // },[school_year]);
     
+    const getLog=async ()=>{
+        let response=await fetch("http://localhost:8000/api/is-loggedin",{
+          credentials:'include'
+        });
+        let data=await response.json()
+        setUrl(data.avatar_url)
+    }
+    
+
     useEffect(()=>{
+        getLog();
+        setName(getCookie('username'));
+        setId(getCookie('user_id'));
         if(getCookie('username')==null){
             navigate('/login',{replace:true,state:{from:'createBook'}})
         }
     },[])
+
     async function handleSearchButton(){
         console.log("username: "+getCookie('username'))
         // if(getCookie('username')==null){
@@ -77,10 +93,7 @@ function CreateBookPage(props){
     }
     async function handleSubmit(){
         console.log("handling submit")
-        // if(getCookie('username')==null){
-        //     navigate('/login',{state:{from:'createBook'}})
-        //     return;
-        // }
+
         if(isbn.length !=13){
             setIsbnError("ISBN无效，请重新输入");
             return;
@@ -127,181 +140,158 @@ function CreateBookPage(props){
 
     return(
         <div className='createBookPage'>
-            <Box sx={{ display: 'flex', justifyContent: 'center', padding: 5 }}>
-                <Grid container>
-                    <Grid item width="100%">
-                        <Grid item width = "100%">
-                            <Box border = "0px dotted #acf" width = "100%">
-                                <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}}>
-                                    <Grid item xs={7} sm={7} md={7} align="left" >
-                                        <NavigateButton />
-                                    </Grid>
-                                    <Grid item xs={4} sm={4} md={4} align="right" >
-                                    <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
-                                    </Grid>
-                                </Grid>
-                            </Box>
-                        </Grid>
-                        <Search />
-                    </Grid>
-                    <Grid item width="100%">
-                        <Box  alignContent="center" sx={{ display:'flex',flexDirection: 'row'}}>
-                            <Box sx={{width:600,p: 2, border: '1px dashed grey'}}>
-                            <Grid container spacing={1} item xs={6} >
-                                <Grid item xs={12} align="center">
-                                    <h1>This is create Use</h1>
-                                </Grid>
-                                <Grid item xs={12} align="center">
-                                                <TextField label={'输入ISBN号,获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
-                                                <Button variant="contained" onClick={handleSearchButton}>搜索</Button>
-                                            </Grid>
-                                <Grid item xs={12} align="center">
-                                    <FormControl  variant="outlined">
-                                        <InputLabel htmlFor="teacher-input">老师</InputLabel>
-                                        <OutlinedInput
-                                            id="teacher-input"
-                                            value={teacher}
-                                            onChange={(e) => { setTeacher(e.target.value) }}
-                                            label="老师"
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                
-                                <Grid item xs={12} align="center">
-                                    <FormControl  variant="outlined">
-                                        <InputLabel htmlFor="course-input">课程</InputLabel>
-                                        <OutlinedInput
-                                            id="course-input"
-                                            value={course}
-                                            onChange={(e) => { setCourse(e.target.value) }}
-                                            label="课程"
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={12} align="center">
-                                    <FormControl sx={{ m: 1, minWidth: 150 }}>
-                                    <InputLabel id="demo-simple-select-helper-label">学部</InputLabel>
-                                        <Select
-                                        labelId="demo-simple-select-helper-label"
-                                        id="demo-simple-select-helper"
-                                        value={department}
-                                        label="学部"
-                                        onChange={(e)=>{setDepartment(e.target.value)}}
-                                        >
-                                        <MenuItem value={"理学部"}>理学部</MenuItem>
-                                        <MenuItem value={"信息学部"}>信息学部</MenuItem>
-                                        <MenuItem value={"文法学部"}>文法学部</MenuItem>
-                                        <MenuItem value={"经管学部"}>经管学部</MenuItem>
-                                        <MenuItem value={"环生学部"}>环生学部</MenuItem>
-                                        <MenuItem value={"城建学部"}>城建学部</MenuItem>
-                                        <MenuItem value={"材制学部"}>材制学部</MenuItem>
-                                        <MenuItem value={"艺设学院"}>艺设学院</MenuItem>
-                                        <MenuItem value={"马克思学院"}>马克思学院</MenuItem>
-                                        <MenuItem value={"素质教育学院"}>素质教育学院</MenuItem>
-
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={12} align="center">
-                                    <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
-                                        <SchoolYearSelect onChange={(e)=>{setSchoolyear(e.target.value)}} value={school_year}/>
-                                    </FormControl>
-                                    <FormControl sx={{ m: 1, minWidth: 140 }}>
-                                        <InputLabel id="demo-simple-select-helper-label">学期</InputLabel>
-                                        <Select
-                                        labelId="demo-simple-select-helper-label"
-                                        id="demo-simple-select-helper"
-                                        value={semester}
-                                        label="学期"
-                                        onChange={(e)=>{setSemester(e.target.value)}}
-                                        >
-                                        <MenuItem value={1}>1-秋季学期</MenuItem>
-                                        <MenuItem value={2}>2-春季学期</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    <Button variant="contained" onClick={handleSubmit}>创建</Button>
-                                    {relationError && <Alert severity="error" style={{ marginTop: 20 }}>{relationError}</Alert>}
-
-                                </Grid>
-                                </Grid>
-                            </Box>
-                            <Card >
-                                <Box sx={{ display:'flex',flexDirection: 'row',minWidth:300}}>
-                                    <CardContent>
-                                        <Grid container spacing={1} item xs={12} >
-                                            <Grid item xs={12} >{/*align="center"*/}
-                                                <h1>This is create book</h1>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                {/* <TextField value={title} label={"标题"} onChange={(e)=>{setTitle(e.target.value)}}/> */}
-                                                {/* <FormControl  variant="outlined">
-                                                    <InputLabel htmlFor="title-input">标题</InputLabel>
-                                                    <OutlinedInput
-                                                        id="title-input"
-                                                        value={title}
-                                                        onChange={(e) => { setTitle(e.target.value) }}
-                                                        label="标题"
-                                                    />
-                                                </FormControl> */}
-                                                <Typography variant='h3'>书名：{title}</Typography>
-
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                {/* <TextField value={author} label={"作者"} onChange={(e)=>{setAuthor(e.target.value)}}/> */}
-                                                {/* <FormControl  variant="outlined">
-                                                    <InputLabel htmlFor="author-input">作者</InputLabel>
-                                                    <OutlinedInput
-                                                        id="author-input"
-                                                        value={author}
-                                                        onChange={(e) => { setAuthor(e.target.value) }}
-                                                        label="作者"
-                                                    />
-                                                </FormControl> */}
-                                                <Typography variant='h6'>作者：{author}</Typography>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                            {/* <TextField value={publisher} label={"出版社"} onChange={(e)=>{setPublisher(e.target.value)}}/> */}
-                                                {/* <FormControl  variant="outlined">
-                                                    <InputLabel htmlFor="publisher-input">出版社</InputLabel>
-                                                    <OutlinedInput
-                                                        id="publisher-input"
-                                                        value={publisher}
-                                                        onChange={(e) => { setPublisher(e.target.value) }}
-                                                        label="出版社"
-                                                    />
-                                                </FormControl> */}
-                                                <Typography variant='h6'>出版社：{publisher}</Typography>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                {/* <FormControl  variant="outlined"> */}
-                                                    {/* <InputLabel htmlFor="publisher-input">{出版日期}</InputLabel>
-                                                    <OutlinedInput
-                                                        id="publisher-input"
-                                                        value={pubdate}
-                                                        onChange={(e) => { setPubdate(e.target.value) }}
-                                                        label="出版日期"
-                                                    />
-                                                </FormControl> */}
-                                                <Typography variant='h6'>出版日期：{pubdate}</Typography>
-                                            </Grid>
+            <Grid container sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
+                <Grid item width = "100%">
+                    <Box width="90%" display="flex" justifyContent="right" sx={{marginTop: '10px', marginLeft: '5%', marginRight: '5%' }}>
+                        <Grid container alignItems="center" justifyContent="space-between">
+                            <Grid item align="left" style={{ marginTop: '16px'}}>
+                                <Home />
+                            </Grid>
+                            <Grid item align="right">
+                                <Box width="100%" sx={{ textAlign: 'right',minWidth:'200px' }}>
+                                    <Grid container alignItems="flex-end" justifyContent="space-between">
+                                        <Grid item>
+                                            <Box>
+                                                {console.log("name" + user_name)}
+                                                <Link to={`/user/${user_id}`}>
+                                                    <Avatar src={avatar_url} sx={{ width: 55, height: 55 }} />
+                                                </Link>
+                                            </Box>
                                         </Grid>
-                                        {isbnError && <Alert severity="error" style={{ marginTop: 20 }}>{isbnError}</Alert>}
-                                    </CardContent>
-                                    {cover && (<img src={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>
-                                    )}
-                                    {/* <CardMedia
-                                    component="img"
-                                    image={cover}
-                                    title='cover'
-                                    crossOrigin="anonymous"
-                                    referrer="same-origin"
-                                    /> */}
+                                        <Grid item>
+                                            <Box>
+                                                <HelloComponent user_name={user_name} id={user_id} /> 
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
                                 </Box>
-                            </Card>
-                        </Box>
-                    </Grid>
+                            </Grid>
+                        </Grid>
+                    </Box>
                 </Grid>
-            </Box>
+                <Grid container alignItems="center" justifyContent="center" marginTop="30px">
+                    <Card sx={{width:"60%"}}>
+                        <Grid item width="100%" justifyContent="center">
+                            <Box alignContent="center" sx={{ display:'flex',flexDirection: 'row'}}>
+                                <Grid container width="100%" sx={{border:'0px solid', justifyContent:'space-evenly'}}>
+                                    <Grid item width="30%" sx={{border:'0px solid'}}>
+                                        <Box sx={{width:'100%', height:'100%' , border: '0px dashed grey'}}>
+                                            <Grid container>
+                                                <Grid item xs={12} align="center">
+                                                    <h1>创建课本</h1>
+                                                </Grid>
+                                                <Grid item xs={12} align="center" sx={{marginBottom: '10px'}}>
+                                                    <Grid container alignContent="center" justifyContent="center">
+                                                        <TextField label={'输入ISBN号,获取书籍信息'} onChange={(e)=>{setIsbn(e.target.value)}}></TextField>
+                                                        <Grid item alignContent="center" justifyContent="center" marginLeft="10px">
+                                                            <Button variant="contained" onClick={handleSearchButton} sx={{maxHeight:'50px'}}>搜索</Button>                                                    
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={12} align="center" sx={{marginBottom: '10px'}}>
+                                                    <FormControl  variant="outlined">
+                                                        <InputLabel htmlFor="teacher-input">老师</InputLabel>
+                                                        <OutlinedInput
+                                                            id="teacher-input"
+                                                            value={teacher}
+                                                            onChange={(e) => { setTeacher(e.target.value) }}
+                                                            label="老师"
+                                                        />
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} align="center" sx={{marginBottom: '10px'}}>
+                                                    <FormControl  variant="outlined">
+                                                        <InputLabel htmlFor="course-input">课程</InputLabel>
+                                                        <OutlinedInput
+                                                            id="course-input"
+                                                            value={course}
+                                                            onChange={(e) => { setCourse(e.target.value) }}
+                                                            label="课程"
+                                                        />
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} align="center" sx={{marginBottom: '10px'}}>
+                                                    <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                                    <InputLabel id="demo-simple-select-helper-label">学部</InputLabel>
+                                                        <Select
+                                                        labelId="demo-simple-select-helper-label"
+                                                        id="demo-simple-select-helper"
+                                                        value={department}
+                                                        label="学部"
+                                                        onChange={(e)=>{setDepartment(e.target.value)}}
+                                                        >
+                                                        <MenuItem value={"理学部"}>理学部</MenuItem>
+                                                        <MenuItem value={"信息学部"}>信息学部</MenuItem>
+                                                        <MenuItem value={"文法学部"}>文法学部</MenuItem>
+                                                        <MenuItem value={"经管学部"}>经管学部</MenuItem>
+                                                        <MenuItem value={"环生学部"}>环生学部</MenuItem>
+                                                        <MenuItem value={"城建学部"}>城建学部</MenuItem>
+                                                        <MenuItem value={"材制学部"}>材制学部</MenuItem>
+                                                        <MenuItem value={"艺设学院"}>艺设学院</MenuItem>
+                                                        <MenuItem value={"马克思学院"}>马克思学院</MenuItem>
+                                                        <MenuItem value={"素质教育学院"}>素质教育学院</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} align="center" sx={{marginBottom: '10px'}}>
+                                                    <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
+                                                        <SchoolYearSelect onChange={(e)=>{setSchoolyear(e.target.value)}} value={school_year}/>
+                                                    </FormControl>
+                                                    <FormControl sx={{ m: 1, minWidth: 140 }}>
+                                                        <InputLabel id="demo-simple-select-helper-label">学期</InputLabel>
+                                                        <Select
+                                                        labelId="demo-simple-select-helper-label"
+                                                        id="demo-simple-select-helper"
+                                                        value={semester}
+                                                        label="学期"
+                                                        onChange={(e)=>{setSemester(e.target.value)}}
+                                                        >
+                                                        <MenuItem value={1}>1-秋季学期</MenuItem>
+                                                        <MenuItem value={2}>2-春季学期</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                    <Button variant="contained" onClick={handleSubmit}>创建</Button>
+                                                    {relationError && <Alert severity="error" style={{ marginTop: 20 }}>{relationError}</Alert>}
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item width="30%" height="100%" sx={{border:'0px solid'}}>
+                                        <Box height="100%">
+                                            <Box height="100%" sx={{ display:'flex',flexDirection: 'row',minWidth:300}}>
+                                                <Grid container direction="column" justifyContent="space-evenly">
+                                                    <Grid item>
+                                                        <CardContent>
+                                                            <Grid container minWidth='200px' alignContent="center" justifyContent="left" sx={{border:'0px solid'}}>
+                                                                <Grid item xs={12}>
+                                                                    <Typography variant='h6'>书名：{title}</Typography>
+                                                                </Grid>
+                                                                <Grid item xs={12}>
+                                                                    <Typography variant='h6'>作者：{author}</Typography>
+                                                                </Grid>
+                                                                <Grid item xs={12}>
+                                                                    <Typography variant='h6'>出版社：{publisher}</Typography>
+                                                                </Grid>
+                                                                <Grid item xs={12}>
+                                                                    <Typography variant='h6'>出版日期：{pubdate}</Typography>
+                                                                </Grid>
+                                                            </Grid>
+                                                            {isbnError && <Alert severity="error" style={{ marginTop: 20 }}>{isbnError}</Alert>}
+                                                        </CardContent>                                                    
+                                                    </Grid>
+                                                    <Grid item sx={{marginBottom: "30px"}}>
+                                                        {cover && (<img src={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>)}
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                        </Box>                                    
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </Grid>                        
+                    </Card>
+                </Grid>
+            </Grid>
         </div>
     );
 }
