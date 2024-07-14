@@ -609,6 +609,8 @@ class ProfileViewer(APIView):
 #
 #     @csrf_exempt
     def put(self, request):
+            ''' 
+            '''
             try:
                 print(request.data)
                 print(request.FILES)
@@ -620,7 +622,10 @@ class ProfileViewer(APIView):
                 user_department=request.data.get('user_department')
                 user_credit=request.data.get('user_credit')
                 data={
-                    'user_id':user_id,
+                    'user':{
+                        'id':user_id,
+                        'username':username
+                    },
                     'user_major':user_major,
                     'user_department':user_department,
                     'user_credit':user_credit
@@ -630,6 +635,7 @@ class ProfileViewer(APIView):
                 
                 print('user')
                 print(user_id)
+                
                 
 
                 profile = Profile.objects.get(user__id=user_id)
@@ -714,8 +720,7 @@ class validation(APIView):
     def post(self,request):
         # email=request.data.get('email')
         print(request.data)
-        history=ValidationCode.objects.filter(email=request.data.get('email')).first()
-        if history :
+        if ValidationCode.objects.filter(email=request.data.get('email')).exists() :
             return Response({"msg":"验证码已发送"},status=status.HTTP_409_CONFLICT)
         serializer=ValidationCodeSerializer(data=request.data)
         if not serializer.is_valid():

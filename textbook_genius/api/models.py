@@ -75,10 +75,6 @@ class Usebook(models.Model):
 
 class Profile(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,primary_key=True)
-    # user_id = models.CharField(max_length=10, default=generate_unique_code, unique=True,primary_key=True)
-    # nickname = models.CharField(max_length=50, null=False, default="")
-    # user_password = models.CharField(max_length=50, null=False, default="")
-    # user_email = models.CharField(max_length=50, null=False, default="")
     user_major = models.CharField(max_length=50, null=False, default="")
     user_department = models.CharField(max_length=50, null=False, default="")
     user_credit = models.IntegerField(null=False,default=100)

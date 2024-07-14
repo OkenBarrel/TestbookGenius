@@ -113,7 +113,7 @@ const UserPage =()=> {
         setIsEditing(false);
         try{
             const formData = new FormData();
-            formData.append('username',userInfo.username)
+            formData.append('username',userInfo.username);
             formData.append('user_id',userInfo.user_id)
             formData.append('user_major', userInfo.major);
             formData.append('user_department', userInfo.department);

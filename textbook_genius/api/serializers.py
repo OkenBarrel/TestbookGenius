@@ -65,6 +65,10 @@ class UsebookSerializer(serializers.ModelSerializer):
         #     'user_password': {'write_only': True},   # 用户密码只能写入,不会在序列化时返回
         #     'user_indate': {'read_only': True},      # 用户注册日期只读
         # }
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
 
 class ProfileSerializer(serializers.ModelSerializer):
     # user_name = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
@@ -77,6 +81,14 @@ class ProfileSerializer(serializers.ModelSerializer):
             if obj.user_avatar:
                 return request.build_absolute_uri(obj.user_avatar.url)
             return None
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user')
+        user_serializer = UserSerializer(instance=instance.user, data=user_data, partial=True)
+        
+        if user_serializer.is_valid():
+            user_serializer.save()
+
+        return super().update(instance, validated_data)
 
 
 class MarkSerializer(serializers.ModelSerializer):
