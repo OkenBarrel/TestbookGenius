@@ -306,6 +306,7 @@ class getUseBook(APIView):
                     "semester": 学期,
                     "upvote_count": 1,实用投票票数
                     "downvote_count": 0,不实用投票票数
+                    "id":关系主键
                 },
             ]
         '''
@@ -335,6 +336,56 @@ class getUseBook(APIView):
             response_data[idx]['downvote_count'] = usebook.downvote_count
 
         return Response(response_data,status=status.HTTP_200_OK)
+
+class getOneUseBook(APIView):
+    '''
+    输入
+    {
+        use_id
+        user_id
+    }
+    输出
+    {
+    
+    
+    }
+    '''
+    
+    def get(self,request):
+        use_id=request.GET.get('use_id')
+        print(use_id)
+        user_id=request.GET.get('user_id')
+        print(user_id)
+        try:
+            use=Usebook.objects.get(id=use_id)
+        except Usebook.DoesNotExist:
+            return Response({'msg':'关系未找到'},status=status.HTTP_404_NOT_FOUND)
+        # use=get_object_or_404(Usebook,id=use_id)
+        upvote_count = UpScoreUserRelation.objects.filter(useBook=use).count()
+        downvote_count = DownScoreUserRelation.objects.filter(useBook=use).count()
+        try:
+            user=User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            data={
+                'use_id':None,
+                'upvote':upvote_count,
+                'downvote':downvote_count,
+                'is_upvoted':False,
+                'is_downvoted':False
+            }
+            return Response(data=data,status=status.HTTP_200_OK)
+
+        data={
+            'use_id':use_id,
+            'upvote':upvote_count,
+            'downvote':downvote_count,
+            'is_upvoted':UpScoreUserRelation.objects.filter(user=user, useBook=use).exists(),
+            'is_downvoted':DownScoreUserRelation.objects.filter(user=user, useBook=use).exists()
+        }
+
+        return Response(data=data,status=status.HTTP_200_OK)
+
+
 from django.core.mail import send_mail
 
 class register(APIView):
@@ -596,11 +647,13 @@ class downScoreUser(APIView):
 
     def delete(self,request):
         usebook_id = request.data.get('useBook')
+        # user_id=request.data.get('user_id')
+        print(usebook_id)
         user_id=request.COOKIES.get('user_id')
         if not usebook_id:
             return Response({"Bad Request": "usebook ID not provided."}, status=status.HTTP_400_BAD_REQUEST)
 
-        scoreUser = DownScoreUserRelation.objects.filter(useBook_id=usebook_id,user_id=user_id).first()
+        scoreUser = DownScoreUserRelation.objects.filter(useBook__id=usebook_id,user__id=user_id).first()
         if not scoreUser:
             return Response({"Bad Request": "Invalid usebook relation."}, status=status.HTTP_404_NOT_FOUND)
 
