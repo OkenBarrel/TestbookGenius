@@ -1,5 +1,5 @@
 import React, { Component, useState,useEffect } from "react";
-import {Button,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
+import {Button,Grid,Card,Box, CardContent,CardMedia,Avatar} from '@mui/material';
 import Alert from '@mui/material/Alert';
 import StarIcon from '@mui/icons-material/Star';
 import IconButton from '@mui/material/IconButton';
@@ -40,15 +40,32 @@ const Book=({relation})=>{
     const[buy_jie,setJie]=useState("")
 
     const[mark,setMark]=useState(false) //mark action
-    const[user_id,setUserId]=useState('')
-    const[username,setUserName]=useState('')
+
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
 
+    const[user_id,setId]=useState(null);
+    const[user_name,setName]=useState(null);
+    const[avatar_url,setUrl]=useState(null);
+
+    
+  
+  
+    const getLog=async ()=>{
+      let response=await fetch("http://localhost:8000/api/is-loggedin",{
+        credentials:'include'
+      });
+      let data=await response.json()
+      setUrl(data.avatar_url)
+  
+    }
+
     useEffect(() => {
         getBookDetails();
-        setUserId(getCookie('user_id'))
+        getLog();
+        setName(getCookie('username'));
+        setId(getCookie('user_id'));
         //setUserName(getCookie('username'))
     }, []);
 
@@ -75,10 +92,12 @@ const Book=({relation})=>{
 
     useEffect(()=>{
         console.log(relation);
-        setUserId(getCookie('user_id'))
+        setId(getCookie('user_id'))
+        
         //setUserName(getCookie('username'))
         getMarkDetail(relation?.id);
     },[relation])
+
 
     const getMarkDetail =async ()=>{
 
@@ -137,14 +156,30 @@ const Book=({relation})=>{
     return(
         <div>
             <Grid container sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
-                <Grid item width = "100%">
-                    <Box border = "0px dotted #acf" width = "100%">
-                        <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px'}}>
-                            <Grid item xs={7} sm={7} md={7} align="left" style={{ marginLeft: '5%' }}>
+                <Grid item width="100%">
+                    <Box width="90%" display="flex" justifyContent="right" sx={{marginTop: '20px', marginLeft: '5%', marginRight: '5%' }}>
+                        <Grid container alignItems="center" justifyContent="space-between">
+                            <Grid item align="left">
                                 <Home />
                             </Grid>
-                            <Grid item xs={3.8} sm={3.8} md={3.8} align="right" style={{ marginRight: '5%'}}>
-                            <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
+                            <Grid item align="right">
+                                <Box width="100%" sx={{ textAlign: 'right',minWidth:'200px' }}>
+                                    <Grid container alignItems="flex-end" justifyContent="space-between">
+                                        <Grid item>
+                                            <Box>
+                                                {console.log("name" + user_name)}
+                                                <Link to={`/user/${user_id}`}>
+                                                    <Avatar src={avatar_url} sx={{ width: 55, height: 55 }} />
+                                                </Link>
+                                            </Box>
+                                        </Grid>
+                                        <Grid item>
+                                            <Box>
+                                               <HelloComponent user_name={user_name} id={user_id} /> 
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
                             </Grid>
                         </Grid>
                     </Box>
