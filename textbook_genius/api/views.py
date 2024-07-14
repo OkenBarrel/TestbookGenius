@@ -769,7 +769,12 @@ class is_loggedin(APIView):
         # print(request.user)
         try:
             if(request.session['is_login']):
-                res=JsonResponse({'msg':'login seccessfully'},status=status.HTTP_200_OK)
+                profile = Profile.objects.get(user__id=request.user.id)
+                data={
+                    'msg':'login seccessfully',
+                    'avatar_url':request.build_absolute_uri(profile.user_avatar.url) if profile.user_avatar else None
+                }
+                res=JsonResponse(data,status=status.HTTP_200_OK)
                 res.set_cookie('username',request.user.get_username(),httponly=False)
                 res.set_cookie('user_id',request.user.id,httponly=False)
                 return res
