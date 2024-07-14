@@ -122,11 +122,10 @@ const SearchResults = () => {
       <Grid item>
         <div style={{ marginTop: '20px' }}>
           <Grid item xs={12}>
-            <Typography variant="h4" gutterBottom align="center">搜索结果</Typography>
+            <h1>搜索结果</h1>
           </Grid>
         </div>        
       </Grid>
-
       <Grid item xs={12}>
         {loading ? (
           <Typography variant="body1" align="center">Loading...</Typography>
