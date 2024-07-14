@@ -329,7 +329,33 @@ class markBook(APIView):
             return Response({'msg':'收藏关系不存在'},status.HTTP_404_NOT_FOUND)
         mark_del.delete()
         return Response({'msg':'取消收藏成功！'},status.HTTP_200_OK)
-        
+    
+    def get(self,request):
+        request_data=request.GET.get("mark")
+        print(request_data)
+        user_id=request_data['userid']
+        book_isbn=request_data['bookisbn']
+
+        try:
+            book=Book.objects.get(isbn=book_isbn)
+        except Book.DoesNotExist:
+            return Response({'msg':'未找到该书籍'},status=status.HTTP_404_NOT_FOUND)
+        try:
+            user=User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            data={
+                'userid':None,
+                'bookisbn':book_isbn,
+                'ismark':False
+            }
+            return Response({'msg':'未找到该用户'},status=status.HTTP_404_NOT_FOUND)
+
+        data={
+            'userid':user_id,
+            'bookisbn':book_isbn,
+            'ismark':Mark.objects.filter(userid=user_id,bookisbn=book_isbn)
+        }
+        return Response(data=data,status=status.HTTP_200_OK)
 
 class getUseBook(APIView):
     def get(self,request,format=None):

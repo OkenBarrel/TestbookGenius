@@ -75,10 +75,21 @@ const Book=({relation})=>{
 
     }
 
-    /*useEffect(()=>{
+    useEffect(()=>{
         console.log(relation);
-       
+        getMarkDetail(relation?.id);
     },[relation])
+
+    const getMarkDetail =async ()=>{
+        let response=await fetch("http://127.0.0.1:8000/api/mark-book");
+        if(!response.ok){
+            return;
+        }
+        let data=await response.json();
+        setMark(data?.isMark);
+        
+
+    };
 
     const handleRequest = async (url, method, body) => {
         let requestOption = {
@@ -119,7 +130,7 @@ const Book=({relation})=>{
                 setMark(true);
             }     
         }
-    }*/
+    }
 
     /*useEffect(()=>{
         console.log(relation);
@@ -143,7 +154,7 @@ const Book=({relation})=>{
         return true;
     };*/
 
-    async function handleMark(){
+    /*async function handleMark(){
         console.log('mark')
         if (mark) {
             // 取消收藏
@@ -204,7 +215,7 @@ const Book=({relation})=>{
             }
             
         }
-    }
+    }*/
 
     return(
         <div>
