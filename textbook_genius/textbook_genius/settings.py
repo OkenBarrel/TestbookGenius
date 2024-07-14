@@ -88,19 +88,22 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-# CORS_ORIGIN_ALLOW_ALL=True
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://127.0.0.1']
+
+
+CORS_ORIGIN_ALLOW_ALL=True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = [
-    # 'http://google.com',
-    # 'http://hostname.example.com',
-    'http://localhost:8000',
-    'http://localhost:3000',
-    'http://127.0.0.1:8000',
-    'http://127.0.0.1:3000',
-    'https://api.douban.com',
-    'https://img1.doubanio.com',
-    # 'http://127.0.0.1:9000'
-]
+# CORS_ORIGIN_WHITELIST = [
+#     # 'http://google.com',
+#     # 'http://hostname.example.com',
+#     'http://localhost:8000',
+#     'http://localhost:3000',
+#     'http://127.0.0.1:8000',
+#     'http://127.0.0.1:3000',
+#     'https://api.douban.com',
+#     'https://img1.doubanio.com',
+#     # 'http://127.0.0.1:9000'
+# ]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
