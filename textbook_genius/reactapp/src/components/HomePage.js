@@ -50,9 +50,6 @@ function HomePage() {
     setId(getCookie('user_id'));
 
   },[]);
-  // useEffect(()=>{
-  //   renderHomePage()
-  // },[out]);
 
   const getLog=async ()=>{
     let response=await fetch("http://8.130.18.80:80/api/is-loggedin",{
@@ -73,7 +70,6 @@ function HomePage() {
                   <Box display="flex" flexDirection="row" justifyContent="flex-start">
                     <Button variant='contained' to="/create" component={Link}>创建书籍</Button>
                     {!getCookie('user_id')&&(<Button variant='contained' to="/login" component={Link}>登录</Button>)}
-                    <Button variant='contained' to="/register" component={Link}>注册</Button>
                     <Button variant='contained' to={`/user/${getCookie('user_id')}`} component={Link}>用户信息</Button>
                     <Button variant='contained'
                       onClick={handleLogout}>
@@ -81,11 +77,27 @@ function HomePage() {
                     </Button>
                   </Box>
                 </Grid>
-                <Grid item xs={3} sm={3} md={3} lg={3} xl={3} justifyContent="flex-end">
-                  <Box display="flex" justifyContent="flex-end">
-                    {console.log("name"+user_name)}
-                    <Avatar src={avatar_url} sx={{ width: 55, height: 55 }}></Avatar>
-                    <HelloComponent user_name={user_name} id={user_id}/>
+                <Grid item xs={3} sm={3} md={3} lg={3} xl={3} container justifyContent="flex-end">
+                  <Box
+                    justifyContent="flex-end"
+                    border="0px solid"
+                    display="flex"
+                    alignItems="center"
+                    textAlign="right"
+                    width="100%"
+                    marginRight="5%"
+                  >
+                    <Grid container direction="row" justifyContent="flex-end" alignItems="center">
+                      <Grid item>
+                        {console.log("name"+user_name)}
+                        <Link to={`/user/${user_id}`} >
+                          <Avatar src={avatar_url} sx={{ width: 55, height: 55 }}></Avatar>
+                        </Link>
+                      </Grid>
+                      <Grid item marginLeft="5%">
+                        <HelloComponent user_name={user_name} id={user_id}/>
+                      </Grid>
+                    </Grid>
                   </Box>
                 </Grid>
               </Grid>

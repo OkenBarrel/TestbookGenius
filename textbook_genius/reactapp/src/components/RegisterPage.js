@@ -66,7 +66,7 @@ const RegisterPage = () => {
         setIsRegistered(true);
         setSuccess('Registration successful!');
         setTimeout(() => {
-          navigate('/login');
+          navigate('/login', { state: { fromRegister: true } });
         }, 1500);
         return;
       } else {

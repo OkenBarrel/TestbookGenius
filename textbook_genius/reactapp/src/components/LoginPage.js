@@ -50,14 +50,12 @@ const LoginPage = () => {
             }
             const data = await response.json();
             setSuccess('Login successful!');
-            navigate(-1);
-            // if (username === 'tw11' && password === 'password' && username === 'tw11') {
-            //     setSuccess('Login successful!');
-            //     // navigate(`/}`);
-            //     //TODO: just for demo, please change to a real page.
-            // } else {
-            //     setError('Invalid username or password(For test purpose, please using tw11 to login).');
-            // }
+            if(location.state && location.state.fromRegister){
+                navigate('/');
+            }else{
+                navigate(-1);
+            }
+
         }catch (error) {
             setError('An error occurred. Please try again.');
         }

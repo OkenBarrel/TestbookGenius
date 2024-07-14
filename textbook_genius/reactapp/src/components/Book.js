@@ -1,5 +1,5 @@
 import React, { Component, useState,useEffect } from "react";
-import {Button,Grid,Card,Box, CardContent,CardMedia} from '@mui/material';
+import {Button,Grid,Card,Box, CardContent,CardMedia,Avatar} from '@mui/material';
 import Alert from '@mui/material/Alert';
 import StarIcon from '@mui/icons-material/Star';
 import IconButton from '@mui/material/IconButton';
@@ -40,15 +40,32 @@ const Book=({relation})=>{
     const[buy_jie,setJie]=useState("")
 
     const[mark,setMark]=useState(false) //mark action
-    const[user_id,setUserId]=useState('')
-    const[username,setUserName]=useState('')
+
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
 
+    const[user_id,setId]=useState(null);
+    const[user_name,setName]=useState(null);
+    const[avatar_url,setUrl]=useState(null);
+
+    
+  
+  
+    const getLog=async ()=>{
+      let response=await fetch("http://localhost:8000/api/is-loggedin",{
+        credentials:'include'
+      });
+      let data=await response.json()
+      setUrl(data.avatar_url)
+  
+    }
+
     useEffect(() => {
         getBookDetails();
-        setUserId(getCookie('user_id'))
+        getLog();
+        setName(getCookie('username'));
+        setId(getCookie('user_id'));
         //setUserName(getCookie('username'))
     }, []);
 
@@ -75,10 +92,12 @@ const Book=({relation})=>{
 
     useEffect(()=>{
         console.log(relation);
-        setUserId(getCookie('user_id'))
+        setId(getCookie('user_id'))
+        
         //setUserName(getCookie('username'))
         getMarkDetail(relation?.id);
     },[relation])
+
 
     const getMarkDetail =async ()=>{
 
@@ -136,15 +155,31 @@ const Book=({relation})=>{
 
     return(
         <div>
-            <Grid container spacing="10px" sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
-                <Grid item width = "100%">
-                    <Box border = "0px dotted #acf" width = "100%">
-                        <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px'}}>
-                            <Grid item xs={7} sm={7} md={7} align="left" style={{ marginLeft: '5%' }}>
+            <Grid container sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
+                <Grid item width="100%">
+                    <Box width="90%" display="flex" justifyContent="right" sx={{marginTop: '20px', marginLeft: '5%', marginRight: '5%' }}>
+                        <Grid container alignItems="center" justifyContent="space-between">
+                            <Grid item align="left">
                                 <Home />
                             </Grid>
-                            <Grid item xs={3.8} sm={3.8} md={3.8} align="right" style={{ marginRight: '5%'}}>
-                            <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
+                            <Grid item align="right">
+                                <Box width="100%" sx={{ textAlign: 'right',minWidth:'200px' }}>
+                                    <Grid container alignItems="flex-end" justifyContent="space-between">
+                                        <Grid item>
+                                            <Box>
+                                                {console.log("name" + user_name)}
+                                                <Link to={`/user/${user_id}`}>
+                                                    <Avatar src={avatar_url} sx={{ width: 55, height: 55 }} />
+                                                </Link>
+                                            </Box>
+                                        </Grid>
+                                        <Grid item>
+                                            <Box>
+                                               <HelloComponent user_name={user_name} id={user_id} /> 
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
                             </Grid>
                         </Grid>
                     </Box>
@@ -155,83 +190,89 @@ const Book=({relation})=>{
                 <Grid item xs={12} align="center">
                     <h1>{title}</h1>
                 </Grid>
-                <Grid item width ="90%">
-                    <Card variant="outlined"  align="center" jutifyContent="center" sx={{display:"flex",maxHeight: 400}}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <CardContent sx={{ flex: '1 0 auto' }}>
-                                <Grid container spacing={1} item xs={12} >
-                                    <Grid item xs={12}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                            <p >标题:</p>
-                                            <p >{title}</p>
-                                        </Box>
+                <Grid item width="90%">
+                    <Card variant="outlined" align="center" justifyContent="center" sx={{ display: "flex", minHeight: 350, padding: 5 }}>
+                        <Grid item xs={4} sm={4} md={4}>
+                            {cover && (
+                                <CardMedia
+                                    component="img"
+                                    sx={{
+                                        maxHeight: 350,
+                                        objectFit: 'contain'
+                                    }}
+                                    image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`}
+                                    title="cover"
+                                />
+                            )}
+                        </Grid>
+                        <Grid item xs={4} sm={4} md={4} marginTop="1%">
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <CardContent sx={{ flex: '1 0 auto' }}>
+                                    <Grid container spacing={1} item xs={12} marginLeft="5%">
+                                        <Grid item xs={12}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                                                <h2>书名:</h2>
+                                                <h2>{title}</h2>
+                                            </Box>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                                                <p>作者:</p>
+                                                <p>{author}</p>
+                                            </Box>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                                                <p>出版社:</p>
+                                                <p>{publisher}</p>
+                                            </Box>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                                                <p>出版日期:</p>
+                                                <p>{pubdate}</p>
+                                            </Box>
+                                        </Grid>
+                                        <Grid item spacing={2} xs={12} align="left">
+                                            <Button variant="contained" to="./update" component={Link}>修改书籍信息</Button>
+                                            <Tooltip title="收藏书籍">
+                                                <IconButton type="button" onClick={handleMark}>
+                                                    <StarIcon variant="contained" style={{ color: mark ? "#ffcc00" : "#353838" }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                            <p>作者:</p>
-                                            <p>{author}</p>
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                            <p>出版社:</p>
-                                            <p>{publisher}</p>
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:'row' }}>
-                                            <p>出版日期:</p>
-                                            <p>{pubdate}</p>
-                                        </Box>
-                                    </Grid>
-                                    <Grid item spacing={2} xs={12} align="Left">
-                                        <Button variant='contained' to="./update" component={Link}>修改书籍信息</Button>
-                                        <Tooltip title="收藏书籍">
-                                            <IconButton type="button" onClick={handleMark}>
-                                                <StarIcon variant="contained" style={{ color: mark ? "#ffcc00" : "#353838" }}/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Grid>
-                            </Grid>
-                            </CardContent>
-                        </Box>
-                        {cover && (
-                            <CardMedia
-                            component="img"
-                            sx={{ 
-                                maxWidth: 300, // 设定合适的 CSS 单位
-                                objectFit: 'contain' // or 'scale-down', 'fill', 'cover'
-                                }}
-                            image={`http://8.130.18.80:80/api/proxy-image?url=${encodeURIComponent(cover)}`}
-                            title="cover"
-                            />
-                        )}
-                        <Box align="center" justifyContent="center" alignItems="flex-end" sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} align="center">
-                                    <Button variant="contained" onClick={() => openNewTab(buy_dang)}>当当网购买</Button>
+                                </CardContent>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={4} sm={4} md={4} marginTop="50px" alignContent="center">
+                            <Box align="center" justifyContent="center" alignItems="flex-end" sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                                <Grid container direction="column" width="100%" spacing={2} justifyContent="space-between">
+                                    <Box border="0px solid" width="100%" height="100%">
+                                        <Grid item align="center" xs={12}>
+                                            <Button variant="outlined" onClick={() => openNewTab(buy_dang)} sx={{ width: '90%', height: '50px', fontSize: '1.2rem' }}>当当网购买</Button>
+                                        </Grid>
+                                        <Grid item align="center" xs={12}>
+                                            <Button variant="outlined" onClick={() => openNewTab(buy_bookchina)} sx={{ width: '90%', height: '50px', fontSize: '1.2rem' }}>中国图书网购买</Button>
+                                        </Grid>
+                                        <Grid item align="center" xs={12}>
+                                            <Button variant="outlined" onClick={() => openNewTab(buy_kong)} sx={{ width: '90%', height: '50px', fontSize: '1.2rem' }}>孔夫子旧书网购买</Button>
+                                        </Grid>
+                                        <Grid item align="center" xs={12}>
+                                            <Button variant="outlined" onClick={() => openNewTab(buy_jie)} sx={{ width: '90%', height: '50px', fontSize: '1.2rem' }}>旧书街购买</Button>
+                                        </Grid>
+                                    </Box>
                                 </Grid>
-                                <Grid item xs={12} align="center">
-                                    <Button variant="contained" onClick={() => openNewTab(buy_bookchina)}>中国图书网购买</Button>
-                                </Grid>
-                                <Grid item xs={12} align="center">
-                                    <Button variant="contained" onClick={() => openNewTab(buy_kong)}>孔夫子旧书网购买</Button>
-                                </Grid>
-                                <Grid item xs={12} align="center">
-                                    <Button variant="contained" onClick={() => openNewTab(buy_jie)}>旧书街购买</Button>
-                                </Grid>
-                            </Grid>
-                        </Box>
+                            </Box>
+                        </Grid>
                     </Card>
                 </Grid>
-                <Grid item>
-                    <Box alignContent="center" style={{ marginTop: '5px'}}>
+                <Grid item justifyContent="center" width="90%">
+                    <Box border="0px solid" justifyContent="center" style={{ marginTop: '5px', width: '100%'}}>
                         <CommentComponet isbn={isbn}/>
                     </Box>
                 </Grid>
             </Grid>
-
-            
         </div>
     );
 
