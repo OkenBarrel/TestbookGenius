@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import string
 import random
 import datetime
+import os
 
 def generate_unique_code():
     length=6
@@ -31,7 +32,7 @@ class Book(models.Model):
     doubanUrl, (doubanRating)...(info from external API
     '''
     
-    isbn=models.CharField(max_length=13,null=False,unique=True,primary_key=True)
+    isbn=models.CharField(max_length=13,null=False,default="0000000000",unique=True,primary_key=True)
     title=models.CharField(max_length=50,default="",unique=False)
     author=models.JSONField(max_length=50,default="")
     publisher=models.CharField(max_length=50,default="")
@@ -81,33 +82,57 @@ class Profile(models.Model):
     user_major = models.CharField(max_length=50, null=False, default="")
     user_department = models.CharField(max_length=50, null=False, default="")
     user_credit = models.IntegerField(null=False,default=100)
-    # user_indate = models.DateTimeField(auto_now_add=True)
+    user_indate = models.CharField(max_length=4, null=False, default="")
+    user_avatar = models.ImageField(upload_to='Avatar/', null=False, blank=True, default='Avatar/DefaultAvatar.png')
     # print(user_id)
+    def save(self, *args, **kwargs):
+        # 如果对象已存在（即这是更新操作）
+        if self.pk:
+            # 获取当前对象
+            try:
+                old_instance = Profile.objects.get(pk=self.pk)
+            except Exception:
+                super(Profile, self).save(*args, **kwargs)
+                return
+            old_image = old_instance.user_avatar
+
+            # 如果旧图片和新图片不同，并且旧图片存在
+            if old_image and old_image != self.user_avatar:
+                # 删除旧图片
+                if os.path.isfile(old_image.path):
+                    os.remove(old_image.path)
+        super(Profile, self).save(*args, **kwargs)
     def __str__(self) -> str:
         return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
 
 class Mark(models.Model):
-    markid=models.CharField(max_length=10,primary_key=True)
     userid = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
     bookisbn = models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
+    class Meta:
+        managed= True
+        unique_together=('userid','bookisbn')
+
+    def __str__(self) -> str:
+        return 'book: '+self.bookisbn.title+' user: '+self.userid.username
+
 
 class Comment(models.Model):
-    com_id = models.CharField(max_length=50,null=False,unique=True,primary_key=True)
-    info = models.CharField(max_length=200,null=False,unique=True)   
-    # relationship with book
-    book = models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
+    # com_id = models.CharField(max_length=50,null=False,unique=True,primary_key=True)
+    info = models.CharField(max_length=200,null=False)   
+    # relationship with usebook
+    usebook = models.ForeignKey(Usebook,on_delete=models.CASCADE)#on_update=models.CASCADE
     # relationship with user
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE) #on_update=models.CASCADE
+    user = models.ForeignKey(User,on_delete=models.CASCADE) #on_update=models.CASCADE
     # relationship with user : props
     com_date = models.DateTimeField(auto_now_add=True)
 
-class Like(models.Model):
-    # relationship with user and comment
-    user = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
-    comment = models.ForeignKey(Comment,on_delete=models.CASCADE)#on_update=models.CASCADE
-    # props
-    like = models.IntegerField(null=False,default=0)
-    dislike = models.IntegerField(null=False,default=0)
+# class Like(models.Model):
+#     # relationship with user and comment
+#     user = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
+#     comment = models.ForeignKey(Comment,on_delete=models.CASCADE)#on_update=models.CASCADE
+#     # props
+#     like = models.IntegerField(null=False,default=0)
+#     dislike = models.IntegerField(null=False,default=0)
 
 class UpScoreUserRelation(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)

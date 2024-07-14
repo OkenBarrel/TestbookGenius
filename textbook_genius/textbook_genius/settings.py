@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1)ej8a^oi24^5gm+p(v5s7dy-l)a4i-3f1cjb)7i%%43lp)e94
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F']#'127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F'
+ALLOWED_HOSTS = ['localhost','127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F', 'Lino-LAPTOP']#'127.0.0.1','laptop-hsaq2kli','desktop-p1gi4oe','LAPTOP-MMOMHI4F'
 
 
 # Application definition
@@ -41,9 +41,11 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     # 'frontend.apps.ApiCofig',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,7 +61,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'frontend/reactapp/build'),
+            os.path.join(BASE_DIR, 'reactapp/build'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -68,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -85,7 +88,22 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://127.0.0.1']
 
+
+CORS_ORIGIN_ALLOW_ALL=True
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_WHITELIST = [
+#     # 'http://google.com',
+#     # 'http://hostname.example.com',
+#     'http://localhost:8000',
+#     'http://localhost:3000',
+#     'http://127.0.0.1:8000',
+#     'http://127.0.0.1:3000',
+#     'https://api.douban.com',
+#     'https://img1.doubanio.com',
+#     # 'http://127.0.0.1:9000'
+# ]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -96,6 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+            "OPTIONS": {
+            "min_length": 8,
+            },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -124,7 +145,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend/reactapp/build/static'),
+    os.path.join(BASE_DIR, 'reactapp/build/static'),
 ]
 
 # Default primary key field type
@@ -147,6 +168,12 @@ LOGGING = {
         'level': 'INFO',
     }
 }
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+print(MEDIA_ROOT)
+
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # 使用 Redis 作为消息代理
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # 使用 Redis 作为结果后端

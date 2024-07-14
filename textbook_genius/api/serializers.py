@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Room, Book, Teacher, Course, Usebook, Profile , Mark ,\
-                    Comment, Like, UpScoreUserRelation,DownScoreUserRelation,ValidationCode
+                    Comment, UpScoreUserRelation,DownScoreUserRelation,ValidationCode
 from django.contrib.auth.models import User
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -67,13 +67,21 @@ class UsebookSerializer(serializers.ModelSerializer):
         # }
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # user = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
+    # user_name = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
     user_id=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model=Profile
-        fields=('user_id','user','user_major','user_department','user_credit')
+        fields = ('user','user_id', 'user_major', 'user_department', 'user_credit','user_indate', 'user_avatar')
+    def get_user_avatar(self, obj):
+            request = self.context.get('request')
+            if obj.user_avatar:
+                return request.build_absolute_uri(obj.user_avatar.url)
+            return None
+
 
 class MarkSerializer(serializers.ModelSerializer):
+    userid = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    bookisbn = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
     class Meta:
         model = Mark
         fields=('userid','bookisbn')
@@ -81,12 +89,12 @@ class MarkSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields=('com_id','info','book','user_id','com_date')
+        fields=('info','usebook','user','com_date')
 
-class LikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Like
-        fields=('user','comment','like','dislike')
+# class LikeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Like
+#         fields=('user','comment','like','dislike')
 
 class UpScoreUserRelationSerializer(serializers.ModelSerializer):
     useBook=serializers.PrimaryKeyRelatedField(queryset=Usebook.objects.all())
@@ -112,7 +120,11 @@ class SearchSerializer(serializers.ModelSerializer):
     book = BookSerializer()
     teacher = TeacherSerializer()
     course = CourseSerializer()
+    cover = serializers.SerializerMethodField()
 
     class Meta:
         model = Usebook
-        fields = ('book', 'teacher', 'course', 'school_year', 'semester')
+        fields = ('book', 'teacher', 'course', 'school_year', 'semester', 'cover')
+
+    def get_cover(self, obj):
+        return obj.book.cover if obj.book else None
