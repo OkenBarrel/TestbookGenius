@@ -1,5 +1,5 @@
 import {Button,DialogContent,Grid,Typography,TextField,Box} from '@mui/material';
-import React,{Component, useState} from "react";
+import React,{Component, useEffect, useState} from "react";
 import CreateBookPage from './CreateBookPage';
 import Book from "./Book";
 import UpdateBookPage from './UpdateBookPage';
@@ -10,7 +10,7 @@ import NavigateButton from './Navigate';
 
 import SearchResults from './SearchResults';
 import HelloComponent from './HelloComponent';
-import { getCookie } from './CSRFToken';
+import { getCookie,getCsrfToken } from './CSRFToken';
 import {
     HashRouter as Router,
     Routes,
@@ -21,8 +21,19 @@ import {
 import UserPage from "./UserPage";
 
 async function handleLogout(){
+  const csrftoken=getCsrfToken();
 
-  let response=await fetch("api/loggout");
+  const requestOption={
+
+    method: "GET",
+    headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken
+    },
+    credentials: 'include',
+  }
+
+  let response=await fetch("http://localhost:8000/api/logout",requestOption);
   if(!response.ok){
     console.log("log out failed");
     return;
@@ -31,7 +42,20 @@ async function handleLogout(){
 
 }
 
-function HomePage({id}) {
+function HomePage() {
+
+  useEffect(()=>{
+    getLog();
+
+
+  },[]);
+  const getLog=async ()=>{
+    let response=await fetch("http://localhost:8000/api/is-loggedin",{
+      credentials:'include'
+    });
+    
+
+  }
   
     function renderHomePage() {
       return (
