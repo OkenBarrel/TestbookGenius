@@ -43,7 +43,7 @@ const ScoreComponent=({relation})=>{
         // }
     },[relation])
     const getUseDetail=async (useid)=>{
-        let response=await fetch("http://127.0.0.1:8000/api/get-one-useBook"+"?use_id="+useid+"&user_id="+user_id);
+        let response=await fetch("http://8.130.18.80:80/api/get-one-useBook"+"?use_id="+useid+"&user_id="+user_id);
         if(!response.ok){
             return;
         }
