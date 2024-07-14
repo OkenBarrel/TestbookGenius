@@ -615,6 +615,7 @@ class ProfileViewer(APIView):
                 
 
                 user_id=request.data.get('user_id')
+                username=request.data.get('username')
                 user_major=request.data.get('user_major')
                 user_department=request.data.get('user_department')
                 user_credit=request.data.get('user_credit')
@@ -636,7 +637,7 @@ class ProfileViewer(APIView):
                 if serializer.is_valid():
                     serializer.save()
                     data = {
-                        'username': profile.user.username,
+                        'username': username,
                         'user_department': profile.user_department,
                         'user_major': profile.user_major,
                         'user_credit': profile.user_credit,
@@ -650,7 +651,6 @@ class ProfileViewer(APIView):
             except Profile.DoesNotExist:
                 print("except")
                 return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-            return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
 
 
 

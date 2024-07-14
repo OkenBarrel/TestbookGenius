@@ -113,6 +113,7 @@ const UserPage =()=> {
         setIsEditing(false);
         try{
             const formData = new FormData();
+            form.append('username',userInfo.username)
             formData.append('user_id',userInfo.user_id)
             formData.append('user_major', userInfo.major);
             formData.append('user_department', userInfo.department);
@@ -133,7 +134,7 @@ const UserPage =()=> {
             if (response.ok) {
                 const data = await response.json();
                 setUserInfo({
-                    username: data.user,
+                    username: data.username,
                     department: data.user_department,
                     major: data.user_major,
                     ProgramStartYear: data.user_indate,
