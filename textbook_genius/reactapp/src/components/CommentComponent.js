@@ -148,48 +148,57 @@ const CommentComponet=({isbn})=>{
     };
     
     return(
-        <Box width="100%" flexDirection="row">
-        <Grid container width = "100%" minHeight="200px">
-                <Card>
-                    <Tabs 
-                        value={value} onChange={handleChange}
-                        variant="scrollable" scrollButtons="auto"
-                    >
-                        {relations.map((relation)=>(
-
-                            <Tab label={relation.course.course_name+"-"+relation.teacher}></Tab>                                
-                        ))}
-                    
-                    </Tabs>
-                <CustomTabPanel value={value} index={value}>
-                    <Box sx={{ width: '100%', typography: 'body1' }}>
-                        <ul>
-                            {comments.filter(comment => comment.relationId === relations.id).map((filteredComment, index) => (
-                                <li key={index}>{filteredComment.info}</li> // 假设每个评论对象都有一个relationId属性与relation的id对应
-                            ))}
-                        </ul>
+        <Box border="0px solid" width="100%" display="flex" justifyContent="center" alignItems="center">
+            <Grid container xs={12} sm={12} md={12} width="100%" minHeight="200px" display="flex" justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%' }}>
+                <Grid item xs={8} sm={8} md={8} justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%', height:'100%' }}>
+                    <Grid container direction="column" sx={{ width: '100%' }}>
+                        <Grid item sx={{ width: '100%' }}>
+                            <Card sx={{ border: "0px solid", width: '100%' }}>
+                                <Tabs 
+                                    value={value} 
+                                    onChange={handleChange}
+                                    variant="scrollable" 
+                                    scrollButtons="auto"
+                                >
+                                    {relations.map((relation) => (
+                                        <Tab label={relation.course.course_name+"-"+relation.teacher}></Tab>
+                                    ))}
+                                </Tabs>
+                            </Card>
+                        </Grid>
+                        <Grid item sx={{ width: '100%' }}>
+                            <Card sx={{ border: "0px solid", height: "150px", width: '100%' }}>
+                                {console.log(relations[value])}
+                                <CustomTabPanel value={value} index={value}>
+                                    <Box sx={{ width: '100%', typography: 'body1' }}>
+                                        <ul>
+                                            {comments.filter(comment => comment.relationId === relations.id).map((filteredComment, index) => (
+                                                <li key={index}>{filteredComment.info}</li> // 假设每个评论对象都有一个relationId属性与relation的id对应
+                                            ))}
+                                        </ul>
+                                    </Box>
+                                </CustomTabPanel>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={4} sm={4} md={4} display="flex" justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%',height:'230px' }}> 
+                    <ScoreComponent relation={relations[value]} />
+                </Grid>
+                    <Grid item style={{marginTop: '20px'}}> 
+                    <Box>
+                        <TextField
+                            label="写下你的评论"
+                            variant="outlined"
+                            fullWidth
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                        />
+                        <Button onClick={() => createComment(content)}>提交评论</Button>
                     </Box>
-                </CustomTabPanel>
-                </Card>
-                    {console.log(relations[value])}
-            <Grid item> 
-                    {<ScoreComponent relation={relations[value]}></ScoreComponent>}
+                </Grid>
             </Grid>
-            {/* 将写评论部分移动到这里，使其在布局中更下方 */}
-            <Grid item style={{marginTop: '20px'}}> 
-                <Box>
-                    <TextField
-                        label="写下你的评论"
-                        variant="outlined"
-                        fullWidth
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                    />
-                    <Button onClick={() => createComment(content)}>提交评论</Button>
-                </Box>
-            </Grid>
-        </Grid>
-    </Box>
+        </Box>
     )
 }
 

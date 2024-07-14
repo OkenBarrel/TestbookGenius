@@ -155,7 +155,7 @@ const ScoreComponent=({relation})=>{
 
     return(
         
-        <Card sx={{width:300,height:200}}>
+        <Card sx={{width:'100%',height:200}}>
             <CardContent>
                 {/* {console.log(course)} */}
                 <Box sx={{minWidth:200}}>

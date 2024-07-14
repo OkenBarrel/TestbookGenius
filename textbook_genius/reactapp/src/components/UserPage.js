@@ -113,7 +113,10 @@ const UserPage =()=> {
         setIsEditing(false);
         try{
             const formData = new FormData();
-            formData.append('username',userInfo.username)
+            // formData.append('username',userInfo.username)
+            // if(userInfo.username===getCookie('username')){
+            //     formData.append('username',userInfo.username)
+            // }
             formData.append('user_id',userInfo.user_id)
             formData.append('user_major', userInfo.major);
             formData.append('user_department', userInfo.department);
@@ -134,7 +137,7 @@ const UserPage =()=> {
             if (response.ok) {
                 const data = await response.json();
                 setUserInfo({
-                    username: data.username,
+                    // username: data.username,
                     department: data.user_department,
                     major: data.user_major,
                     ProgramStartYear: data.user_indate,
@@ -153,22 +156,36 @@ const UserPage =()=> {
     }
 
     return (
-        <Grid container justifyContent="center" spacing="50px" style={{ minHeight: '100%' }}>
-            <Grid item width = "100%">
-                <Box border = "px dotted #acf" width = "100%">
-                    <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px', marginLeft: '5%' }}>
-                        <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px'}}>
-                            <Home />
+            <Grid container sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
+                <Grid item width = "100%">
+                    <Box width="90%" display="flex" justifyContent="right" sx={{marginTop: '10px', marginLeft: '5%', marginRight: '5%' }}>
+                        <Grid container alignItems="center" justifyContent="space-between">
+                            <Grid item align="left" style={{ marginTop: '16px'}}>
+                                <Home />
+                            </Grid>
+                            <Grid item align="right">
+                                <Box width="100%" sx={{ textAlign: 'right',minWidth:'200px' }}>
+                                    <Grid container alignItems="flex-end" justifyContent="space-between">
+                                        <Grid item>
+                                            <Box>
+                                                {console.log("name" + userInfo.username)}
+                                                <Avatar src={url} sx={{ width: 55, height: 55 }} />
+                                            </Box>
+                                        </Grid>
+                                        <Grid item>
+                                            <Box>
+                                               <HelloComponent user_name={userInfo.username} id={userInfo.user_id} /> 
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={4} sm={4} md={4} align="right">
-                            <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Grid>
+                    </Box>
+                </Grid>
             <Grid item width="100%">
                 <Container maxWidth="sm" style={{ marginTop: '20px' }}>
-                    <Paper elevation={3} style={{ padding: '20px' }}>
+                    <Paper elevation={3} style={{ padding: '10px',marginTop:'40px' }}>
                         <Box display="flex" justifyContent="center" mb={2}>
                             <Avatar alt="User Avatar" src={url} sx={{ width: 80, height: 80 }} />
                         </Box>
@@ -179,13 +196,13 @@ const UserPage =()=> {
                             </Box>
                         )}
                         <Typography variant="h4" component="h1" gutterBottom>
-                            {userInfo.username}'s Profile
+                            {userInfo.username}
                         </Typography>
                         <Box mb={2}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <Typography variant="body1">
-                                        <strong>Credit:</strong> {userInfo.credit}
+                                        <strong>信用分:</strong> {userInfo.credit}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -193,9 +210,9 @@ const UserPage =()=> {
 
                         <form onSubmit={clickSubmitHandler}>
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <TextField
-                                        label="Name"
+                                        label="昵称"
                                         name="username"
                                         value={userInfo.username}
                                         onChange={handleInputChange}
@@ -203,10 +220,10 @@ const UserPage =()=> {
                                         variant="outlined"
                                         disabled={!isEditing}
                                     />
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12}>
                                     <FormControl fullWidth variant="outlined" disabled={!isEditing}>
-                                        <InputLabel id="department-label">Department</InputLabel>
+                                        <InputLabel id="department-label">学院/学部</InputLabel>
                                         <Select
                                             labelId="department-label"
                                             name="department"
@@ -229,7 +246,7 @@ const UserPage =()=> {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        label="Major"
+                                        label="专业"
                                         name="major"
                                         value={userInfo.major}
                                         onChange={handleInputChange}
@@ -240,7 +257,7 @@ const UserPage =()=> {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        label="Program Start Year"
+                                        label="入学年份"
                                         name="ProgramStartYear"
                                         value={userInfo.ProgramStartYear}
                                         onChange={handleInputChange}
