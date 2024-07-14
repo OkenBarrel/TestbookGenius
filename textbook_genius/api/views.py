@@ -643,21 +643,43 @@ class ProfileViewer(APIView):
 #
 #     @csrf_exempt
     def put(self, request):
+            '''
+            {
+                username: '',
+                user_id:'',
+                department: '',
+                major: '',
+                ProgramStartYear: '',
+                credit: '',
+                avatarFile: null,
+            }
+            '''
             try:
                 print(request.data)
                 print(request.FILES)
                 
 
                 user_id=request.data.get('user_id')
+                username=request.data.get('username')
                 user_major=request.data.get('user_major')
                 user_department=request.data.get('user_department')
                 user_credit=request.data.get('user_credit')
+                # data={
+                #     'user':user_id,
+                #     'user_major':user_major,
+                #     'user_department':user_department,
+                #     'user_credit':user_credit
+                # }
                 data={
-                    'user_id':user_id,
+                    'user':{
+                       'id':user_id,
+                       'username':username
+                    },
                     'user_major':user_major,
                     'user_department':user_department,
                     'user_credit':user_credit
                 }
+                print(data)
                 if 'user_avatar' in request.FILES:
                     data['user_avatar'] = request.FILES['user_avatar']
                 
