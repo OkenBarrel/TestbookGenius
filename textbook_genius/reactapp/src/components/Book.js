@@ -211,11 +211,11 @@ const Book=({relation})=>{
             <Grid container spacing="10px" sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
                 <Grid item width = "100%">
                     <Box border = "0px dotted #acf" width = "100%">
-                        <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px', marginLeft: '5%' }}>
-                            <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px'}}>
+                        <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px'}}>
+                            <Grid item xs={7} sm={7} md={7} align="left" style={{ marginLeft: '5%' }}>
                                 <Home />
                             </Grid>
-                            <Grid item xs={4} sm={4} md={4} align="right">
+                            <Grid item xs={3.8} sm={3.8} md={3.8} align="right" style={{ marginRight: '5%'}}>
                                 <HelloComponent />
                             </Grid>
                         </Grid>

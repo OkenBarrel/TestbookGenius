@@ -1,6 +1,7 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Grid, Typography, TextField, Paper, Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
+import { useNavigate } from 'react-router-dom';
 import { getCsrfToken } from "./CSRFToken";
 import Home from './Navigate';
 import HelloComponent from './HelloComponent';
@@ -12,13 +13,13 @@ const RegisterPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [valiCode,setValiCode]=useState("");
+  const [valiCode, setValiCode] = useState('');
   const [timeLeft, setTimeLeft] = useState(0); // 120秒的倒计时
-  const [isRegistered,setIsRegestered]=useState(false);
-  const [validationError,setValidationError]=useState("");
-
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [validationError, setValidationError] = useState('');
 
   const csrftoken = getCsrfToken(); 
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     setError('');
@@ -46,19 +47,20 @@ const RegisterPage = () => {
         body: JSON.stringify({ 
           user_name: username, 
           user_password: password,
-          user_email : email,
-          validation:valiCode
+          user_email: email,
+          validation: valiCode
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setIsRegestered(true);
+        setIsRegistered(true);
         setSuccess('Registration successful!');
-        // navigator("/");
-        // Optionally clear form fields after successful registration
-      
+        setTimeout(() => {
+          navigate('/login');
+        }, 1500);
+        return;
       } else {
         setError(data.msg || 'Registration failed. Please try again.');
       }
@@ -68,34 +70,32 @@ const RegisterPage = () => {
     }
   };
 
-  const handleValidation=async (e)=>{
-    setValiCode(e.target.value)
-    if(timeLeft!=0){
+  const handleValidation = async (e) => {
+    setValiCode(e.target.value);
+    if (timeLeft !== 0) {
       return;
     }
-    const requestOption={
-      method:"POST",
+    const requestOption = {
+      method: "POST",
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': csrftoken
       },
       body: JSON.stringify({ 
-        email:email
+        email: email
       })
-
-    }
-    let response=await fetch("http://localhost:8000/api/validation",requestOption)
-    let data=await response.json()
-    if(!response.ok){
-      console.log(response.statusText)
+    };
+    let response = await fetch("http://localhost:8000/api/validation", requestOption);
+    let data = await response.json();
+    if (!response.ok) {
+      console.log(response.statusText);
       setValidationError(data.msg);
       return;
     }
     setTimeLeft(120);
-
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const timer = setInterval(() => {
       if (timeLeft > 0) {
         setTimeLeft((prevTime) => prevTime - 1);
@@ -103,12 +103,11 @@ const RegisterPage = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  },[timeLeft])
+  }, [timeLeft]);
 
   useEffect(() => {
     if (timeLeft <= 0 && !isRegistered) {
-      // 倒计时结束并且用户没有注册成功时，发起API请求
-      const requestOption={
+      const requestOption = {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -116,37 +115,27 @@ const RegisterPage = () => {
         },
         body: JSON.stringify({ 
           email: email 
-        }), // 假设你需要发送的email
-      }
-      fetch('/api/validation',requestOption)
-        // .then((response) => response.json())
-        // .then((data) => {
-        //   console.log('API Response:', data);
-        //   // 处理API响应
-        // })
-        // .catch((error) => {
-        //   console.error('API Error:', error);
-        // });
+        }),
+      };
+      fetch('/api/validation', requestOption);
     }
-
-    // 计时器
   }, [timeLeft, isRegistered]);
 
   return (
-    <Grid container justifyContent="center" spacing="50px" style={{ minHeight: '100vh' }}>
-      <Grid item width = "100%">
-          <Box border = "0px dotted #acf" width = "100%">
-              <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px', marginLeft: '5%' }}>
-                  <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px'}}>
-                      <Home />
-                  </Grid>
-                  <Grid item xs={4} sm={4} md={4} align="right">
-                      <HelloComponent />
-                  </Grid>
-              </Grid>
-          </Box>
+    <Grid container justifyContent="center" spacing="30px" style={{ minHeight: '100vh' }}>
+      <Grid item width="100%">
+        <Box border="0px dotted #acf" width="100%">
+          <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'row' }} style={{ marginTop: '5px', marginLeft: '5%' }}>
+            <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px' }}>
+              <Home />
+            </Grid>
+            <Grid item xs={4} sm={4} md={4} align="right">
+              <HelloComponent />
+            </Grid>
+          </Grid>
+        </Box>
       </Grid>
-      <Grid item justifyContent="center" alignItems="center" style={{ minHeight: '100vh', marginTop: '8%' }}>
+      <Grid item justifyContent="center" alignItems="center" style={{ minHeight: '100vh', marginTop: '10px' }}>
         <Paper elevation={3} style={{ padding: 20, maxWidth: 600 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Register
@@ -188,7 +177,6 @@ const RegisterPage = () => {
             />
             <TextField
               label="Validation"
-              // type="password"
               margin="normal"
               variant="outlined"
               value={valiCode}
@@ -204,7 +192,6 @@ const RegisterPage = () => {
               onClick={handleValidation}
             >
               {timeLeft === 0 ? '获取验证码' : timeLeft}
-              {/* {timeLeft=120?"获取验证码":timeLeft} */}
             </Button>
             <Button
               variant="contained"

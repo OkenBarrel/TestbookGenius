@@ -156,7 +156,7 @@ const UserPage =()=> {
                             <Home />
                         </Grid>
                         <Grid item xs={4} sm={4} md={4} align="right">
-                            <HelloComponent />
+                            <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
                         </Grid>
                     </Grid>
                 </Box>
