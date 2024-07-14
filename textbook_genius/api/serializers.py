@@ -72,9 +72,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())  # 或者使用 IntegerField
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())  # 或者使用 IntegerField
     user_avatar = serializers.ImageField()
-    user = UserSerializer()
+    # user = UserSerializer()
     # user_name = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
     user_id=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
@@ -85,22 +85,33 @@ class ProfileSerializer(serializers.ModelSerializer):
             if obj.user_avatar:
                 return request.build_absolute_uri(obj.user_avatar.url)
             return None
-    def update(self, instance, validated_data):
-        user_data = validated_data.pop('user')
-        user = instance.user
+    # def update(self, instance, validated_data):
+    #     print('into')
+    #     user_data = validated_data.pop('user')
+    #     user = instance.user
 
-        # 更新 User 模型
-        user.username = user_data.get('username', user.username)
-        user.save()
-
-        # 更新 Profile 模型
-        instance.user_major = validated_data.get('user_major', instance.user_major)
-        instance.user_department = validated_data.get('user_department', instance.user_department)
-        instance.user_credit = validated_data.get('user_credit', instance.user_credit)
-        instance.user_avatar = validated_data.get('user_avatar', instance.user_avatar)
-        instance.save()
-
-        return instance
+    #     # 检查用户名是否改变
+    #     print(user.username)
+    #     new_username = user_data.get('username', user.username)
+    #     print(user.username)
+    #     print(new_username)
+    #     if user.username != new_username:
+    #         print(user.username)
+    #         print(new_username)
+    #         user.username = new_username
+    #         try:
+    #             user.save()
+    #         except Exception as e:
+    #             raise serializers.ValidationError({"user": str(e)})
+    #     print(user.username)
+    #     print(new_username)
+    #     # 更新 Profile 模型
+    #     instance.user_major = validated_data.get('user_major', instance.user_major)
+    #     instance.user_department = validated_data.get('user_department', instance.user_department)
+    #     instance.user_credit = validated_data.get('user_credit', instance.user_credit)
+    #     instance.user_avatar = validated_data.get('user_avatar', instance.user_avatar)
+    #     instance.save()
+    #     return instance
     # def update(self, instance, validated_data):
     #     user_data = validated_data.pop('user')
     #     user_serializer = UserSerializer(instance=instance.user, data=user_data, partial=True)

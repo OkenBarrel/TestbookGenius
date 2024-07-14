@@ -27,10 +27,7 @@ from django.http import JsonResponse
 from rest_framework.parsers import MultiPartParser, FormParser
 APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
-
-import logging
-
-logger = logging.getLogger(__name__)
+from django.db import transaction
 
 class RoomView(generics.ListAPIView):
     queryset = Room.objects.all()
@@ -113,6 +110,7 @@ class createBook(APIView):
     useBook_serializer_class=UsebookSerializer
     course_serializer_class=CourseSerializer
     teacher_serializer_class=TeacherSerializer
+    @transaction.atomic
     def post(self,request,format=None):
         school_year=request.data.get("school_year")
         if len(school_year)!=9:
@@ -548,13 +546,14 @@ class register(APIView):
         validation:
     }
     '''
+    @transaction.atomic
     def post(self, request):
         print(request.data)
         vali=get_object_or_404(ValidationCode,email=request.data.get('user_email'))
         if vali.code!=request.data.get('validation'):
             return Response({"msg":"验证码错误"},status=status.HTTP_404_NOT_FOUND)
         history=User.objects.filter(email=request.data.get('email')).first()
-        if history is not None:
+        if User.objects.filter(email=request.data.get('email')).exists():
             return Response({"Conflict":"Already registered"},status=status.HTTP_409_CONFLICT)
 
 
@@ -575,44 +574,6 @@ class register(APIView):
         vali.delete()
         return Response({"username":user.get_username(),"email":user.get_email_field_name()},status=status.HTTP_200_OK)
 
-        #     send_mail(
-        #     "Testing for email validation",
-        #     "Here is the message.",
-        #     "3014033378@qq.com",
-        #     [request.data.get('user_email')],
-        #     fail_silently=False,
-        # )
-        # serializer=ProfileSerializer()
-        # user=authenticate(request=request,username=username,password=password)
-        # if user is not None:
-            # login(request,user)
-            # if not request.session.session_key:
-            #     request.session.save()
-            # print("session key:"+request.session.session_key)
-            #print("usernsme:"+request.session['user_name'])
-            #print(request.session.session_key)
-            # return Response({"username":user.get_username(),"email":user.get_email_field_name()})
-        # else:
-        #     print("error")
-        #     return Response({"Bad Request":"Invalid Login"},status=status.HTTP_400_BAD_REQUEST)
-            #return Response({"user_name":user.username,"email":user.email}, status=status.HTTP_200_OK)
-        # except Exception:
-
-
-
-        # serializer = UserSerializer(data=request.data)
-        # if serializer.is_valid():
-        #     print(serializer.data)
-        #     user_name= serializer.data.get('user_name')
-        #     user_password= serializer.data.get('user_password')
-        #     user_email= serializer.data.get('user_email')
-        #     user=User(user_name = user_name, user_password = user_password, user_email = user_email)
-        #     print(user.user_id)
-        #     user.save()
-        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # else:
-        #     print(serializer.errors)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class upScoreUser(APIView):
     '''
@@ -719,7 +680,6 @@ class ProfileViewer(APIView):
     def put(self, request):
             '''
             {
-                username: '',
                 user_id:'',
                 department: '',
                 major: '',
@@ -734,25 +694,24 @@ class ProfileViewer(APIView):
                 
 
                 user_id=request.data.get('user_id')
-                username=request.data.get('username')
                 user_major=request.data.get('user_major')
                 user_department=request.data.get('user_department')
                 user_credit=request.data.get('user_credit')
-                # data={
-                #     'user':user_id,
-                #     'user_major':user_major,
-                #     'user_department':user_department,
-                #     'user_credit':user_credit
-                # }
                 data={
-                    'user':{
-                       'id':user_id,
-                       'username':username
-                    },
+                    'user':user_id,
                     'user_major':user_major,
                     'user_department':user_department,
                     'user_credit':user_credit
                 }
+                # data={
+                #     'user':{
+                #        'id':user_id,
+                #        'username':username
+                #     },
+                #     'user_major':user_major,
+                #     'user_department':user_department,
+                #     'user_credit':user_credit
+                # }
                 print(data)
                 if 'user_avatar' in request.FILES:
                     data['user_avatar'] = request.FILES['user_avatar']
@@ -841,25 +800,28 @@ class validation(APIView):
             email:
         }
     '''
+    @transaction.atomic
     def post(self,request):
         # email=request.data.get('email')
         print(request.data)
-        history=ValidationCode.objects.filter(email=request.data.get('email')).first()
-        if history :
+        if ValidationCode.objects.filter(email=request.data.get('email')).exists() :
             return Response({"msg":"验证码已发送"},status=status.HTTP_409_CONFLICT)
         serializer=ValidationCodeSerializer(data=request.data)
         if not serializer.is_valid():
             return
         email=serializer.data.get('email')
         code=ValidationCode(email=email)
+        try:
+            send_mail(
+                "This is for validation",
+                "Here is the validation code {0}.".format(code.code),
+                "3014033378@qq.com",
+                [email],
+                fail_silently=False,
+            )
+        except Exception:
+            return Response({'msg':'无效邮箱，请重新输入'},status=status.HTTP_404_NOT_FOUND)
         code.save()
-        send_mail(
-            "This is for validation",
-            "Here is the code code {0}.".format(code.code),
-            "3014033378@qq.com",
-            [email],
-            fail_silently=False,
-        )
         return Response({"email":email},status=status.HTTP_200_OK)
     def delete(self,request):
         email=request.data.get('email')
@@ -927,6 +889,7 @@ class is_loggedin(APIView):
         # print(request.session['user_id'])
         # print(request.user)
         try:
+            print(request.session['is_login'])
             if(request.session['is_login']):
                 profile = Profile.objects.get(user__id=request.user.id)
                 data={
