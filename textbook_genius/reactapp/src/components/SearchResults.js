@@ -5,6 +5,7 @@ import Search from './Search';
 import NavigateButton from './Navigate';
 import HelloComponent from './HelloComponent';
 import Pagination from '@mui/material/Pagination';
+import { getCookie,getCsrfToken } from './CSRFToken';
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -56,7 +57,7 @@ const SearchResults = () => {
                           <NavigateButton />
                       </Grid>
                       <Grid item xs={4} sm={4} md={4} align="right" >
-                          <HelloComponent />
+                      <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
                       </Grid>
                   </Grid>
               </Box>
