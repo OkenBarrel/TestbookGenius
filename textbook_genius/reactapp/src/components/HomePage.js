@@ -19,6 +19,7 @@ import {
     Redirect,
 } from "react-router-dom";
 import UserPage from "./UserPage";
+import { AlignHorizontalRight } from '@mui/icons-material';
 
 async function handleLogout(){
 
@@ -35,8 +36,8 @@ function HomePage({id}) {
   
     function renderHomePage() {
       return (
-        <div>
-          <Grid container spacing={2} direction={'column'}>
+        <div paddling="10%">
+          <Grid container spacing={2} direction={'column'} >
             <Grid item>
               <Grid container spacing={2} direction="row" justifyContent={'center'}>
                 <Grid item margin={1.5} xs={7} sm={7} md={7} lg={7} xl={7}>
@@ -45,12 +46,11 @@ function HomePage({id}) {
                     <Button variant='contained' to="/register" component={Link}>注册</Button>
                     <Button variant='contained' to="/login" component={Link}>登录</Button>
                     <Button variant='contained' to={`/user/${getCookie('user_id')}`} component={Link}>用户信息</Button>
-                    <Button variant='contained' to="/search" component={Link}>搜索</Button>
                     <Button variant='contained' onClick={handleLogout}>退出登录</Button>
                   </Box>
                 </Grid>
                 <Grid item xs={3} sm={3} md={3} lg={3} xl={3} justifyContent="flex-end">
-                  <Box display="flex" justifyContent="flex-end">
+                  <Box display="flex" style={{AlignHorizontalRight}}>
                     <HelloComponent />
                   </Box>
                 </Grid>

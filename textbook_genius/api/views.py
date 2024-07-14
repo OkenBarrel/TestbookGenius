@@ -733,7 +733,7 @@ class SearchView(APIView):
         combined_results = list(chain(search_results1, search_results2, search_results3, search_results4, search_results5))
         search_results = list({result.id: result for result in combined_results}.values())
 
-        items_per_page = 5
+        items_per_page = 6
         paginator = Paginator(search_results, items_per_page)
         page_number = request.query_params.get('page', 1)
         page_obj = paginator.get_page(page_number)
