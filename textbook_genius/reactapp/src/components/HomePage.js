@@ -44,7 +44,7 @@ function HomePage({id}) {
                     <Button variant='contained' to="/create" component={Link}>创建书籍</Button>
                     <Button variant='contained' to="/register" component={Link}>注册</Button>
                     <Button variant='contained' to="/login" component={Link}>登录</Button>
-                    <Button variant='contained' to={`/user/${id}`} component={Link}>用户信息</Button>
+                    <Button variant='contained' to={`/user/${getCookie('user_id')}`} component={Link}>用户信息</Button>
                     <Button variant='contained' to="/search" component={Link}>搜索</Button>
                     <Button variant='contained' onClick={handleLogout}>退出登录</Button>
                   </Box>
