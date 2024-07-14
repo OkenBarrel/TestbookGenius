@@ -75,7 +75,7 @@ function HomePage() {
                     {!getCookie('user_id')&&(<Button variant='contained' to="/login" component={Link}>登录</Button>)}
                     <Button variant='contained' to="/register" component={Link}>注册</Button>
                     <Button variant='contained' to={`/user/${getCookie('user_id')}`} component={Link}>用户信息</Button>
-                    <Button variant='contained' 
+                    <Button variant='contained'
                       onClick={handleLogout}>
                       退出登录
                     </Button>
