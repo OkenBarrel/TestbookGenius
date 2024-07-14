@@ -8,10 +8,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
-    CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
+    CommentSerializer,UsebookSerializer,MarkSerializer,\
     UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer,\
     ValidationCodeSerializer,SearchSerializer
-from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
+from .models import Room,Book,Teacher,Course,Comment,Usebook,Mark,\
                     UpScoreUserRelation, Profile,DownScoreUserRelation,ValidationCode
 from requests import Request,post,get,patch
 from django.db.models import Count
@@ -413,6 +413,80 @@ class getUseBook(APIView):
             response_data[idx]['downvote_count'] = usebook.downvote_count
 
         return Response(response_data,status=status.HTTP_200_OK)
+    
+class getComment(APIView):
+    def get(self, request, format=None):
+        # 通过URL参数获取Usebook的ID
+        usebook_id = request.GET.get('usebook_id')
+        # user_id = request.COOKIES.get('user_id')
+        print("获取的usebook_id:", usebook_id)
+        
+        # 根据Usebook的ID查询评论
+        comments = Comment.objects.filter(usebook__id=usebook_id)
+        
+        # 如果没有找到评论，返回404
+        if not comments.exists():
+            return Response({"msg": "没有找到评论"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 序列化查询到的评论数据
+        serializer = CommentSerializer(comments, many=True)
+        print(serializer.data)
+
+        # # 手动构建每个评论的JSON数据
+        # comments_data = []
+        # for comment in comments:
+        #     comment_data = {
+        #         'user_id': comment.user.id,
+        #         'comment_text': comment.text,
+        #         'usebook_id': comment.usebook.id
+        #     }
+        #     comments_data.append(comment_data)
+
+        # 返回序列化后的数据
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class createComment(APIView):
+    '''
+    user , info , usebook
+    '''
+    def post(self, request, format=None):
+        # 获取请求数据
+        # user_id=request.COOKIES.get('user_id')
+        user_id=request.data.get('user')
+        print(user_id)
+        comment_data = request.data.get("info")
+        print(comment_data)
+        usebook_id = request.data.get("usebook")
+        print(usebook_id)
+
+        # 验证数据完整性
+        if not all([user_id,comment_data, usebook_id]):
+            return Response({"msg": "缺少必要信息"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 查找关联对象
+        try:
+            usebook = Usebook.objects.get(id=usebook_id)
+        except Usebook.DoesNotExist as e:
+            return Response({"msg": "提供的信息无法找到对应的Usebook实例"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"msg": "用户不存在"}, status=status.HTTP_404_NOT_FOUND)
+
+        # 创建评论
+        comment = Comment(user=user, info=comment_data, usebook=usebook)
+        comment.save()
+        data={
+            'user':user_id,
+            'info':comment_data,
+            'usebook':usebook_id
+        }
+
+        # 返回成功响应
+        return Response(data, status=status.HTTP_201_CREATED)
+
 
 class getOneUseBook(APIView):
     '''
