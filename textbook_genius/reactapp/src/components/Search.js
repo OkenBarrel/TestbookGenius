@@ -8,11 +8,7 @@ const Search = () => {
 
   const handleSearch = () => {
     if (query.trim()) {
-<<<<<<< HEAD
       navigate(`http://8.130.18.80:80/search/results?query=${encodeURIComponent(query)}`);
-=======
-      navigate(`/search/results?query=${encodeURIComponent(query)}`);
->>>>>>> 1709571c09594b844ba04bfdbf7a53e8ee6d2efb
     }
   };
 
