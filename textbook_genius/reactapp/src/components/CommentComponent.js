@@ -8,6 +8,7 @@ import List from '@mui/material/List';
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import Avatar from "@mui/material/Avatar";
 import { useParams, useNavigate } from 'react-router-dom';
 import ScoreComponent from "./ScoreComponet";
 import { getCookie } from './CSRFToken';
@@ -170,7 +171,7 @@ const CommentComponet=({isbn})=>{
                         <Button variant="outlined" onClick={() => createComment(content)} sx={{height:"40px"}}>提交评论</Button>
                     </Grid>
                 </Grid>
-                </Grid><Grid item xs={8} sm={8} md={8} justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%', height:'100%' }}>
+                </Grid><Grid item xs={7} sm={7} md={7} justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%', height:'100%' }}>
                     <Grid container direction="column" sx={{ width: '100%' }}>
                         <Grid item sx={{ width: '100%' }}>
                             <Card sx={{ border: "0px solid", width: '100%' }}>
@@ -186,8 +187,8 @@ const CommentComponet=({isbn})=>{
                                 </Tabs>
                             </Card>
                         </Grid>
-                        <Grid item sx={{ width: '100%' }}>
-                            <Card sx={{ border: "0px solid", minHeight: "150px", width: '100%' }}>
+                        <Grid item sx={{ width: '100%', padding: '20px' }}>
+                            <Card sx={{ border: "0px solid", minHeight: "200px", width: '100%' }}>
                                 {console.log(relations[value])}
                                 <CustomTabPanel value={value} index={value}>
                                     <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -195,10 +196,22 @@ const CommentComponet=({isbn})=>{
                                             <List sx={{ width: '100%' }}>
                                                 {comments.filter(comment => comment.relationId === relations.id).map((filteredComment, index) => (
                                                     <ListItem key={index} sx={{ borderBottom: '1px solid #ddd', padding: '10px 0' }}>
-                                                        <ListItemIcon>
-                                                            <CommentIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText primary={filteredComment.info} />
+                                                        <Grid container direction="row" alignContent="center">
+                                                            <Grid item alignContent="center">
+                                                                <ListItemIcon>
+                                                                    <CommentIcon />
+                                                                </ListItemIcon>                                                                
+                                                            </Grid>
+                                                            <Grid item alignContent="center">
+                                                                <Avatar alt="User Avatar" src={filteredComment.avatar} sx={{ width: 25, height: 25 }} />
+                                                            </Grid>
+                                                            <Grid item sx={{ marginLeft: '10px'}} alignContent="center">
+                                                                <ListItemText primary={filteredComment.username} />
+                                                            </Grid>
+                                                            <Grid item sx={{ marginLeft: '10px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxWidth: '80%' }} alignContent="center" justifyContent="center">
+                                                                <ListItemText primary={filteredComment.info} />
+                                                            </Grid>
+                                                        </Grid>
                                                     </ListItem>
                                                 ))}
                                             </List>
@@ -209,7 +222,7 @@ const CommentComponet=({isbn})=>{
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={4} sm={4} md={4} display="flex" justifyContent="center" alignItems="center" sx={{ border: "0px solid", width: '100%',Height:'230px' }}> 
+                <Grid item xs={4} sm={4} md={4} justifyContent="center" sx={{ marginLeft:"10px", border: "0px solid", width: '100%',Height:'300px' }}> 
                     <ScoreComponent relation={relations[value]} />
                 </Grid>
 
