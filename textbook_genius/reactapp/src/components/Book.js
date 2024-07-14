@@ -40,7 +40,6 @@ const Book=({relation})=>{
     const[buy_jie,setJie]=useState("")
 
     const[mark,setMark]=useState(false) //mark action
-    const[markid,setMarkId]=useState('')
     const[userid,setUserId]=useState('')
     const[username,setUserName]=useState('')
 
@@ -50,7 +49,6 @@ const Book=({relation})=>{
     const csrftoken=getCsrfToken();
 
     useEffect(() => {
-        //console.log(isbn);
         getBookDetails();
         setUserId(getCookie('user_id'))
         setUserName(getCookie('username'))
@@ -74,14 +72,54 @@ const Book=({relation})=>{
         setDang("http://search.dangdang.com/?key="+isbn+"&act=input")
         setBookchina("https://www.bookschina.com/book_find2/?stp="+isbn+"&sCate=0")
         setJie("https://www.jiushujie.com/sell?q="+isbn)
-        
-        // .then((response)=>{
-        //     return response.json();
-        // })
-        // .then((data)=>{
-        //     setTitle(data.title)
-        // })
+
     }
+
+    /*useEffect(()=>{
+        console.log(relation);
+       
+    },[relation])
+
+    const handleRequest = async (url, method, body) => {
+        let requestOption = {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrftoken
+            },
+            credentials: 'include',
+            body: JSON.stringify(body)
+        };
+        let response = await fetch(url, requestOption);
+        if (!response.ok) {
+            console.log(`${method} request failed`);
+            return false;
+        }
+        return true;
+    };
+
+    async function handleMark(){
+        console.log("mark");
+        const body ={
+            userid:userid,
+            bookisbn:isbn
+        };
+        if (mark) {
+            // 取消收藏
+            console.log("取消收藏")
+            const success = await handleRequest("http://localhost:8000/api/mark-book", "DELETE", body);
+            if (success) {
+                setMark(false);
+            }
+        } else {
+            // 进行收藏
+            console.log("进行收藏")
+            const success = await handleRequest("http://localhost:8000/api/mark-book", "POST", body);
+            if (success) {
+                setMark(true);
+            }     
+        }
+    }*/
 
     /*useEffect(()=>{
         console.log(relation);
@@ -106,10 +144,32 @@ const Book=({relation})=>{
     };*/
 
     async function handleMark(){
-        
+        console.log('mark')
         if (mark) {
             // 取消收藏
             setMark(false);
+            setUserId(getCookie('user_id'))
+            setUserName(getCookie('username'))
+
+            const requestOption={
+                method:"DELETE",
+                headers:{
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken
+                },
+                body:JSON.stringify({
+                    mark:{
+                        userid:userid,
+                        bookisbn:isbn
+                    }
+                })
+            };
+            let response=await fetch("http://localhost:8000/api/mark-book",requestOption)
+            let data=await response.json();
+            if(!response.ok){
+                setRelationError(data.msg);
+                return;
+            }
         } else {
             // 进行收藏
             if(getCookie('username')==null){
@@ -134,23 +194,9 @@ const Book=({relation})=>{
                         userid:userid,
                         bookisbn:isbn
                     }
-                   /* book:{
-                        isbn:isbn,
-                        title:title,
-                        author:author,
-                        publisher:publisher,
-                        pubdate:pubdate,
-                        cover:cover,
-                        douban_url:douban_url
-                    },
-                    User:{
-                        user_id:userid,
-                        username:username
-                    }*/
-
                 })
             };
-            let response=await fetch("/api/mark-book",requestOption)
+            let response=await fetch("http://localhost:8000/api/mark-book",requestOption)
             let data=await response.json();
             if(!response.ok){
                 setRelationError(data.msg);
