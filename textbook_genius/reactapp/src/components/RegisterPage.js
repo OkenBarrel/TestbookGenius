@@ -130,7 +130,7 @@ const RegisterPage = () => {
           email: email 
         }),
       };
-      fetch('/api/validation', requestOption);
+      fetch('http://localhost:8000/api/validation', requestOption);
     }
   }, [timeLeft, isRegistered]);
 
