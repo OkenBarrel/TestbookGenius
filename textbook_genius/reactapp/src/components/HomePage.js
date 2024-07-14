@@ -39,6 +39,7 @@ function HomePage() {
     }
     setName(getCookie('username'));
     setId(getCookie('user_id'));
+    setUrl(null);
   
   }
   
@@ -83,8 +84,8 @@ function HomePage() {
                 <Grid item xs={3} sm={3} md={3} lg={3} xl={3} justifyContent="flex-end">
                   <Box display="flex" justifyContent="flex-end">
                     {console.log("name"+user_name)}
-                    <Avatar src={avatar_url} ></Avatar>
-                    <HelloComponent user_name={user_name} id={user_id} sx={{ width: 50, height: 50 }}/>
+                    <Avatar src={avatar_url} sx={{ width: 55, height: 55 }}></Avatar>
+                    <HelloComponent user_name={user_name} id={user_id}/>
                   </Box>
                 </Grid>
               </Grid>
