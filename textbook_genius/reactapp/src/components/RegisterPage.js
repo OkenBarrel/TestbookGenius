@@ -118,7 +118,7 @@ const RegisterPage = () => {
           email: email 
         }),
       };
-      fetch('/api/validation', requestOption);
+      fetch('http://8.130.18.80:80/api/validation', requestOption);
     }
   }, [timeLeft, isRegistered]);
 
