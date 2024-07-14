@@ -216,7 +216,7 @@ const Book=({relation})=>{
                                 <Home />
                             </Grid>
                             <Grid item xs={3.8} sm={3.8} md={3.8} align="right" style={{ marginRight: '5%'}}>
-                                <HelloComponent />
+                            <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
                             </Grid>
                         </Grid>
                     </Box>

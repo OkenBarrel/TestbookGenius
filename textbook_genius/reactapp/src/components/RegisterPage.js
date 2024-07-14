@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Grid, Typography, TextField, Paper, Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from 'react-router-dom';
-import { getCsrfToken } from "./CSRFToken";
+import { getCookie,getCsrfToken } from './CSRFToken';
 import Home from './Navigate';
 import HelloComponent from './HelloComponent';
 
@@ -131,7 +131,7 @@ const RegisterPage = () => {
               <Home />
             </Grid>
             <Grid item xs={4} sm={4} md={4} align="right">
-              <HelloComponent />
+              <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
             </Grid>
           </Grid>
         </Box>

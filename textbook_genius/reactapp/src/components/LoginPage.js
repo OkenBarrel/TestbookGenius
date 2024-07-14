@@ -1,7 +1,7 @@
 import {Button,DialogContent,Grid,Typography,TextField, Paper, Box} from '@mui/material';
 import React,{Component, useState} from "react";
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { getCsrfToken } from './CSRFToken';
+import { getCookie, getCsrfToken } from './CSRFToken';
 import Alert from '@mui/material/Alert';
 import Home from './Navigate';
 import HelloComponent from './HelloComponent';
@@ -50,7 +50,7 @@ const LoginPage = () => {
             }
             const data = await response.json();
             setSuccess('Login successful!');
-            navigate('/');
+            navigate(-1);
             // if (username === 'tw11' && password === 'password' && username === 'tw11') {
             //     setSuccess('Login successful!');
             //     // navigate(`/}`);
@@ -71,7 +71,7 @@ const LoginPage = () => {
                             <Home />
                         </Grid>
                         <Grid item xs={4} sm={4} md={4} align="right">
-                            <HelloComponent />
+                            <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
                         </Grid>
                     </Grid>
                 </Box>
