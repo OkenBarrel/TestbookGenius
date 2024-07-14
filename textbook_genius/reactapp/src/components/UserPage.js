@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import { getCookie } from './CSRFToken';
 import Home from './Navigate';
 import HelloComponent from './HelloComponent';
@@ -16,6 +16,7 @@ const UserPage =()=> {
     const csrftoken = getCookie('csrftoken');
     const[url,setUrl]=useState("");
     const [originalUserInfo, setOriginalUserInfo] = useState(null);
+    const navigate=useNavigate();
     // const userId = 'testuser';
     const [userInfo, setUserInfo] = useState(
         {
@@ -29,6 +30,9 @@ const UserPage =()=> {
         });
     const [isEditing, setIsEditing] = useState(false);
     useEffect(() => {
+        if(getCookie('username')==null){
+            navigate('/login',{replace:true,state:{from:'createBook'}})
+        }
         fetchUserData();
     }, []);
 

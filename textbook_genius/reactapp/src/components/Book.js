@@ -40,20 +40,16 @@ const Book=({relation})=>{
     const[buy_jie,setJie]=useState("")
 
     const[mark,setMark]=useState(false) //mark action
-    const[markid,setMarkId]=useState('')
-    const[userid,setUserId]=useState('')
+    const[user_id,setUserId]=useState('')
     const[username,setUserName]=useState('')
-
-    const[relationerror,setRelationError]=useState('')
 
     const navigate=useNavigate();
     const csrftoken=getCsrfToken();
 
     useEffect(() => {
-        //console.log(isbn);
         getBookDetails();
         setUserId(getCookie('user_id'))
-        setUserName(getCookie('username'))
+        //setUserName(getCookie('username'))
     }, []);
 
     async function getBookDetails(){
@@ -74,27 +70,37 @@ const Book=({relation})=>{
         setDang("http://search.dangdang.com/?key="+isbn+"&act=input")
         setBookchina("https://www.bookschina.com/book_find2/?stp="+isbn+"&sCate=0")
         setJie("https://www.jiushujie.com/sell?q="+isbn)
-        
-        // .then((response)=>{
-        //     return response.json();
-        // })
-        // .then((data)=>{
-        //     setTitle(data.title)
-        // })
+
     }
 
-    /*useEffect(()=>{
+    useEffect(()=>{
         console.log(relation);
-       
-    },[relation])*/
+        setUserId(getCookie('user_id'))
+        //setUserName(getCookie('username'))
+        getMarkDetail(relation?.id);
+    },[relation])
 
-    /*const handleRequest = async (url, method, body) => {
+    const getMarkDetail =async ()=>{
+
+        let response=await fetch("http://127.0.0.1:8000/api/get-mark-status"+"?userid="+getCookie('user_id')+"&bookisbn="+isbn,{
+            credentials:'include'
+        });
+        if(!response.ok){
+            return;
+        }
+        let data=await response.json();
+        setMark(data?.ismark);
+
+    };
+
+    const handleRequest = async (url, method, body) => {
         let requestOption = {
             method: method,
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": csrftoken
             },
+            credentials: 'include',
             body: JSON.stringify(body)
         };
         let response = await fetch(url, requestOption);
@@ -103,60 +109,28 @@ const Book=({relation})=>{
             return false;
         }
         return true;
-    };*/
+    };
 
     async function handleMark(){
-        
+        console.log("mark");
+        const body ={
+            userid:user_id,
+            bookisbn:isbn
+        };
         if (mark) {
             // 取消收藏
-            setMark(false);
+            console.log("取消收藏")
+            const success = await handleRequest("http://localhost:8000/api/mark-book", "DELETE", body);
+            if (success) {
+                setMark(false);
+            }
         } else {
             // 进行收藏
-            if(getCookie('username')==null){
-                setRelationError('Please Login First');
-                return;
-            }
-            console.log("mark"+isbn);
-            console.log(getCookie('user_id'))
-            setMark(true);
-            setUserId(getCookie('user_id'))
-            setUserName(getCookie('username'))
-            
-            const requestOption={
-                method:"POST",
-                headers:{
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken
-                },
-                body:JSON.stringify({
-                    mark:{
-                       // markid:markid,
-                        userid:userid,
-                        bookisbn:isbn
-                    }
-                   /* book:{
-                        isbn:isbn,
-                        title:title,
-                        author:author,
-                        publisher:publisher,
-                        pubdate:pubdate,
-                        cover:cover,
-                        douban_url:douban_url
-                    },
-                    User:{
-                        user_id:userid,
-                        username:username
-                    }*/
-
-                })
-            };
-            let response=await fetch("/api/mark-book",requestOption)
-            let data=await response.json();
-            if(!response.ok){
-                setRelationError(data.msg);
-                return;
-            }
-            
+            console.log("进行收藏")
+            const success = await handleRequest("http://localhost:8000/api/mark-book", "POST", body);
+            if (success) {
+                setMark(true);
+            }     
         }
     }
 
@@ -170,7 +144,7 @@ const Book=({relation})=>{
                                 <Home />
                             </Grid>
                             <Grid item xs={3.8} sm={3.8} md={3.8} align="right" style={{ marginRight: '5%'}}>
-                                <HelloComponent />
+                            <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
                             </Grid>
                         </Grid>
                     </Box>
