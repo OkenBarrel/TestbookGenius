@@ -44,7 +44,7 @@ const RegisterPage = () => {
     }
 
     // 验证密码：不能为纯数字，且至少8位
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[_@!*&%$#^])[A-Za-z\d_@!*&%$#^]{8,}$/;
     if (!passwordRegex.test(password)) {
       setError('Password must be at least 8 characters long and contain both letters and numbers.');
       return;
