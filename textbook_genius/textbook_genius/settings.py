@@ -88,27 +88,27 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-# CORS_ORIGIN_ALLOW_ALL=True
+CORS_ORIGIN_ALLOW_ALL=True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = [
-    # 'http://google.com',
-    # 'http://hostname.example.com',
-    'http://8.130.18.80:8000',
-    'http://8.130.18.80:80',
-    'http://8.130.18.80:3000',
-    'http://172.27.194.74:8000',
-    'http://172.27.194.74:80',
-    'http://172.27.194.74:3000',
-    'http://localhost:8000',
-    'http://localhost:80',
-    'http://localhost:3000',
-    # 'http://127.0.0.1:8000',
-    # 'http://127.0.0.1:3000',
-    # 'http://127.0.0.1:80',
-    'https://api.douban.com',
-    'https://img1.doubanio.com',
-    # 'http://127.0.0.1:9000'
-]
+# CORS_ORIGIN_WHITELIST = [
+#     # 'http://google.com',
+#     # 'http://hostname.example.com',
+#     'http://8.130.18.80:8000',
+#     'http://8.130.18.80:80',
+#     'http://8.130.18.80:3000',
+#     'http://172.27.194.74:8000',
+#     'http://172.27.194.74:80',
+#     'http://172.27.194.74:3000',
+#     'http://localhost:8000',
+#     'http://localhost:80',
+#     'http://localhost:3000',
+#     # 'http://127.0.0.1:8000',
+#     # 'http://127.0.0.1:3000',
+#     # 'http://127.0.0.1:80',
+#     'https://api.douban.com',
+#     'https://img1.doubanio.com',
+#     # 'http://127.0.0.1:9000'
+# ]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -150,6 +150,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'reactapp/build/static'),
 ]
 STATIC_ROOT='/usr/static/'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -177,8 +179,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 print(MEDIA_ROOT)
 
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # 使用 Redis 作为消息代理
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # 使用 Redis 作为结果后端
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'  # 使用 Redis 作为消息代理
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # 使用 Redis 作为结果后端
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'# 发送邮件配置
 EMAIL_HOST = 'smtp.qq.com'# 服务器名称

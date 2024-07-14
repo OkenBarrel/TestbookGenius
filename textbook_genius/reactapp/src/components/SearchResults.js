@@ -18,7 +18,7 @@ const SearchResults = () => {
       setLoading(true);
       try {
         if (query) {
-          const response = await fetch(`http://8.130.18.80:8000/api/search?query=${encodeURIComponent(query)}`);
+          const response = await fetch(`http://8.130.18.80:80/api/search?query=${encodeURIComponent(query)}`);
           if (!response.ok) {
             throw new Error('Failed to fetch data');
           }
