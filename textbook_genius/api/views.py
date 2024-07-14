@@ -356,6 +356,8 @@ class getComment(APIView):
     def get(self, request, format=None):
         # 通过URL参数获取Usebook的ID
         usebook_id = request.GET.get('usebook_id')
+        # user_id = request.COOKIES.get('user_id')
+        print("获取的usebook_id:", usebook_id)
         
         # 根据Usebook的ID查询评论
         comments = Comment.objects.filter(usebook__id=usebook_id)
@@ -366,18 +368,35 @@ class getComment(APIView):
         
         # 序列化查询到的评论数据
         serializer = CommentSerializer(comments, many=True)
-        
+        print(serializer.data)
+
+        # # 手动构建每个评论的JSON数据
+        # comments_data = []
+        # for comment in comments:
+        #     comment_data = {
+        #         'user_id': comment.user.id,
+        #         'comment_text': comment.text,
+        #         'usebook_id': comment.usebook.id
+        #     }
+        #     comments_data.append(comment_data)
+
         # 返回序列化后的数据
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class createComment(APIView):
+    '''
+    user , info , usebook
+    '''
     def post(self, request, format=None):
         # 获取请求数据
         # user_id=request.COOKIES.get('user_id')
-        user_id=request.data.get('user_id')
-        comment_data = request.data.get("comment")
-        usebook_id = request.data.get("usebook_id")
+        user_id=request.data.get('user')
+        print(user_id)
+        comment_data = request.data.get("info")
+        print(comment_data)
+        usebook_id = request.data.get("usebook")
+        print(usebook_id)
 
         # 验证数据完整性
         if not all([user_id,comment_data, usebook_id]):
@@ -397,9 +416,14 @@ class createComment(APIView):
         # 创建评论
         comment = Comment(user=user, info=comment_data, usebook=usebook)
         comment.save()
+        data={
+            'user':user_id,
+            'info':comment_data,
+            'usebook':usebook_id
+        }
 
         # 返回成功响应
-        return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
 class getOneUseBook(APIView):
