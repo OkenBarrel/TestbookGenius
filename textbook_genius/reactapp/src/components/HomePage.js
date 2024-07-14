@@ -42,8 +42,8 @@ function HomePage({id}) {
                 <Grid item margin={1.5} xs={7} sm={7} md={7} lg={7} xl={7}>
                   <Box display="flex" flexDirection="row" justifyContent="flex-start">
                     <Button variant='contained' to="/create" component={Link}>创建书籍</Button>
+                    {!getCookie('user_id')&&(<Button variant='contained' to="/login" component={Link}>登录</Button>)}
                     <Button variant='contained' to="/register" component={Link}>注册</Button>
-                    <Button variant='contained' to="/login" component={Link}>登录</Button>
                     <Button variant='contained' to={`/user/${getCookie('user_id')}`} component={Link}>用户信息</Button>
                     <Button variant='contained' to="/search" component={Link}>搜索</Button>
                     <Button variant='contained' onClick={handleLogout}>退出登录</Button>
