@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Room, Book, Teacher, Course, Usebook, Profile , Mark ,\
-                    Comment, Like, UpScoreUserRelation,DownScoreUserRelation,ValidationCode
+                    Comment, UpScoreUserRelation,DownScoreUserRelation,ValidationCode
 from django.contrib.auth.models import User
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -87,12 +87,12 @@ class MarkSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields=('com_id','info','usebook','user_id','com_date')
+        fields=('info','usebook','user','com_date')
 
-class LikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Like
-        fields=('user','comment','like','dislike')
+# class LikeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Like
+#         fields=('user','comment','like','dislike')
 
 class UpScoreUserRelationSerializer(serializers.ModelSerializer):
     useBook=serializers.PrimaryKeyRelatedField(queryset=Usebook.objects.all())

@@ -111,22 +111,22 @@ class Mark(models.Model):
     bookisbn = models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
 
 class Comment(models.Model):
-    com_id = models.CharField(max_length=50,null=False,unique=True,primary_key=True)
-    info = models.CharField(max_length=200,null=False,unique=True)   
+    # com_id = models.CharField(max_length=50,null=False,unique=True,primary_key=True)
+    info = models.CharField(max_length=200,null=False)   
     # relationship with usebook
     usebook = models.ForeignKey(Usebook,on_delete=models.CASCADE)#on_update=models.CASCADE
     # relationship with user
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE) #on_update=models.CASCADE
+    user = models.ForeignKey(User,on_delete=models.CASCADE) #on_update=models.CASCADE
     # relationship with user : props
     com_date = models.DateTimeField(auto_now_add=True)
 
-class Like(models.Model):
-    # relationship with user and comment
-    user = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
-    comment = models.ForeignKey(Comment,on_delete=models.CASCADE)#on_update=models.CASCADE
-    # props
-    like = models.IntegerField(null=False,default=0)
-    dislike = models.IntegerField(null=False,default=0)
+# class Like(models.Model):
+#     # relationship with user and comment
+#     user = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
+#     comment = models.ForeignKey(Comment,on_delete=models.CASCADE)#on_update=models.CASCADE
+#     # props
+#     like = models.IntegerField(null=False,default=0)
+#     dislike = models.IntegerField(null=False,default=0)
 
 class UpScoreUserRelation(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)

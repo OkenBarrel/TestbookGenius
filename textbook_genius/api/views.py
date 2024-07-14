@@ -7,10 +7,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
-    CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
+    CommentSerializer,UsebookSerializer,MarkSerializer,\
     UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer,\
     ValidationCodeSerializer,SearchSerializer
-from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
+from .models import Room,Book,Teacher,Course,Comment,Usebook,Mark,\
                     UpScoreUserRelation, Profile,DownScoreUserRelation,ValidationCode
 from requests import Request,post,get,patch
 from django.db.models import Count
@@ -315,11 +315,13 @@ class getComment(APIView):
 class createComment(APIView):
     def post(self, request, format=None):
         # 获取请求数据
+        # user_id=request.COOKIES.get('user_id')
+        user_id=request.data.get('user_id')
         comment_data = request.data.get("comment")
         usebook_id = request.data.get("usebook_id")
 
         # 验证数据完整性
-        if not all([comment_data, usebook_id]):
+        if not all([user_id,comment_data, usebook_id]):
             return Response({"msg": "缺少必要信息"}, status=status.HTTP_400_BAD_REQUEST)
 
         # 查找关联对象
@@ -327,9 +329,14 @@ class createComment(APIView):
             usebook = Usebook.objects.get(id=usebook_id)
         except Usebook.DoesNotExist as e:
             return Response({"msg": "提供的信息无法找到对应的Usebook实例"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"msg": "用户不存在"}, status=status.HTTP_404_NOT_FOUND)
 
         # 创建评论
-        comment = Comment(content=comment_data, usebook=usebook)
+        comment = Comment(user=user, info=comment_data, usebook=usebook)
         comment.save()
 
         # 返回成功响应

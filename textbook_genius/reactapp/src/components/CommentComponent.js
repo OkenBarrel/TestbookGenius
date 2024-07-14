@@ -5,12 +5,36 @@ import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card'
 import { useParams, useNavigate } from 'react-router-dom';
 import ScoreComponent from "./ScoreComponet";
+import { getCookie } from './CSRFToken';
+import {getCsrfToken} from "./CSRFToken";
+
+import {Button,TextField} from '@mui/material';
+
+// import Tabs from '@mui/material/Tabs';
+// import Tab from '@mui/material/Tab';
+
+function CustomTabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    );
+  }
 
 const CommentComponet=({isbn})=>{
 
     const [value,setValue]=useState(0);
     const [relations,setRelations]=useState([]);
     const [comments, setComments] = useState([]);
+    const [content, setContent] = useState('');
 
 
     const handleChange = (event, newValue) => {
@@ -62,12 +86,16 @@ const CommentComponet=({isbn})=>{
 
 
     const createComment = async (commentText) => {
-        // if (!isUserLoggedIn()) {
-        //     alert("请先登录！");
-        //     return;
-        // }验证信息格式？跳到登录
+        // 尝试获取user_id和username
+        const userId = getCookie('user_id');
+        const username = getCookie('username');
 
-        const userId = getCurrentUserId();
+        // 如果无法获取user_id或username，则跳转到登录界面
+        if (!userId || !username) {
+            window.location.href = 'http://localhost:8000//api/login'; 
+            return;
+        }
+
         const relationId = relations[value].id; // 使用当前选中的useBook关系的ID
 
         try {
@@ -89,7 +117,7 @@ const CommentComponet=({isbn})=>{
 
             const newComment = await response.json();
             setComments([...comments, newComment]); // 更新评论列表以包含新评论
-            // 清空输入框或执行其他UI更新操作
+            setContent(''); // 清空输入框内容
         } catch (error) {
             console.error('创建评论失败:', error);
         }
@@ -110,7 +138,7 @@ const CommentComponet=({isbn})=>{
                     <CustomTabPanel value={value} index={value}>
                         <Box sx={{ width: '100%', typography: 'body1' }}>
                             <ul>
-                                {comments.filter(comment => comment.relationId === relations[value].id).map((filteredComment, index) => (
+                                {Comment.filter(comment => comment.relationId === relations[value].id).map((filteredComment, index) => (
                                     <li key={index}>{filteredComment.info}</li> // 假设每个评论对象都有一个relationId属性与relation的id对应
                                 ))}
                             </ul>
@@ -132,10 +160,10 @@ const CommentComponet=({isbn})=>{
                         label="写下你的评论"
                         variant="outlined"
                         fullWidth
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
+                        value={content}
+                        onChange={(e) => setComments(e.target.value)}
                     />
-                    <Button onClick={() => createComment(commentText)}>提交评论</Button>
+                    <Button onClick={() => createComment(content)}>提交评论</Button>
                 </Box>
             </Box>
         )
