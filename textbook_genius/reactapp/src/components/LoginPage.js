@@ -23,40 +23,34 @@ const LoginPage = () => {
         //TODO: Just a dummy function, please use API to handle login function
         setError('');
         setSuccess('');
-        if (!username || !password) {
+        if (!username || !password) {//用户名或密码为空
             setError('Username and password are required.');
             return;
         };
        try{
             const requestOption={
-                method:"POST",
+                method:"POST",//  POST 请求
                 headers:{
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken
+                    "Content-Type": "application/json",// 设置请求头中的内容类型为 JSON
+                    "X-CSRFToken": csrftoken// 设置请求头中的 CSRF 令牌
                 },
+                credentials: 'include',
                 body:JSON.stringify({
                     username:username,
-                    password:password
+                    password:password// 请求体中包含用户名密码
                 })
             };
-            const response=await fetch('/api/login',requestOption);
-            if(!response.ok){
-                const errorData = await response.json();
-                setError(errorData.msg || 'Invalid username or password.');
+            const response=await fetch('http://localhost:8000/api/login',requestOption);//发送登录请求到后端
+            if(!response.ok){//响应不正常
+                const errorData = await response.json();//获取错误信息
+                setError(errorData.msg || 'Invalid username or password.');//打印错误提示
                 return;
             }
-            const data = await response.json();
-            setSuccess('Login successful!');
-            navigate(-1);
-            // if (username === 'tw11' && password === 'password' && username === 'tw11') {
-            //     setSuccess('Login successful!');
-            //     // navigate(`/}`);
-            //     //TODO: just for demo, please change to a real page.
-            // } else {
-            //     setError('Invalid username or password(For test purpose, please using tw11 to login).');
-            // }
+            const data = await response.json();//获取响应数据
+            setSuccess('Login successful!');//设置成功信息
+            navigate(-1);//回到前一个页面
         }catch (error) {
-            setError('An error occurred. Please try again.');
+            setError('An error occurred. Please try again.');// 捕获并设置错误信息
         }
     };
     return (
