@@ -489,6 +489,7 @@ class register(APIView):
                                     email=request.data.get('user_email'),
                                     password=request.data.get('user_password'))
         user.save()
+        Profile.objects.create(user=user)###
         """
         login(request,user)
         request.session['user_id'] = user.pk
