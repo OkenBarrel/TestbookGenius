@@ -1,5 +1,5 @@
 import {Button,DialogContent,Grid,Typography,TextField,Box} from '@mui/material';
-import React,{Component, useState} from "react";
+import React,{Component, useEffect, useState} from "react";
 import CreateBookPage from './CreateBookPage';
 import Book from "./Book";
 import UpdateBookPage from './UpdateBookPage';
@@ -10,29 +10,61 @@ import NavigateButton from './Navigate';
 
 import SearchResults from './SearchResults';
 import HelloComponent from './HelloComponent';
-import { getCookie } from './CSRFToken';
+import { getCookie,getCsrfToken } from './CSRFToken';
 import {
     HashRouter as Router,
-    Routes,
-    Route,
     Link,
-    Redirect,
 } from "react-router-dom";
 import UserPage from "./UserPage";
 import { AlignHorizontalRight } from '@mui/icons-material';
+import { useReducer } from 'react'
 
-async function handleLogout(){
+function HomePage() {
+  const [out,setOut]=useState(false);
+  const[user_id,setId]=useState(null);
+  const[user_name,setName]=useState(null);
 
-  let response=await fetch("api/loggout");
-  if(!response.ok){
-    console.log("log out failed");
-    return;
+  async function handleLogout(){
+    const csrftoken=getCsrfToken();
+  
+    const requestOption={
+  
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken
+      },
+      credentials: 'include',
+    }
+  
+    let response=await fetch("http://localhost:8000/api/logout",requestOption);
+    if(!response.ok){
+      console.log("log out failed");
+      return;
+    }
+    setName(getCookie('username'));
+    setId(getCookie('user_id'));
+  
   }
-  console.log("log out success");
+  
 
-}
+  useEffect(()=>{
+    getLog();
+    setName(getCookie('username'));
+    setId(getCookie('user_id'));
 
-function HomePage({id}) {
+  },[]);
+  // useEffect(()=>{
+  //   renderHomePage()
+  // },[out]);
+
+  const getLog=async ()=>{
+    let response=await fetch("http://localhost:8000/api/is-loggedin",{
+      credentials:'include'
+    });
+    
+
+  }
   
     function renderHomePage() {
       return (
@@ -43,15 +75,19 @@ function HomePage({id}) {
                 <Grid item margin={1.5} xs={7} sm={7} md={7} lg={7} xl={7}>
                   <Box display="flex" flexDirection="row" justifyContent="flex-start">
                     <Button variant='contained' to="/create" component={Link}>创建书籍</Button>
+                    {!getCookie('user_id')&&(<Button variant='contained' to="/login" component={Link}>登录</Button>)}
                     <Button variant='contained' to="/register" component={Link}>注册</Button>
-                    <Button variant='contained' to="/login" component={Link}>登录</Button>
                     <Button variant='contained' to={`/user/${getCookie('user_id')}`} component={Link}>用户信息</Button>
-                    <Button variant='contained' onClick={handleLogout}>退出登录</Button>
+                    <Button variant='contained' 
+                      onClick={handleLogout}>
+                      退出登录
+                    </Button>
                   </Box>
                 </Grid>
                 <Grid item xs={3} sm={3} md={3} lg={3} xl={3} justifyContent="flex-end">
-                  <Box display="flex" style={{AlignHorizontalRight}}>
-                    <HelloComponent />
+                  <Box display="flex" justifyContent="flex-end">
+                    {console.log("name"+user_name)}
+                    <HelloComponent user_name={user_name} id={user_id} />
                   </Box>
                 </Grid>
               </Grid>
