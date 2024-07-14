@@ -8,10 +8,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from .serializers import RoomSerializer,BookSerializer,TeacherSerializer,CourseSerializer,\
-    CommentSerializer,LikeSerializer,UsebookSerializer,MarkSerializer,\
+    CommentSerializer,UsebookSerializer,MarkSerializer,\
     UpScoreUserRelationSerializer,ProfileSerializer,DownScoreUserRelationSerializer,\
     ValidationCodeSerializer,SearchSerializer
-from .models import Room,Book,Teacher,Course,Comment,Usebook,Like,Mark,\
+from .models import Room,Book,Teacher,Course,Comment,Usebook,Mark,\
                     UpScoreUserRelation, Profile,DownScoreUserRelation,ValidationCode
 from requests import Request,post,get,patch
 from django.db.models import Count
@@ -256,6 +256,7 @@ class markBook(APIView):
     mark_serializer_class=MarkSerializer
     book_serializer_class=BookSerializer
     def post(self,request):
+        '''
         print(request.data)
         #print(request.session.get('_auth_user_id',None))
         request_data=request.data.get("mark")
@@ -275,9 +276,12 @@ class markBook(APIView):
             return Response({'msg':'未找到该用户'},status.HTTP_404_NOT_FOUND)
         
         #user_id=request.COOKIES.get('user_id')
+        '''
+        user_id=request.data.get('userid')
+        book_isbn=request.data.get('bookisbn')
         mark_data={
-            "userid":user_mark.id,
-            "bookisbn":book.isbn
+            "userid":user_id,
+            "bookisbn":book_isbn
         }
 
         mark_serializer=self.mark_serializer_class(data=mark_data)
@@ -306,9 +310,9 @@ class markBook(APIView):
             return Response({'msg':'收藏失败'},status.HTTP_404_NOT_FOUND)
         
     def delete(self,request):
-        request_data=request.data.get("mark")
-        print(request_data)
-
+        #request_data=request.data.get("mark")
+        #print(request_data)
+        '''
         queryset=Book.objects.filter(isbn=request_data['bookisbn'])
         if queryset.exists():
             book=queryset[0]
@@ -323,13 +327,46 @@ class markBook(APIView):
             print(user_id)
         else:
             return Response({'msg':'未找到该用户'},status.HTTP_404_NOT_FOUND)
-        
+        '''
+
+        user_id=request.data.get('userid')
+        book_isbn=request.data.get('bookisbn')
+            
         mark_del = Mark.objects.filter(userid=user_id,bookisbn=book_isbn)
         if not mark_del:
             return Response({'msg':'收藏关系不存在'},status.HTTP_404_NOT_FOUND)
         mark_del.delete()
         return Response({'msg':'取消收藏成功！'},status.HTTP_200_OK)
-        
+    
+class getMarkStatus(APIView):
+    def get(self,request):
+        user_id=request.GET.get('userid')
+        print(user_id)
+        book_isbn=request.GET.get('bookisbn')
+        print(book_isbn)
+        #user_id=request.session.get('_auth_user_id',None)
+        #print(user_id)
+
+        try:
+            book=Book.objects.get(isbn=book_isbn)
+        except Mark.DoesNotExist:
+            return Response({'msg':'关系不存在'},status=status.HTTP_404_NOT_FOUND)
+        try:
+            user=User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            data={
+                'userid':0,
+                'bookisbn':book_isbn,
+                'ismark':False
+            }
+            return Response(data=data,status=status.HTTP_200_OK)
+
+        data={
+            'userid':user_id,
+            'bookisbn':book_isbn,
+            'ismark':Mark.objects.filter(userid=user,bookisbn=book).exists()
+        }
+        return Response(data=data,status=status.HTTP_200_OK)
 
 class getUseBook(APIView):
     def get(self,request,format=None):
@@ -376,6 +413,80 @@ class getUseBook(APIView):
             response_data[idx]['downvote_count'] = usebook.downvote_count
 
         return Response(response_data,status=status.HTTP_200_OK)
+    
+class getComment(APIView):
+    def get(self, request, format=None):
+        # 通过URL参数获取Usebook的ID
+        usebook_id = request.GET.get('usebook_id')
+        # user_id = request.COOKIES.get('user_id')
+        print("获取的usebook_id:", usebook_id)
+        
+        # 根据Usebook的ID查询评论
+        comments = Comment.objects.filter(usebook__id=usebook_id)
+        
+        # 如果没有找到评论，返回404
+        if not comments.exists():
+            return Response({"msg": "没有找到评论"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 序列化查询到的评论数据
+        serializer = CommentSerializer(comments, many=True)
+        print(serializer.data)
+
+        # # 手动构建每个评论的JSON数据
+        # comments_data = []
+        # for comment in comments:
+        #     comment_data = {
+        #         'user_id': comment.user.id,
+        #         'comment_text': comment.text,
+        #         'usebook_id': comment.usebook.id
+        #     }
+        #     comments_data.append(comment_data)
+
+        # 返回序列化后的数据
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class createComment(APIView):
+    '''
+    user , info , usebook
+    '''
+    def post(self, request, format=None):
+        # 获取请求数据
+        # user_id=request.COOKIES.get('user_id')
+        user_id=request.data.get('user')
+        print(user_id)
+        comment_data = request.data.get("info")
+        print(comment_data)
+        usebook_id = request.data.get("usebook")
+        print(usebook_id)
+
+        # 验证数据完整性
+        if not all([user_id,comment_data, usebook_id]):
+            return Response({"msg": "缺少必要信息"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 查找关联对象
+        try:
+            usebook = Usebook.objects.get(id=usebook_id)
+        except Usebook.DoesNotExist as e:
+            return Response({"msg": "提供的信息无法找到对应的Usebook实例"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"msg": "用户不存在"}, status=status.HTTP_404_NOT_FOUND)
+
+        # 创建评论
+        comment = Comment(user=user, info=comment_data, usebook=usebook)
+        comment.save()
+        data={
+            'user':user_id,
+            'info':comment_data,
+            'usebook':usebook_id
+        }
+
+        # 返回成功响应
+        return Response(data, status=status.HTTP_201_CREATED)
+
 
 class getOneUseBook(APIView):
     '''
@@ -452,6 +563,7 @@ class register(APIView):
                                     email=request.data.get('user_email'),
                                     password=request.data.get('user_password'))
         user.save()
+        Profile.objects.create(user=user)###
         """
         login(request,user)
         request.session['user_id'] = user.pk
@@ -605,21 +717,43 @@ class ProfileViewer(APIView):
 #
 #     @csrf_exempt
     def put(self, request):
+            '''
+            {
+                username: '',
+                user_id:'',
+                department: '',
+                major: '',
+                ProgramStartYear: '',
+                credit: '',
+                avatarFile: null,
+            }
+            '''
             try:
                 print(request.data)
                 print(request.FILES)
                 
 
                 user_id=request.data.get('user_id')
+                username=request.data.get('username')
                 user_major=request.data.get('user_major')
                 user_department=request.data.get('user_department')
                 user_credit=request.data.get('user_credit')
+                # data={
+                #     'user':user_id,
+                #     'user_major':user_major,
+                #     'user_department':user_department,
+                #     'user_credit':user_credit
+                # }
                 data={
-                    'user_id':user_id,
+                    'user':{
+                       'id':user_id,
+                       'username':username
+                    },
                     'user_major':user_major,
                     'user_department':user_department,
                     'user_credit':user_credit
                 }
+                print(data)
                 if 'user_avatar' in request.FILES:
                     data['user_avatar'] = request.FILES['user_avatar']
                 

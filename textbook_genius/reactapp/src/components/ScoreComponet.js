@@ -28,7 +28,7 @@ const ScoreComponent=({relation})=>{
 
 
     useEffect(()=>{
-        console.log(relation);
+        console.log('!!!!',relation);
         setCourse(relation?.course?.course_name);
         setTeacher(relation?.teacher);
         setUseId(relation?.id);
@@ -84,7 +84,7 @@ const ScoreComponent=({relation})=>{
         // const yesColor = yes&&!no ? "#f44336" : "default"; 
         const body = { 
             useBook: use_id,
-            // user_id:user_id
+            user_id: user_id
         };
         if (yes) {
             // 取消点赞
