@@ -844,8 +844,7 @@ class validation(APIView):
     def post(self,request):
         # email=request.data.get('email')
         print(request.data)
-        history=ValidationCode.objects.filter(email=request.data.get('email')).first()
-        if history :
+        if ValidationCode.objects.filter(email=request.data.get('email')).exists() :
             return Response({"msg":"验证码已发送"},status=status.HTTP_409_CONFLICT)
         serializer=ValidationCodeSerializer(data=request.data)
         if not serializer.is_valid():
