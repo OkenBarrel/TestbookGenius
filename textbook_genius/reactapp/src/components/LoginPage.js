@@ -25,7 +25,7 @@ const LoginPage = () => {
     console.log(location, state);
 
     const getLog=async ()=>{
-        let response=await fetch("http://localhost:800000/api/is-loggedin",{
+        let response=await fetch("http://192.168.225.149:8000/api/is-loggedin",{
           credentials:'include'
         });
         let data=await response.json()
@@ -60,7 +60,7 @@ const LoginPage = () => {
                     password:password
                 })
             };
-            const response=await fetch('http://localhost:8000/api/login',requestOption);
+            const response=await fetch('http://192.168.225.149:80/api/login',requestOption);
             if(!response.ok){
                 const errorData = await response.json();
                 setError(errorData.msg || 'Invalid username or password.');

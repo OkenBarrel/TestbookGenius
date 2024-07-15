@@ -35,7 +35,7 @@ const SearchResults = () => {
       credentials: 'include',
     }
   
-    let response=await fetch("http://localhost:8000/api/logout",requestOption);
+    let response=await fetch("http://192.168.225.149:80/api/logout",requestOption);
     if(!response.ok){
       console.log("log out failed");
       return;
@@ -47,7 +47,7 @@ const SearchResults = () => {
   }
   
   const getLog=async ()=>{
-    let response=await fetch("http://localhost:8000/api/is-loggedin",{
+    let response=await fetch("http://192.168.225.149:80/api/is-loggedin",{
       credentials:'include'
     });
     let data=await response.json()
@@ -63,7 +63,7 @@ const SearchResults = () => {
       setLoading(true);
       try {
         if (query) {
-          const response = await fetch(`http://localhost:8000/api/search/results?query=${encodeURIComponent(query)}&page=${page}`);
+          const response = await fetch(`http://192.168.225.149:80/api/search/results?query=${encodeURIComponent(query)}&page=${page}`);
           if (!response.ok) {
             throw new Error('Failed to fetch data');
           }
@@ -132,6 +132,7 @@ const SearchResults = () => {
         ) : (
           results.length > 0 ? (
             <>
+            {console.log("rendering")}
               <Grid container spacing={2} justifyContent="center">
                 {results.map((result) => (
                   <Grid item key={result.book.isbn} xs={12} style={{ marginBottom: 10, display: 'center', maxWidth: 700, justifyContent: 'center' }}>
@@ -143,7 +144,11 @@ const SearchResults = () => {
                                 <CardContent>
                                   <Typography variant="h5">{result.book.title}</Typography>
                                   <Typography variant="subtitle1">{result.book.publisher}</Typography>
-                                  <Typography variant="subtitle1">{result.book.author ? result.book.author.join(', ') : ''}</Typography>
+                                  <Typography variant="subtitle1">
+                                    {Array.isArray(result.book.author) && result.book.author.length > 0
+                                      ? result.book.author.join(', ')
+                                      : 'Author information not available'}
+                                  </Typography>
                                   <Typography variant="body2">课程: {result.course ? result.course.course_name : ''}</Typography>
                                   <Typography variant="subtitle2">教师: {result.teacher ? result.teacher.teacher_name : ''}</Typography>
                                   <Typography variant="body2">开课学部: {result.course ? result.course.department : ''}</Typography>
@@ -159,7 +164,7 @@ const SearchResults = () => {
                                     minWidth: 150,
                                     objectFit: 'contain' 
                                     }}
-                                image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(result.book.cover)}`}
+                                image={`http://192.168.225.149:80/api/proxy-image?url=${encodeURIComponent(result.book.cover)}`}
                                 title="cover"
                                 />                                  
                               </Box>

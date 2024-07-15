@@ -27,7 +27,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const getLog=async ()=>{
-    let response=await fetch("http://localhost:800000/api/is-loggedin",{
+    let response=await fetch("http://192.168.225.149:8000/api/is-loggedin",{
       credentials:'include'
     });
     let data=await response.json()
@@ -55,7 +55,7 @@ const RegisterPage = () => {
       return;
     }
 
-    const apiUrl = 'http://localhost:8000/api/register';
+    const apiUrl = 'http://192.168.225.149:80/api/register';
     // 验证邮箱格式
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -142,7 +142,7 @@ const RegisterPage = () => {
         email: email
       })
     };
-    let response = await fetch("http://localhost:8000/api/validation", requestOption);
+    let response = await fetch("http://192.168.225.149:80/api/validation", requestOption);
     let data = await response.json();
     if (!response.ok) {
       console.log(response.statusText);
@@ -174,7 +174,7 @@ const RegisterPage = () => {
           email: email 
         }),
       };
-      fetch('http://localhost:8000/api/validation', requestOption);
+      fetch('http://192.168.225.149:80/api/validation', requestOption);
     }
   }, [timeLeft, isRegistered]);
 

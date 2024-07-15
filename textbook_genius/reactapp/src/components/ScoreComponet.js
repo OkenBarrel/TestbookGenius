@@ -43,7 +43,7 @@ const ScoreComponent=({relation})=>{
         // }
     },[relation])
     const getUseDetail=async (useid)=>{
-        let response=await fetch("http://localhost:8000/api/get-one-useBook"+"?use_id="+useid+"&user_id="+user_id);
+        let response=await fetch("http://192.168.225.149:80/api/get-one-useBook"+"?use_id="+useid+"&user_id="+user_id);
         if(!response.ok){
             return;
         }
@@ -89,7 +89,7 @@ const ScoreComponent=({relation})=>{
         if (yes) {
             // 取消点赞
             // console.log("yes"+yes);
-            const success = await handleRequest("http://localhost:8000/api/up-score-user", "DELETE", body);
+            const success = await handleRequest("http://192.168.225.149:80/api/up-score-user", "DELETE", body);
             if (success) {
                 setYes(false);
                 setYesCount(yesCount-1)
@@ -97,7 +97,7 @@ const ScoreComponent=({relation})=>{
         } else {
             // 进行点赞
             console.log("yes"+yes);
-            const success = await handleRequest("http://localhost:8000/api/up-score-user", "POST", body);
+            const success = await handleRequest("http://192.168.225.149:80/api/up-score-user", "POST", body);
             if (success) {
                 setYes(true);
                 setYesCount(yesCount+1)
@@ -123,14 +123,14 @@ const ScoreComponent=({relation})=>{
         };
         if(no){
             // 取消点踩
-            const success = await handleRequest("http://localhost:8000/api/down-score-user", "DELETE", body);
+            const success = await handleRequest("http://192.168.225.149:80/api/down-score-user", "DELETE", body);
             if (success) {
                 setNo(false);
                 setNoCount(NoCount-1)
             }
         }else{
             //进行点踩
-            const success = await handleRequest("http://localhost:8000/api/down-score-user", "POST", body);
+            const success = await handleRequest("http://192.168.225.149:80/api/down-score-user", "POST", body);
             if (success) {
                 setNo(true);
                 setNoCount(NoCount+1)
