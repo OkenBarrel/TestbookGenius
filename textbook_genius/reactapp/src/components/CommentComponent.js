@@ -22,7 +22,6 @@ import {Button,TextField} from '@mui/material';
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
-    const csrftoken=getCsrfToken();
   
     return (
       <div
@@ -43,6 +42,7 @@ const CommentComponet=({isbn})=>{
     const [relations,setRelations]=useState([]);
     const [comments, setComments] = useState([]);
     const [content, setContent] = useState('');
+    const csrftoken=getCsrfToken();
 
 
     const handleChange = (event, newValue) => {

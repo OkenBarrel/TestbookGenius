@@ -25,7 +25,7 @@ const LoginPage = () => {
     console.log(location, state);
 
     const getLog=async ()=>{
-        let response=await fetch("http://localhost:8000/api/is-loggedin",{
+        let response=await fetch("http://192.168.225.149:8000/api/is-loggedin",{
           credentials:'include'
         });
         let data=await response.json()
