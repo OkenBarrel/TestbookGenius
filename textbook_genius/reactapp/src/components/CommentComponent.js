@@ -59,7 +59,7 @@ const CommentComponet=({isbn})=>{
     },[]);
 
     async function getRelations(){
-        let response=await fetch("http://192.168.225.149:80/api/get-useBook"+"?isbn="+isbn);
+        let response=await fetch("http://localhost:8000/api/get-useBook"+"?isbn="+isbn);
         if(!response.ok){
             console.log("get relations wrong!!");
             return;
@@ -76,7 +76,7 @@ const CommentComponet=({isbn})=>{
   
     const getComment = async (relationId) => {
         try {
-            const response = await fetch(`http://192.168.225.149:80/api/get-comment?usebook_id=${relationId}`, {
+            const response = await fetch(`http://localhost:8000/api/get-comment?usebook_id=${relationId}`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json'
@@ -121,14 +121,14 @@ const CommentComponet=({isbn})=>{
 
         // 如果无法获取user_id或username，则跳转到登录界面
         if (!userId || !username) {
-            window.location.href = 'http://192.168.225.149:80/api/login'; 
+            window.location.href = 'http://localhost:8000/api/login'; 
             return;
         }
 
         const relationId = relations[value].id; // 使用当前选中的useBook关系的ID
 
         try {
-            const response = await fetch('http://192.168.225.149:80/api/create-comment', {
+            const response = await fetch('http://localhost:8000/api/create-comment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

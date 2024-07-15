@@ -29,7 +29,7 @@ function UpdateBookPage(props){
     const csrftoken=getCsrfToken();
 
     const getLog=async ()=>{
-        let response=await fetch("http://192.168.225.149:80/api/is-loggedin",{
+        let response=await fetch("http://localhost:8000/api/is-loggedin",{
           credentials:'include'
         });
         let data=await response.json()
@@ -39,7 +39,7 @@ function UpdateBookPage(props){
 
     useEffect(() => {
         console.log(isbn);
-        fetch("http://192.168.225.149:80/api/get-book"+"?isbn="+isbn)
+        fetch("http://localhost:8000/api/get-book"+"?isbn="+isbn)
         .then(res=>{
             return res.json()
         })
@@ -76,7 +76,7 @@ function UpdateBookPage(props){
                 },
             }),
         };
-        let response=await fetch("http://192.168.225.149:80/api/update-book",requestOption)
+        let response=await fetch("http://localhost:8000/api/update-book",requestOption)
         let data=await response.json();
         navigate('/book/'+isbn);
     }

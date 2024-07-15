@@ -53,7 +53,7 @@ const Book=({relation})=>{
   
   
     const getLog=async ()=>{
-      let response=await fetch("http://192.168.225.149:80/api/is-loggedin",{
+      let response=await fetch("http://localhost:8000/api/is-loggedin",{
         credentials:'include'
       });
       let data=await response.json()
@@ -70,7 +70,7 @@ const Book=({relation})=>{
     }, []);
 
     async function getBookDetails(){
-        let res=await fetch("http://192.168.225.149:80/api/get-book"+"?isbn="+isbn)
+        let res=await fetch("http://localhost:8000/api/get-book"+"?isbn="+isbn)
         if(!res.ok){
             navigate("/");
             return;
@@ -101,7 +101,7 @@ const Book=({relation})=>{
 
     const getMarkDetail =async ()=>{
 
-        let response=await fetch("http://192.168.225.149:80/api/get-mark-status"+"?userid="+getCookie('user_id')+"&bookisbn="+isbn,{
+        let response=await fetch("http://localhost:8000/api/get-mark-status"+"?userid="+getCookie('user_id')+"&bookisbn="+isbn,{
             credentials:'include'
         });
         if(!response.ok){
@@ -139,14 +139,14 @@ const Book=({relation})=>{
         if (mark) {
             // 取消收藏
             console.log("取消收藏")
-            const success = await handleRequest("http://192.168.225.149:80/api/mark-book", "DELETE", body);
+            const success = await handleRequest("http://localhost:8000/api/mark-book", "DELETE", body);
             if (success) {
                 setMark(false);
             }
         } else {
             // 进行收藏
             console.log("进行收藏")
-            const success = await handleRequest("http://192.168.225.149:80/api/mark-book", "POST", body);
+            const success = await handleRequest("http://localhost:8000/api/mark-book", "POST", body);
             if (success) {
                 setMark(true);
             }     
@@ -200,7 +200,7 @@ const Book=({relation})=>{
                                         maxHeight: 350,
                                         objectFit: 'contain'
                                     }}
-                                    image={`http://192.168.225.149:80/api/proxy-image?url=${encodeURIComponent(cover)}`}
+                                    image={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`}
                                     title="cover"
                                 />
                             )}
