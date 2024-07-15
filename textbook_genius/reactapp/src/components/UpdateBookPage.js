@@ -115,7 +115,7 @@ function UpdateBookPage(props){
                 <Grid item width = "100%">
                     <Grid container alignItems="center" justifyContent="center" >
                         <Box width ="60%" alignItems="center" justifyContent="center" border={"0px solid"}>
-                            <Paper elevation={3} style={{ padding: '10px', marginTop:'40px' }}>
+                            <Paper elevation={3} style={{ padding: '20px', marginTop:'40px' }}>
                                 <Grid container spacing={2} direction="column" >
                                     <Grid item align="center"> 
                                         <h1>修改书籍信息</h1>

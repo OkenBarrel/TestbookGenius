@@ -1,5 +1,5 @@
-import {Button,DialogContent,Grid,Typography,TextField, Paper, Box} from '@mui/material';
-import React,{Component, useState} from "react";
+import {Button,DialogContent,Grid,Typography,TextField, Paper, Box, Avatar} from '@mui/material';
+import React,{Component, useState, useEffect} from "react";
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { getCookie, getCsrfToken } from './CSRFToken';
 import Alert from '@mui/material/Alert';
@@ -14,12 +14,30 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const[user_id,setId]=useState(null);
+    const[user_name,setName]=useState(null);
+    const[avatar_url,setUrl]=useState(null);
     const navigate = useNavigate();
     const csrftoken=getCsrfToken();
 
     const location = useLocation()
     const { state } = location
     console.log(location, state);
+
+    const getLog=async ()=>{
+        let response=await fetch("http://192.168.225.149:8000/api/is-loggedin",{
+          credentials:'include'
+        });
+        let data=await response.json()
+        setUrl(data.avatar_url)
+    
+    }
+    
+    useEffect(()=>{
+        getLog();
+        setName(getCookie('username'));
+        setId(getCookie('user_id'));
+    },[]);
 
     async function handleLogin(){
         //TODO: Just a dummy function, please use API to handle login function
@@ -61,65 +79,90 @@ const LoginPage = () => {
         }
     };
     return (
-        <Grid container justifyContent="center" spacing="100px" style={{ minHeight: '100%' }}>
+        <Grid container sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
             <Grid item width = "100%">
-                <Box border = "0px dotted #acf" width = "100%">
-                    <Grid container spacing={0} sx={{display:'flex', flexDirection:'row'}} style={{ marginTop: '5px', marginLeft: '5%' }}>
-                        <Grid item xs={7} sm={7} md={7} align="left" style={{ marginTop: '16px'}}>
+                <Box width="90%" display="flex" justifyContent="right" sx={{marginTop: '10px', marginLeft: '5%', marginRight: '5%' }}>
+                    <Grid container alignItems="center" justifyContent="space-between">
+                        <Grid item align="left" style={{ marginTop: '16px'}}>
                             <Home />
                         </Grid>
-                        <Grid item xs={4} sm={4} md={4} align="right">
-                            <HelloComponent user_name={getCookie('username')} id={getCookie('user_id')}/>
+                        <Grid item align="right">
+                            <Box width="100%" sx={{ textAlign: 'right',minWidth:'200px' }}>
+                                <Grid container alignItems="flex-end" justifyContent="space-between">
+                                    <Grid item>
+                                        <Box>
+                                            {console.log("name" + user_name)}
+                                            <Link to={`/user/${user_id}`}>
+                                                <Avatar src={avatar_url} sx={{ width: 55, height: 55 }} />
+                                            </Link>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item>
+                                        <Box>
+                                            <HelloComponent user_name={user_name} id={user_id} /> 
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                            </Box>
                         </Grid>
                     </Grid>
                 </Box>
             </Grid>
-            <Grid item justifyContent="center" >
-                <Paper elevation={3} style={{ padding: 20, maxWidth: 600 }}>
-                    <Typography variant="h4" component="h1" gutterBottom>
-                        用户登录
-                    </Typography>
-                    <form noValidate autoComplete="off">
-                        <TextField
-                            label="Username"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                        <TextField
-                            label="Password"
-                            type="password"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            style={{ marginTop: 20 }}
-                            onClick={handleLogin}
-                        >
-                            登录
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            style={{ marginTop: 20 }}
-                            component={Link}
-                            to={`/register`} 
-                        >
-                            注册
-                        </Button>
-                    </form>
-                    {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
-                    {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
-                </Paper>
+            <Grid container alignItems="center" justifyContent="center" >
+                <Box width ="60%" alignItems="center" justifyContent="center" border="0px solid">
+                    <Paper elevation={3} style={{ padding: '10px', marginTop:'40px' }}>
+                        <Grid container width='100%' justifyContent="center" sx={{padding: '10px',marginBottom: '30px'}} alignContent="center">
+                            <Grid item width="100%" maxWidth="550px">
+                               <h1>用户登录</h1>                                
+                            </Grid>
+                            <Grid item width ="100%">
+                                <form noValidate autoComplete="off">
+                                    <TextField
+                                        label="Username"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                    <TextField
+                                        label="Password"
+                                        type="password"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        fullWidth
+                                        style={{ marginTop: 20 }}
+                                        onClick={handleLogin}
+                                    >
+                                        登录
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        fullWidth
+                                        style={{ marginTop: 20 }}
+                                        component={Link}
+                                        to={`/register`} 
+                                    >
+                                        注册
+                                    </Button>
+                                </form>                                
+                            </Grid>
+                            <Grid item width ="100%">
+                                {error && <Alert severity="error" style={{ marginTop: 20 }}>{error}</Alert>}
+                                {success && <Alert severity="success" style={{ marginTop: 20 }}>{success}</Alert>}
+                            </Grid>
+
+                        </Grid>
+                    </Paper>
+                </Box>
             </Grid>
         </Grid>
     );

@@ -431,21 +431,24 @@ class getComment(APIView):
             return Response({"msg": "没有找到评论"}, status=status.HTTP_404_NOT_FOUND)
         
         # 序列化查询到的评论数据
-        serializer = CommentSerializer(comments, many=True)
-        print(serializer.data)
+        # serializer = CommentSerializer(comments, many=True)
+        # print(serializer.data)
 
-        # # 手动构建每个评论的JSON数据
-        # comments_data = []
-        # for comment in comments:
-        #     comment_data = {
-        #         'user_id': comment.user.id,
-        #         'comment_text': comment.text,
-        #         'usebook_id': comment.usebook.id
-        #     }
-        #     comments_data.append(comment_data)
+        # 手动构建每个评论的JSON数据
+        comments_data = []
+        for comment in comments:
+            temp = {
+                'user_id': comment.user.id,
+                'username':comment.user.username,
+                'data':comment.com_date,
+                'avatar':request.build_absolute_uri(Profile.objects.get(user=comment.user).user_avatar.url) if Profile.objects.get(user=comment.user).user_avatar else None,
+                'info': comment.info,
+                'usebook_id': comment.usebook.id
+            }
+            comments_data.append(temp)
 
         # 返回序列化后的数据
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(comments_data, status=status.HTTP_200_OK)
     
 
 class createComment(APIView):
@@ -805,7 +808,7 @@ class validation(APIView):
             email:
         }
     '''
-    @transaction.atomic
+    # @transaction.atomic
     def post(self,request):
         # email=request.data.get('email')
         print(request.data)
@@ -892,7 +895,7 @@ class loggout(APIView):
 class is_loggedin(APIView):
     def get(self,request):
         # print(request.session['user_id'])
-        # print(request.user)
+        print(request.user)
         try:
             print(request.session['is_login'])
             if(request.session['is_login']):

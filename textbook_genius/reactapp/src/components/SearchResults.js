@@ -122,17 +122,17 @@ const SearchResults = () => {
       <Grid item>
         <div style={{ marginTop: '20px' }}>
           <Grid item xs={12}>
-            <Typography variant="h4" gutterBottom align="center">搜索结果</Typography>
+            <h1>搜索结果</h1>
           </Grid>
         </div>        
       </Grid>
-
       <Grid item xs={12}>
         {loading ? (
           <Typography variant="body1" align="center">Loading...</Typography>
         ) : (
           results.length > 0 ? (
             <>
+            {console.log("rendering")}
               <Grid container spacing={2} justifyContent="center">
                 {results.map((result) => (
                   <Grid item key={result.book.isbn} xs={12} style={{ marginBottom: 10, display: 'center', maxWidth: 700, justifyContent: 'center' }}>
@@ -144,7 +144,11 @@ const SearchResults = () => {
                                 <CardContent>
                                   <Typography variant="h5">{result.book.title}</Typography>
                                   <Typography variant="subtitle1">{result.book.publisher}</Typography>
-                                  <Typography variant="subtitle1">{result.book.author ? result.book.author.join(', ') : ''}</Typography>
+                                  <Typography variant="subtitle1">
+                                    {Array.isArray(result.book.author) && result.book.author.length > 0
+                                      ? result.book.author.join(', ')
+                                      : 'Author information not available'}
+                                  </Typography>
                                   <Typography variant="body2">课程: {result.course ? result.course.course_name : ''}</Typography>
                                   <Typography variant="subtitle2">教师: {result.teacher ? result.teacher.teacher_name : ''}</Typography>
                                   <Typography variant="body2">开课学部: {result.course ? result.course.department : ''}</Typography>
