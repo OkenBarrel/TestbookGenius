@@ -40,7 +40,7 @@ const UserPage =()=> {
             try {
     
                 console.log(userId)
-                const response = await fetch("http://192.168.225.149:80/api/user"+"?user_id="+userId);
+                const response = await fetch("http://localhost:8000/api/user"+"?user_id="+userId);
                 if (response.ok) {
                     const data = await response.json();
                     console.log(data.avatar_url)
@@ -125,7 +125,7 @@ const UserPage =()=> {
                 formData.append('user_avatar', userInfo.avatarFile);
             }
             console.log(userInfo.avatarFile)
-            const response = await fetch("http://192.168.225.149:80/api/user"+"?user_id="+userId, {
+            const response = await fetch("http://localhost:8000/api/user"+"?user_id="+userId, {
                     method: 'PUT',
                     headers:{
                         // "Content-Type": "multipart/form-data",
