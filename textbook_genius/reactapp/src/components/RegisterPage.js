@@ -27,7 +27,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const getLog=async ()=>{
-    let response=await fetch("http://localhost:800000/api/is-loggedin",{
+    let response=await fetch("http://localhost:8000/api/is-loggedin",{
       credentials:'include'
     });
     let data=await response.json()

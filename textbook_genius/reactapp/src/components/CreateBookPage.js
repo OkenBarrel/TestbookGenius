@@ -45,7 +45,7 @@ function CreateBookPage(props){
     // },[school_year]);
     
     const getLog=async ()=>{
-        let response=await fetch("http://localhost:800000/api/is-loggedin",{
+        let response=await fetch("http://localhost:8000/api/is-loggedin",{
           credentials:'include'
         });
         let data=await response.json()
@@ -280,7 +280,7 @@ function CreateBookPage(props){
                                                         </CardContent>                                                    
                                                     </Grid>
                                                     <Grid item sx={{marginBottom: "30px"}}>
-                                                        {cover && (<img src={`http://localhost:800000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>)}
+                                                        {cover && (<img src={`http://localhost:8000/api/proxy-image?url=${encodeURIComponent(cover)}`} crossOrigin="anonymous" referrer="same-origin"></img>)}
                                                     </Grid>
                                                 </Grid>
                                             </Box>
