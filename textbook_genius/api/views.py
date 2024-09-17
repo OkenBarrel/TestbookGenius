@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Q
+from django.db import connection
 from django.core.paginator import Paginator
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -29,6 +30,7 @@ APIKEY="0ac44ae016490db2204ce0a042db2916"
 # Create your views here.
 from django.db import transaction
 
+print (connection.queries)
 class RoomView(generics.ListAPIView):
     queryset = Room.objects.all()
     print('in room')
@@ -351,7 +353,7 @@ class getMarkStatus(APIView):
             return Response({'msg':'关系不存在'},status=status.HTTP_404_NOT_FOUND)
         try:
             user=User.objects.get(id=user_id)
-        except User.DoesNotExist:
+        except Exception:
             data={
                 'userid':0,
                 'bookisbn':book_isbn,
@@ -415,11 +417,11 @@ class getUseBook(APIView):
 class getComment(APIView):
     def get(self, request, format=None):
         # 通过URL参数获取Usebook的ID
-        usebook_id = request.GET.get('usebook_id')
-        # user_id = request.COOKIES.get('user_id')
-        print("获取的usebook_id:", usebook_id)
-        
+        usebook_id = request.GET.get("usebook_id")
+        print("获取的usebook_id:"+usebook_id+'this')
+        usebook_id=usebook_id.strip()
         # 根据Usebook的ID查询评论
+        usebook_id=int(usebook_id)
         comments = Comment.objects.filter(usebook__id=usebook_id)
         
         # 如果没有找到评论，返回404
@@ -510,14 +512,14 @@ class getOneUseBook(APIView):
         print(user_id)
         try:
             use=Usebook.objects.get(id=use_id)
-        except Usebook.DoesNotExist:
+        except Exception:# Usebook.DoesNotExist
             return Response({'msg':'关系未找到'},status=status.HTTP_404_NOT_FOUND)
         # use=get_object_or_404(Usebook,id=use_id)
         upvote_count = UpScoreUserRelation.objects.filter(useBook=use).count()
         downvote_count = DownScoreUserRelation.objects.filter(useBook=use).count()
         try:
             user=User.objects.get(id=user_id)
-        except User.DoesNotExist:
+        except Exception:
             data={
                 'use_id':None,
                 'upvote':upvote_count,
@@ -863,7 +865,7 @@ class SearchView(APIView):
         page_obj = paginator.get_page(page_number)
 
         serialized_results = self.serializer_class(page_obj.object_list, many=True).data
-        print(f"Serialized results: {serialized_results}")
+        # print(f"Serialized results: {serialized_results}")
 
         return Response({
             'results': serialized_results,

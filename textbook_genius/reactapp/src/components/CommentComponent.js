@@ -54,8 +54,9 @@ const CommentComponet=({isbn})=>{
     };
     useEffect(()=>{
         getRelations();
-            // if (relations.length > 0) 
-        getComment(relations[value]?.id); // 使用第一个relation的id调用getComment
+        if (relations.length > 0){
+            getComment(relations[value]?.id);
+        } // 使用第一个relation的id调用getComment
     },[]);
 
     async function getRelations(){
@@ -103,6 +104,7 @@ const CommentComponet=({isbn})=>{
     useEffect(() => {
         if (relations.length > 0 && relations[value]) {
             const relationId = relations[value].id; // 假设每个relation对象都有一个id属性
+            console.log(relationId);
             getComment(relationId);
         }
     }, [relations, value]);

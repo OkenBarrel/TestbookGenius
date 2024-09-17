@@ -45,7 +45,7 @@ class Book(models.Model):
 class Teacher(models.Model):
 #     # props: teacher_id, teacher_name, department
 #     # teacher_id=models.CharField(max_length=50,null=False,unique=True,primary_key=True)
-    teacher_name=models.CharField(max_length=50,null=False,default="")
+    teacher_name=models.CharField(max_length=50,null=False,default="",db_index=True)
 #     # department=models.CharField(max_length=50,null=False,default="")
     def __str__(self) -> str:
         return self.teacher_name
@@ -53,7 +53,7 @@ class Teacher(models.Model):
 class Course(models.Model):
     # props: course_id, course_name, department
     # course_id=models.CharField(max_length=50,null=False,unique=True,primary_key=True)
-    course_name=models.CharField(max_length=50,null=False,default="")
+    course_name=models.CharField(max_length=50,null=False,default="",db_index=True)
     department=models.CharField(max_length=50,null=False,default="")
     def __str__(self) -> str:
         return self.course_name
@@ -106,7 +106,7 @@ class Profile(models.Model):
         return "id: {0} username: {1}".format(self.user.id,self.user.get_username())
 
 class Mark(models.Model):
-    userid = models.ForeignKey(User,on_delete=models.CASCADE)#on_update=models.CASCADE
+    userid = models.ForeignKey(User,on_delete=models.CASCADE,db_index=True)#on_update=models.CASCADE
     bookisbn = models.ForeignKey(Book,on_delete=models.CASCADE)#on_update=models.CASCADE
     class Meta:
         managed= True
@@ -120,7 +120,7 @@ class Comment(models.Model):
     # com_id = models.CharField(max_length=50,null=False,unique=True,primary_key=True)
     info = models.CharField(max_length=200,null=False)   
     # relationship with usebook
-    usebook = models.ForeignKey(Usebook,on_delete=models.CASCADE)#on_update=models.CASCADE
+    usebook = models.ForeignKey(Usebook,on_delete=models.CASCADE,db_index=True)#on_update=models.CASCADE
     # relationship with user
     user = models.ForeignKey(User,on_delete=models.CASCADE) #on_update=models.CASCADE
     # relationship with user : props

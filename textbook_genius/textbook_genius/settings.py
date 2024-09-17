@@ -42,16 +42,20 @@ INSTALLED_APPS = [
     # 'frontend.apps.ApiCofig',
     'rest_framework',
     'corsheaders',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    
     'django.contrib.messages.middleware.MessageMiddleware',
+    
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -82,10 +86,20 @@ WSGI_APPLICATION = 'textbook_genius.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'textbook',
+        'HOST': '127.0.0.1',# mysql的ip地址
+        'PORT': 3306, # mysql的端口
+        'USER': 'root', # mysql的用户名
+        'PASSWORD': 'Milky18874' # mysql的密码
     }
 }
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://127.0.0.1:80',]
@@ -157,6 +171,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(message)s'
+        },
+    },
+    # 'handlers': {
+    #     'console': {
+    #         'level': 'DEBUG',
+    #         'class': 'logging.StreamHandler',
+    #         'formatter': 'simple'
+    #     },
+    # },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
@@ -167,6 +193,12 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'INFO',
     }
+    # 'loggers': {
+    #     'django': {
+    #         'handlers': ['console'],
+    #         'level': 'DEBUG',
+    #     },
+    # },
 }
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -187,3 +219,6 @@ EMAIL_FROM = 'TextbookGenius'# 收件人看到的发件人
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_USE_TLS = True   #是否使用TLS安全传输协议
 #EMAIL_USE_SSL = True    #是否使用SSL加密，qq企业邮箱要求使用
+
+# dubug-toolbar
+INTERNAL_IPS=['127.0.0.1','localhost','localhost:3000']#'127.0.0.1:3000',,

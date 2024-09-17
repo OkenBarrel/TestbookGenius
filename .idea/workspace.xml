@@ -4,18 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8e875ffe-f16a-4440-afab-f2e7ea19085d" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/textbook_genius/api/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/api/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js" afterDir="false" />
-    </list>
-    <list id="c2224f17-430e-4519-b168-3d1829835ec4" name="Changes by tong" comment="">
-      <change beforePath="$PROJECT_DIR$/textbook_genius/api/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/api/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/textbook_genius/api/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/api/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/textbook_genius/api/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/api/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/textbook_genius/textbook_genius/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/textbook_genius/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/textbook_genius/textbook_genius/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/textbook_genius/textbook_genius/urls.py" afterDir="false" />
-    </list>
+    <list default="true" id="8e875ffe-f16a-4440-afab-f2e7ea19085d" name="更改" comment="" />
+    <list id="c2224f17-430e-4519-b168-3d1829835ec4" name="Changes by tong" comment="" />
     <list id="151e3159-9671-4241-84e7-e20de0b8da5e" name="tong 进行的更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,23 +34,8 @@
     &quot;accountId&quot;: &quot;a480589d-0863-4bff-a9c6-67045c95b79d&quot;
   }
 }</component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/textbook_genius/frontend/reactapp/src/components/UserPage.js">
-      <ranges>
-        <range start1="3" end1="3" start2="3" end2="4" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="24" end1="25" start2="25" end2="26" changelist="8e875ffe-f16a-4440-afab-f2e7ea19085d" />
-        <range start1="26" end1="27" start2="27" end2="28" changelist="8e875ffe-f16a-4440-afab-f2e7ea19085d" />
-        <range start1="54" end1="54" start2="55" end2="56" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="55" end1="56" start2="57" end2="58" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="60" end1="61" start2="62" end2="63" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="95" end1="95" start2="97" end2="104" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="96" end1="107" start2="105" end2="112" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="110" end1="111" start2="115" end2="116" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="113" end1="114" start2="118" end2="119" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="115" end1="116" start2="120" end2="121" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-        <range start1="126" end1="128" start2="131" end2="131" changelist="c2224f17-430e-4519-b168-3d1829835ec4" />
-      </ranges>
-    </file>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -73,14 +48,16 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feat-loginn",
+    "git-widget-placeholder": "develop",
     "last_opened_file_path": "E:/SP/SE-project/textbook_genius/media/Avatar",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "ts.external.directory.path": "E:\\WebStorm 2024.1.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
