@@ -1,4 +1,4 @@
-import React, { Component, useState,useEffect } from "react";
+import React, { Component, useState,useEffect,useRef } from "react";
 import {Button,Grid,Card,Box, CardContent,CardMedia,Avatar} from '@mui/material';
 import Alert from '@mui/material/Alert';
 import StarIcon from '@mui/icons-material/Star';
@@ -33,6 +33,7 @@ const Book=({relation})=>{
     const[douban_url,setDouban]=useState("")
     const[publisher,setPublisher]=useState("")
     const[pubdate,setPubdate]=useState("")
+    const hasLoaded = useRef(false);
 
     const[buy_kong,setKong]=useState("")
     const[buy_dang,setDang]=useState("")
@@ -62,12 +63,15 @@ const Book=({relation})=>{
     }
 
     useEffect(() => {
-        getBookDetails();
-        getLog();
-        setName(getCookie('username'));
-        setId(getCookie('user_id'));
+        if (!hasLoaded.current) {
+            getBookDetails();
+            getLog();
+            setName(getCookie('username'));
+            setId(getCookie('user_id'));
+            hasLoaded.current = true; // 标记为已加载，避免重复执行
+        }
         //setUserName(getCookie('username'))
-    }, []);
+    }, [isbn]);
 
     async function getBookDetails(){
         let res=await fetch("http://localhost:8000/api/get-book"+"?isbn="+isbn)

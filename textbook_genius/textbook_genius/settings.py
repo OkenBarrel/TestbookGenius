@@ -204,7 +204,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-print(MEDIA_ROOT)
+# print(MEDIA_ROOT)
 
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # 使用 Redis 作为消息代理
@@ -220,5 +220,27 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_USE_TLS = True   #是否使用TLS安全传输协议
 #EMAIL_USE_SSL = True    #是否使用SSL加密，qq企业邮箱要求使用
 
-# dubug-toolbar
+# ---------------------dubug-toolbar---------------------
 INTERNAL_IPS=['127.0.0.1','localhost','localhost:3000']#'127.0.0.1:3000',,
+
+# ---------------------redis-----------------------------
+# Redis的基本配置
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+REDIS_DB = 0
+
+# 配置Django缓存后端为Redis
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+# 配置Django的会话后端为Redis
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 60*60 # 单位为秒

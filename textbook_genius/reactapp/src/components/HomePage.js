@@ -1,6 +1,7 @@
 import {Button,DialogContent,Grid,Typography,TextField,Box} from '@mui/material';
 import React,{Component, useEffect, useState} from "react";
 import SearchHome from './SearchHome';
+import Top from './Top';
 import NavigateButton from './Navigate';
 import HelloComponent from './HelloComponent';
 import { getCookie,getCsrfToken } from './CSRFToken';
@@ -10,7 +11,7 @@ import {
     Link,
 } from "react-router-dom";
 import UserPage from "./UserPage";
-import { AlignHorizontalRight } from '@mui/icons-material';
+import { AlignHorizontalRight, NoEncryption } from '@mui/icons-material';
 import { useReducer } from 'react'
 
 function HomePage() {
@@ -46,6 +47,7 @@ function HomePage() {
 
   useEffect(()=>{
     getLog();
+    console.log("getting cookie:"+getCookie('username'))
     setName(getCookie('username'));
     setId(getCookie('user_id'));
 
@@ -55,7 +57,12 @@ function HomePage() {
     let response=await fetch("http://localhost:8000/api/is-loggedin",{
       credentials:'include'
     });
-    let data=await response.json()
+    if(!response.ok){
+      setName(null);
+      setId(null);
+    }
+    let data=await response.json();
+
     setUrl(data.avatar_url)
 
   }
@@ -95,6 +102,7 @@ function HomePage() {
                         </Link>
                       </Grid>
                       <Grid item marginLeft="5%">
+                        {console.group("befor jello: "+user_name)}
                         <HelloComponent user_name={user_name} id={user_id}/>
                       </Grid>
                     </Grid>
@@ -107,18 +115,41 @@ function HomePage() {
                 border="1"
                 display="flex"
                 flexDirection="column"
-                justifyContent="center"
+                // justifyContent="center"
                 alignItems="center"
                 height="40vh"
                 width="100%"
                 sx={{textAligh:'right'}}
               >
-                  <Box width="80%" alignItems="left">
+                  <Box width="80%" hight="10%" alignItems="left" sx={{ 
+                                    minHeight: 100,
+                                    minWidth: 100,
+                                    }}>
                       <NavigateButton />
                   </Box>
                   <Box width="80%">
                       <SearchHome />
                   </Box>
+              </Box>
+            </Grid>
+            <Grid item>
+              <Box
+                border="1"
+                display="flex"
+                flexDirection="column"
+                // justifyContent="center"
+                alignItems="center"
+                height="40vh"
+                width="100%"
+                sx={{textAligh:'right'}}
+              >
+                  <Box width="80%" hight="10%" alignItems="left" sx={{ 
+                                    minHeight: 100,
+                                    minWidth: 100,
+                                    }}>
+                      <Top />
+                  </Box>
+                  
               </Box>
             </Grid>
           </Grid>

@@ -48,9 +48,7 @@ const CommentComponet=({isbn})=>{
     const handleChange = (event, newValue) => {
         setValue(newValue);
         console.log('!?',value)
-        // setPasson(relations[newValue])
-        // console.log("passon"+passon)
-        // console.log(relations[value]["course"]+"-"+relations[value]["teacher"]);
+        
     };
     useEffect(()=>{
         getRelations();
@@ -69,9 +67,7 @@ const CommentComponet=({isbn})=>{
         console.log('????',data);
         setRelations(data);
         console.log('????',data);
-        // setIds(data?.usebook_id)
-        // console.log(ids)
-        // console.log(ids)
+        
     }
 
   

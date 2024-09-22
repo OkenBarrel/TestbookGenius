@@ -1,7 +1,5 @@
-// import React, { useState } from 'react';
+
 // import { Button } from '@mui/material';
-
-
 // const FileUpload = ({ onFileSelect, acceptedFileTypes, label }) => {
 //     /**
 //      * FileUpload 组件
@@ -58,9 +56,11 @@
 
 // export default FileUpload;
 import * as React from 'react';
+import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import SparkMD5 from 'spark-md5';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -74,7 +74,10 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
+
 const InputFileUpload = ({ onChange }) => {
+
+    
     return (
         <Button
             component="label"
@@ -87,6 +90,82 @@ const InputFileUpload = ({ onChange }) => {
             <VisuallyHiddenInput type="file" onChange={onChange} />
         </Button>
     );
+};
+const CHUNK_SIZE=5;
+const UplodadBig=()=>{
+    const [file, setFile] = useState(null);
+    const [progress, setProgress] = useState(0);
+
+    const calculateFileMD5 = (file) => {
+        return new Promise((resolve) => {
+          const spark = new SparkMD5.ArrayBuffer();
+          const fileReader = new FileReader();
+          
+          fileReader.onload = (e) => {
+            spark.append(e.target.result);
+            resolve(spark.end());
+          };
+          
+          fileReader.readAsArrayBuffer(file);
+        });
+    };
+    
+    const uploadChunk = async (filename, chunkIndex, chunk,fileMD5) => {
+        const formData = new FormData();
+        formData.append('filename', filename);
+        formData.append('fileMD5', fileMD5);
+        formData.append('index', chunkIndex);
+        formData.append('chunk', chunk);
+
+        const data=await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            body: formData,
+          });
+    
+        // let resp = await axios.post(API_HOST, formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // });
+        // console.log(resp)
+      };
+
+    const upload=async (e)=>{
+        const f = e.target.files[0];
+        setFile(f)
+        if (!f){
+            return;
+        }
+        const filename="";
+        const fileMD5 = await calculateFileMD5(file);
+        const totalChunks = Math.ceil(file.size / CHUNK_SIZE); // 计算分片总数
+        let uploadedChunks = 0; // 已上传的分片数
+
+        for (let i = 0; i < totalChunks; i++) {
+            const start = i * CHUNK_SIZE;
+            const end = (i + 1) * CHUNK_SIZE;
+      
+            const chunk = file.slice(start, end);
+            await uploadChunk(filename, i, chunk); // 上传分片
+            uploadedChunks++;
+      
+            setProgress((uploadedChunks / totalChunks) * 100); // 更新上传进度
+          }
+
+
+    };
+
+    return (
+        <div>
+            {InputFileUpload(onchange=upload)}
+        </div>
+
+
+    );
+
 };
 
 export default InputFileUpload;
